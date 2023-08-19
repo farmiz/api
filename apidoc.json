@@ -1,0 +1,43 @@
+{
+  "name": "farmiz api",
+  "version": "1.0.0",
+  "description": "farmiz API",
+  "title": "OFFICIAL FARMIZ Documentation",
+  "url": "https://myapi.com",
+  "sampleUrl": "https://myapi.com",
+  "header": {
+    "title": "My API",
+    "content": "<h1>My API</h1>\n<p>My awesome API documentation.</p>"
+  },
+  "footer": {
+    "title": "farmiz api",
+    "content": "<p>Copyright &copy; 2023 My Company.</p>"
+  },
+  "template": {
+    "showRequiredLabels": true,
+    "withCompare": true,
+    "withGenerator": true,
+    "aloneDisplay": true
+  },
+  "apidoc": {
+    
+  },
+  "markdown": {
+    "parser": "marked",
+    "renderer": "marked",
+    "lineEnding": "unix"
+  },
+  "files": [
+    "app.js",
+    "controllers/**/*"
+  ],
+  "excludeFiles": [
+    "node_modules/",
+    "**/test/**",
+    "docs"
+  ],
+  "ignore": [
+    "node_modules/",
+    "**/test/**"
+  ]
+}

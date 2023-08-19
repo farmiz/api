@@ -1,0 +1,9 @@
+node_modules
+.env
+build/
+.vscode/settings.json
+test.ts
+docs/
+dump.rdb
+.nyc_output
+.coverage
