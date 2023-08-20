@@ -72,7 +72,7 @@ const data: IData = {
   permission: ["wallet", "delete"],
   rules: {
     params: {
-      walletId: {
+      walletId: { 
         required: true,
         authorize: walletService.canViewDocument,
       },
