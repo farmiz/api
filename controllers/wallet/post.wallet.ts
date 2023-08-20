@@ -22,7 +22,7 @@
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
- *     {
+ *     { 
  *       "success": true,
  *       "response": {
  *         "id": "43e25a93-c89e-4c98-8fcb-71f230498ec1",
