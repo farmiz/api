@@ -1,9 +1,10 @@
 import dotenv from "dotenv";
+const path = process.env.NODE_ENV !== "production"
+? `.env.${process.env.NODE_ENV}`
+: ".env";
+console.log({path})
 dotenv.config({
-  path:
-    process.env.NODE_ENV !== "production"
-      ? `.env.${process.env.NODE_ENV}`
-      : ".env",
+  path
 });
 import { HttpServer } from "./../interfaces";
 import { IData, RouteTypes } from "../interfaces";
