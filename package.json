@@ -14,7 +14,7 @@
     "type": "module",
     "build:docs": "apidoc -i ./controllers -o ./docs/",
     "prod-build": "tsc -p tsconfig.json",
-    "prod-start": "cross-env NODE_ENV=production pm2 ./build/index.js && pm2 monit",
+    "prod-start": "cross-env NODE_ENV=production pm2 start ./build/index.js --name=staging && pm2 monit",
     "staging-ci": "npm run prod-build && npm run prod-start"
   },
   "keywords": [],
