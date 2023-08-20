@@ -30,15 +30,16 @@ jobs:
           EMAIL_SENDER: ${{secrets.EMAIL_SENDER}}
 
       run: |
-          echo "APP_PORT=${APP_PORT}" >> $GITHUB_ENV
-          echo "JWT_REFRESH_TOKEN_SECRET=${JWT_REFRESH_TOKEN_SECRET}" >> $GITHUB_ENV
-          echo "JWT_TOKEN_SECRET=${JWT_TOKEN_SECRET}" >> $GITHUB_ENV
-          echo "PASSWORD_HASH=${PASSWORD_HASH}" >> $GITHUB_ENV
-          echo "PASSWORD_SALT=${PASSWORD_SALT}" >> $GITHUB_ENV
-          echo "DATABASE_URI=${DATABASE_URI}" >> $GITHUB_ENV
-          echo "PAYSTACK_SK=${PAYSTACK_SK}" >> $GITHUB_ENV
-          echo "EMAIL_KEY=${EMAIL_KEY}" >> $GITHUB_ENV
-          echo "EMAIL_SENDER=${EMAIL_SENDER}" >> $GITHUB_ENV
+          touch .env
+          echo "APP_PORT=${APP_PORT}" >> .env
+          echo "JWT_REFRESH_TOKEN_SECRET=${JWT_REFRESH_TOKEN_SECRET}" >> .env
+          echo "JWT_TOKEN_SECRET=${JWT_TOKEN_SECRET}" >> .env
+          echo "PASSWORD_HASH=${PASSWORD_HASH}" >> .env
+          echo "PASSWORD_SALT=${PASSWORD_SALT}" >> .env
+          echo "DATABASE_URI=${DATABASE_URI}" >> .env
+          echo "PAYSTACK_SK=${PAYSTACK_SK}" >> .env
+          echo "EMAIL_KEY=${EMAIL_KEY}" >> .env
+          echo "EMAIL_SENDER=${EMAIL_SENDER}" >> .env
 
     - run: npm install
     - run: npm run staging-ci
