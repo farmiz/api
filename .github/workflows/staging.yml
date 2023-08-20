@@ -26,6 +26,8 @@ jobs:
           PASSWORD_SALT: ${{ secrets.PASSWORD_SALT }}
           DATABASE_URI: ${{ secrets.DATABASE_URI }}
           PAYSTACK_SK: ${{secrets.PAYSTACK_SK}}
+          EMAIL_KEY: ${{secrets.EMAIL_KEY}}
+          EMAIL_SENDER: ${{secrets.EMAIL_SENDER}}
 
       run: |
           echo "APP_PORT=${APP_PORT}" >> $GITHUB_ENV
@@ -35,6 +37,8 @@ jobs:
           echo "PASSWORD_SALT=${PASSWORD_SALT}" >> $GITHUB_ENV
           echo "DATABASE_URI=${DATABASE_URI}" >> $GITHUB_ENV
           echo "PAYSTACK_SK=${PAYSTACK_SK}" >> $GITHUB_ENV
+          echo "EMAIL_KEY=${EMAIL_KEY}" >> $GITHUB_ENV
+          echo "EMAIL_SENDER=${EMAIL_SENDER}" >> $GITHUB_ENV
 
     - run: npm install
     - run: npm run staging-ci
