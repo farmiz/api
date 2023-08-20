@@ -12,7 +12,7 @@ export function sendSuccessResponse(
 ): void {
   const { headers, response, success } = data;
 
-  res.status(statusCode).send({ success, response, headers });
+  res.status(statusCode).json({ success, response, headers });
   if (doAfter && doAfter instanceof Function) {
     doAfter();
   }
@@ -29,7 +29,7 @@ export function sendFailedResponse(
 
   res
     .status(statusCode)
-    .send({ error: true, response: { message: error.message } });
+    .json({ error: true, response: { message: error.message } });
   if (doAfter && doAfter instanceof Function) {
     doAfter();
   }
