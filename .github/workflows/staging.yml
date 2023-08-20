@@ -42,4 +42,4 @@ jobs:
 
     - run: npm install
     - run: npm run staging-ci
-    - run: sudo pm2 restart staging
+    - run: pm2 restart staging
