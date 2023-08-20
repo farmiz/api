@@ -10,17 +10,32 @@ jobs:
 
     runs-on: self-hosted
 
-    strategy:
-      matrix:
-        node-version: [14.x]
-
     steps:
     - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Use Node.js 14
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+        node-version: 14
+
+    - name: Set environment variables
+      env:
+          APP_PORT: ${{ secrets.APP_PORT }}
+          JWT_REFRESH_TOKEN_SECRET: ${{ secrets.JWT_REFRESH_TOKEN_SECRET }}
+          JWT_TOKEN_SECRET: ${{ secrets.JWT_TOKEN_SECRET }}
+          PASSWORD_HASH: ${{ secrets.PASSWORD_HASH }}
+          PASSWORD_SALT: ${{ secrets.PASSWORD_SALT }}
+          DATABASE_URI: ${{ secrets.DATABASE_URI }}
+          PAYSTACK_SK: ${{secrets.PAYSTACK_SK}}
+
+      run: |
+          echo "APP_PORT=${APP_PORT}" >> $GITHUB_ENV
+          echo "JWT_REFRESH_TOKEN_SECRET=${JWT_REFRESH_TOKEN_SECRET}" >> $GITHUB_ENV
+          echo "JWT_TOKEN_SECRET=${JWT_TOKEN_SECRET}" >> $GITHUB_ENV
+          echo "PASSWORD_HASH=${PASSWORD_HASH}" >> $GITHUB_ENV
+          echo "PASSWORD_SALT=${PASSWORD_SALT}" >> $GITHUB_ENV
+          echo "DATABASE_URI=${DATABASE_URI}" >> $GITHUB_ENV
+          echo "PAYSTACK_SK=${PAYSTACK_SK}" >> $GITHUB_ENV
+
     - run: npm install
     - run: npm run staging-ci
     - run: sudo pm2 restart staging
