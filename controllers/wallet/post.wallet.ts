@@ -59,7 +59,6 @@
  *     }
  */
 
-
 // The rest of your code remains unchanged
 
 import { IData } from "../../interfaces";
@@ -82,11 +81,12 @@ import { CardBINResponse, ResolveAccountResponse } from "paystackly";
 import { extractWalletData, getNetworkBaseOnNumber } from "../../utils";
 import { RequestError } from "../../helpers/errors";
 import { BankCodes } from "paystackly/dist/types";
-import {
-  walletTypes,
-} from "../../mongoose/models/Wallet";
+import { walletTypes } from "../../mongoose/models/Wallet";
 import { mobileMoneyWalletService } from "../../services/wallet/mobileMoney";
-import { hasValidCreditCardDetails, hasValidMobileMoneyDetails } from "../../helpers";
+import {
+  hasValidCreditCardDetails,
+  hasValidMobileMoneyDetails,
+} from "../../helpers";
 import { assert } from "../../helpers/asserts";
 import { creditCardWalletService } from "../../services/wallet/creditCard";
 
@@ -108,15 +108,22 @@ const data: IData = {
       },
       mobileMoneyDetails: {
         required: (req: AuthRequest) => !!(req.body.type === "mobile money"),
-        validate: (req: AuthRequest, data: TMobileMoneyWallet["mobileMoneyDetails"]) =>
-          req.body.type !== "mobile money" ? true : hasValidMobileMoneyDetails(data),
+        validate: (
+          req: AuthRequest,
+          data: TMobileMoneyWallet["mobileMoneyDetails"],
+        ) =>
+          req.body.type !== "mobile money"
+            ? true
+            : hasValidMobileMoneyDetails(data),
         fieldName: "Mobile money details",
       },
       cardDetails: {
         required: (req: AuthRequest) => req.body.type === "credit card",
         validate: (req: AuthRequest, data: TCreditCardWallet["cardDetails"]) =>
-        req.body.type !== "credit card" ? true : hasValidCreditCardDetails(data),
-        fieldName: "Card details"
+          req.body.type !== "credit card"
+            ? true
+            : hasValidCreditCardDetails(data),
+        fieldName: "Card details",
       },
       primary: {
         required: false,
@@ -161,9 +168,10 @@ async function createWalletHandler(
           req.user?.id as string,
           accountVerified.data,
         );
-        response = await mobileMoneyWalletService.create(
-          dataToStore as TMobileMoneyWallet,
-        );
+        response = await mobileMoneyWalletService.create({
+          ...(dataToStore as TMobileMoneyWallet),
+          createdBy: req.user?.id,
+        });
       }
     } else if (walletData.type === "credit card") {
       const binNumber = walletData.cardDetails.number.substring(0, 6);
@@ -177,9 +185,10 @@ async function createWalletHandler(
           req.user?.id as string,
           accountVerified.data,
         );
-        response = await creditCardWalletService.create(
-          dataToStore as TCreditCardWallet,
-        );
+        response = await creditCardWalletService.create({
+          ...(dataToStore as TCreditCardWallet),
+          createdBy: req.user?.id,
+        });
       }
     } else
       throw next(
@@ -202,7 +211,6 @@ async function createWalletHandler(
       httpCodes.CREATED.code,
     );
     // send wallet created email
-    
   } catch (error: any) {
     sendFailedResponse(res, next, error);
   }

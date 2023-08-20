@@ -3,7 +3,6 @@ import { Model } from "mongoose";
 import { MockBase } from "../../core/MockBase";
 import { range } from "lodash";
 import { v4 as uuid } from "uuid";
-import { MobileMoneyWallet } from "../../../mongoose/models/Wallet";
 type IWalletMock  =  any
 export class WalletMock extends MockBase<IWalletMock> {
   protected data: IWalletMock[];
@@ -73,4 +72,4 @@ export class WalletMock extends MockBase<IWalletMock> {
   async destroy(): Promise<any> {
     return await this.model.deleteMany({});
   }
-}
+} 

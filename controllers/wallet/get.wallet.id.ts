@@ -67,6 +67,12 @@ const data: IData = {
     params: {
       id: {
         required: true,
+        authorize: async (req: AuthRequest, id: string)=>{
+          const userId= req?.user?.id;
+          const result = await walletService._exists({createdBy: userId, _id: req.params.id});
+          console.log({result})
+          return result;
+        }
       },
     },
   },
