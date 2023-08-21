@@ -22,7 +22,7 @@ describe("RESET PASSWORD /auth/reset-password", function () {
   it("should not change user password if oldPassword is not provided", async function () {
     const res = await chai
       .request(app.app)
-      .patch("/api/auth/reset-password")
+      .patch("/v1/auth/reset-password")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -36,7 +36,7 @@ describe("RESET PASSWORD /auth/reset-password", function () {
   it("should not change user password if newPassword is not provided", async function () {
     const res = await chai
       .request(app.app)
-      .patch("/api/auth/reset-password")
+      .patch("/v1/auth/reset-password")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -51,7 +51,7 @@ describe("RESET PASSWORD /auth/reset-password", function () {
   it("should not change user password if passwords are the same", async function () {
     const res = await chai
       .request(app.app)
-      .patch("/api/auth/reset-password")
+      .patch("/v1/auth/reset-password")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -67,7 +67,7 @@ describe("RESET PASSWORD /auth/reset-password", function () {
   it("should change user password", async function () {
     const res = await chai
       .request(app.app)
-      .patch("/api/auth/reset-password")
+      .patch("/v1/auth/reset-password")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })

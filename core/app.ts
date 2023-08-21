@@ -61,7 +61,7 @@ export class App implements HttpServer {
       data && data.rules && data.rules.query ? data.rules.query : {};
 
     this.router[method](
-      `/api${url}`,
+      `/v1${url}`,
       [
         // LIMIT THE METHODS ALLOWED ON EACH ROUTE
         (req: Request, res: Response, next: NextFunction) => {

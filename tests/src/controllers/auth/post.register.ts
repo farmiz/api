@@ -37,7 +37,7 @@ describe("REGISTER USER /auth/register", function () {
   it("should not register user without firstName", async () => {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/register")
+      .post("/v1/auth/register")
       .send({ firstName: "" });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
     res.body.should.have.property("error").be.a("boolean").eql(true);
@@ -50,7 +50,7 @@ describe("REGISTER USER /auth/register", function () {
   it("should not register user if firstName is less than three characters", async () => {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/register")
+      .post("/v1/auth/register")
       .send({ firstName: "Sm" });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
     res.body.should.have.property("error").be.a("boolean").eql(true);
@@ -63,7 +63,7 @@ describe("REGISTER USER /auth/register", function () {
   it("should not register user without lastName", async () => {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/register")
+      .post("/v1/auth/register")
       .send({ firstName: userDetails.firstName, lastName: "" });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
     res.body.should.have.property("error").be.a("boolean").eql(true);
@@ -76,7 +76,7 @@ describe("REGISTER USER /auth/register", function () {
   it("should not register user if lastName is less than three characters", async () => {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/register")
+      .post("/v1/auth/register")
       .send({ firstName: userDetails.firstName, lastName: "Lf" });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
     res.body.should.have.property("error").be.a("boolean").eql(true);
@@ -89,7 +89,7 @@ describe("REGISTER USER /auth/register", function () {
   it("should not register user without username", async () => {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/register")
+      .post("/v1/auth/register")
       .send({ ...pick(userDetails, ["firstName", "lastName"]), username: "" });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
     res.body.should.have.property("error").be.a("boolean").eql(true);
@@ -102,7 +102,7 @@ describe("REGISTER USER /auth/register", function () {
   it("should not register user if username is less than three characters", async () => {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/register")
+      .post("/v1/auth/register")
       .send({
         ...pick(userDetails, ["firstName", "lastName"]),
         username: "Lf",
@@ -119,7 +119,7 @@ describe("REGISTER USER /auth/register", function () {
   it("should not register user with invalid email", async function () {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/register")
+      .post("/v1/auth/register")
       .send({
         ...pick(userDetails, ["firstName", "lastName", "username"]),
         email: "something.sss",
@@ -137,7 +137,7 @@ describe("REGISTER USER /auth/register", function () {
   it("should not register user without phone", async function () {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/register")
+      .post("/v1/auth/register")
       .send({ ...omit(userDetails, ["dateOfBirth", "phone"]) });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
     res.body.should.have.property("error").be.a("boolean").eql(true);
@@ -150,7 +150,7 @@ describe("REGISTER USER /auth/register", function () {
   it("should not register user invalid phone object", async function () {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/register")
+      .post("/v1/auth/register")
       .send({
         ...omit(userDetails, ["dateOfBirth", "phone.country", "phone.number"]),
         phone: { number: "543814868" },
@@ -166,7 +166,7 @@ describe("REGISTER USER /auth/register", function () {
   it("should not register user without date of birth", async function () {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/register")
+      .post("/v1/auth/register")
       .send({ ...omit(userDetails, ["dateOfBirth"]) });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
     res.body.should.have.property("error").be.a("boolean").eql(true);
@@ -179,7 +179,7 @@ describe("REGISTER USER /auth/register", function () {
   it("should not register user if user is not 18yrs or above", async function () {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/register")
+      .post("/v1/auth/register")
       .send({...userDetails, dateOfBirth: new Date()});
     res.should.have.status(httpCodes.BAD_REQUEST.code);
     res.body.should.have.property("error").be.a("boolean").eql(true);
@@ -192,7 +192,7 @@ describe("REGISTER USER /auth/register", function () {
   it("should not register user with a short password format", async function () {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/register")
+      .post("/v1/auth/register")
       .send({
        ...userDetails,
         password: "12345",
@@ -209,7 +209,7 @@ describe("REGISTER USER /auth/register", function () {
   it("should not register user with no lowercase letter in password", async function () {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/register")
+      .post("/v1/auth/register")
       .send({
       ...userDetails,
         password: "12345678",
@@ -226,7 +226,7 @@ describe("REGISTER USER /auth/register", function () {
   it("should not register user with no uppercase letter in password", async function () {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/register")
+      .post("/v1/auth/register")
       .send({
       ...userDetails,
         password: "12345678a",
@@ -243,7 +243,7 @@ describe("REGISTER USER /auth/register", function () {
   it("should not register user with no special character in password", async function () {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/register")
+      .post("/v1/auth/register")
       .send({
         ...userDetails,
         password: "12345678aA",
@@ -259,7 +259,7 @@ describe("REGISTER USER /auth/register", function () {
   it("should not register user if username already exists", async function () {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/register")
+      .post("/v1/auth/register")
       .send({ ...userDetails, username });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
     res.body.should.have.property("error").be.a("boolean").eql(true);
@@ -273,7 +273,7 @@ describe("REGISTER USER /auth/register", function () {
   it("should not register user if email already exists", async function () {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/register")
+      .post("/v1/auth/register")
       .send({ ...userDetails, email });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
     res.body.should.have.property("error").be.a("boolean").eql(true);
@@ -288,7 +288,7 @@ describe("REGISTER USER /auth/register", function () {
     const newEmail = faker.internet.email();
     const res = await chai
       .request(app.app)
-      .post("/api/auth/register")
+      .post("/v1/auth/register")
       .send({ ...userDetails, email: newEmail });
     res.should.have.status(httpCodes.CREATED.code);
     res.body.should.have.property("success").eql(true);
