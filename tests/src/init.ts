@@ -9,7 +9,7 @@ chai.should();
 // FIX TEST HERE
 describe("/auth/health", function () {
   it("should return status 200", async function () {
-    const res = await chai.request(app.app).get("/api/health/check").send();
+    const res = await chai.request(app.app).get("/v1/health/check").send();
     res.should.have.status(200);
     res.body.should.have.property("success").equal(true);
   });

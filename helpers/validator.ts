@@ -37,7 +37,8 @@ export class Validator {
         return next();
       } else {
         const errors: { error: string; status: number }[] =
-          await bundleValidation(rules, req, "body");
+        await bundleValidation(rules, req, "body");
+        console.log(errors)
         if (errors.length > 0) {
           return res
             .status(errors[0].status)

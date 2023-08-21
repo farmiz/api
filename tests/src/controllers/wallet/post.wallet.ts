@@ -124,7 +124,7 @@ describe("CREATE WALLET /wallet", async () => {
       .be.a("string")
       .eql("Invalid wallet details");
   });
-  it("should create wallet with a validnumber", async () => {
+  it.only("should create wallet with a validnumber", async () => {
     const res = await chai
       .request(app.app)
       .post("/v1/wallet")
@@ -134,7 +134,6 @@ describe("CREATE WALLET /wallet", async () => {
       .send({
         ...set(validWalletData, "mobileMoneyDetails.phone.number", "543814868"),
       });
-      console.log(res.body, set(validWalletData, "mobileMoneyDetails.phone.number", "543814868"))
     res.should.have.status(201);
     res.body.should.have.property("success").be.a("boolean").eql(true);
     res.body.should.have.property("response").be.a("object");
