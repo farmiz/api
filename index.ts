@@ -2,7 +2,7 @@ import Database from "./core/database";
 import { assert } from "./helpers/asserts";
 import { App } from "./core/app";
 
-const { APP_PORT = 3000, DATABASE_URI = "" } = process.env;
+const { APP_PORT, DATABASE_URI = "" } = process.env;
 
 class Server {
   private server: App;
