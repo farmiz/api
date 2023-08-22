@@ -13,7 +13,7 @@ async function postHandler(req: Request, res: Response) {
   try {
     return res.send({ success: true });
   } catch (error: any) {
-    res.send({ error: error.message });
+    res.status(500).send({ error: error.message });
   }
 }
 
