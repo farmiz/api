@@ -1,0 +1,58 @@
+name: Production CI
+
+on:
+  push:
+    branches:
+     - main
+
+jobs:
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js 14
+      uses: actions/setup-node@v3
+      with:
+        node-version: 14
+
+    - name: Set environment variables
+      env:
+          APP_PORT: ${{ secrets.APP_PORT }}
+          JWT_REFRESH_TOKEN_SECRET: ${{ secrets.JWT_REFRESH_TOKEN_SECRET }}
+          JWT_TOKEN_SECRET: ${{ secrets.JWT_TOKEN_SECRET }}
+          PASSWORD_HASH: ${{ secrets.PASSWORD_HASH }}
+          PASSWORD_SALT: ${{ secrets.PASSWORD_SALT }}
+          DATABASE_URI: ${{ secrets.DATABASE_URI }}
+          PAYSTACK_SK: ${{secrets.PAYSTACK_SK}}
+          EMAIL_KEY: ${{secrets.EMAIL_KEY}}
+          EMAIL_SENDER: ${{secrets.EMAIL_SENDER}}
+          TREBLLE_API_KEY: ${{secrets.TREBLLE_API_KEY}}
+          TREBLLE_PROJECT_ID: ${{secrets.TREBLLE_PROJECT_ID}}
+          REDIS_PORT: ${{secrets.REDIS_PORT}}
+          REDIS_USER: ${{secrets.REDIS_USER}}
+          REDIS_PASSWORD: ${{secrets.REDIS_PASSWORD}}
+          REDIS_HOST: ${{secrets.REDIS_HOST}}
+
+      run: |
+          touch .env
+          echo "APP_PORT=${APP_PORT}" >> .env
+          echo "JWT_REFRESH_TOKEN_SECRET=${JWT_REFRESH_TOKEN_SECRET}" >> .env
+          echo "JWT_TOKEN_SECRET=${JWT_TOKEN_SECRET}" >> .env
+          echo "PASSWORD_HASH=${PASSWORD_HASH}" >> .env
+          echo "PASSWORD_SALT=${PASSWORD_SALT}" >> .env
+          echo "DATABASE_URI=${DATABASE_URI}" >> .env
+          echo "PAYSTACK_SK=${PAYSTACK_SK}" >> .env
+          echo "EMAIL_KEY=${EMAIL_KEY}" >> .env
+          echo "EMAIL_SENDER=${EMAIL_SENDER}" >> .env
+          echo "TREBLLE_PROJECT_ID=${TREBLLE_PROJECT_ID}" >> .env
+          echo "TREBLLE_API_KEY=${TREBLLE_API_KEY}" >> .env
+          echo "REDIS_PORT=${REDIS_PORT}" >> .env
+          echo "REDIS_USER=${REDIS_USER}" >> .env
+          echo "REDIS_PASSWORD=${REDIS_PASSWORD}" >> .env
+          echo "REDIS_HOST=${REDIS_HOST}" >> .env
+
+    - run: npm install
+    - run: npm run production-ci
+    - run: pm2 restart production
