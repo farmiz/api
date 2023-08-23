@@ -15,7 +15,8 @@
     "build:docs": "apidoc -i ./controllers -o ./docs/",
     "prod-build": "tsc -p tsconfig.json",
     "prod-start": "cross-env NODE_ENV=production node ./build/index.js",
-    "staging-ci": "npm run prod-build"
+    "staging-ci": "npm run prod-build",
+    "production-ci": "npm run prod-build"
   },
   "keywords": [],
   "author": "",
