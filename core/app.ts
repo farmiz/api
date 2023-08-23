@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
+const path = process.env.NODE_ENV !== "production"
+? `.env.${process.env.NODE_ENV}`
+: ".env";
 dotenv.config({
-  path:
-    process.env.NODE_ENV !== "production"
-      ? `.env.${process.env.NODE_ENV}`
-      : ".env",
+  path
 });
 import { HttpServer } from "./../interfaces";
 import { IData, RouteTypes } from "../interfaces";
@@ -61,7 +61,7 @@ export class App implements HttpServer {
       data && data.rules && data.rules.query ? data.rules.query : {};
 
     this.router[method](
-      `/api${url}`,
+      `/v1${url}`,
       [
         // LIMIT THE METHODS ALLOWED ON EACH ROUTE
         (req: Request, res: Response, next: NextFunction) => {
@@ -228,21 +228,16 @@ export class App implements HttpServer {
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       if (process.env.NODE_ENV !== "test") {
         console.debug({
-          // headers: req.headers,
           host: req.hostname,
           method: req.method,
           url: req.url,
-          // statusCode: req.statusCode,
-          // body: req.body || {},
           ip: req.ip,
-          // cookies: req.cookies,
         });
       }
       next();
     });
     this.app.use(this.router);
     this.app.all("*", (req, res, next) => {
-      console.log("I WAS HERE")
       res.status(404).send("Route not found");
       next();
     });

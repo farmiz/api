@@ -25,7 +25,7 @@ describe("UPADTE PIN /auth/pin", function () {
   it("should not update pin if old code is not provided", async function () {
     const res = await chai
       .request(app.app)
-      .put("/api/auth/pin")
+      .put("/v1/auth/pin")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -42,7 +42,7 @@ describe("UPADTE PIN /auth/pin", function () {
   it("should not update pin if new code is not provided", async function () {
     const res = await chai
       .request(app.app)
-      .put("/api/auth/pin")
+      .put("/v1/auth/pin")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -58,7 +58,7 @@ describe("UPADTE PIN /auth/pin", function () {
   it("should not update pin if old code and new code are the same", async function () {
     const res = await chai
       .request(app.app)
-      .put("/api/auth/pin")
+      .put("/v1/auth/pin")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -74,7 +74,7 @@ describe("UPADTE PIN /auth/pin", function () {
   it("should update pin if old code and new code are valid", async function () {
     const res = await chai
       .request(app.app)
-      .put("/api/auth/pin")
+      .put("/v1/auth/pin")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })

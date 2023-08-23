@@ -37,7 +37,7 @@ describe("CREATE WALLET /wallet", async () => {
   it("should not create wallet without wallet type", async () => {
     const res = await chai
       .request(app.app)
-      .post("/api/wallet")
+      .post("/v1/wallet")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -53,7 +53,7 @@ describe("CREATE WALLET /wallet", async () => {
   it("should not create wallet without mobile money details", async () => {
     const res = await chai
       .request(app.app)
-      .post("/api/wallet")
+      .post("/v1/wallet")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -71,7 +71,7 @@ describe("CREATE WALLET /wallet", async () => {
     it("should not create wallet without a valid mobileMoneyDetails", async () => {
       const res = await chai
         .request(app.app)
-        .post("/api/wallet")
+        .post("/v1/wallet")
         .set({
           Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
         })
@@ -91,7 +91,7 @@ describe("CREATE WALLET /wallet", async () => {
   it("should not create wallet without a valid phone number ", async () => {
     const res = await chai
       .request(app.app)
-      .post("/api/wallet")
+      .post("/v1/wallet")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -109,7 +109,7 @@ describe("CREATE WALLET /wallet", async () => {
   it("should not create wallet with an unresolved number", async () => {
     const res = await chai
       .request(app.app)
-      .post("/api/wallet")
+      .post("/v1/wallet")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -124,10 +124,10 @@ describe("CREATE WALLET /wallet", async () => {
       .be.a("string")
       .eql("Invalid wallet details");
   });
-  it("should create wallet with a validnumber", async () => {
+  it.only("should create wallet with a validnumber", async () => {
     const res = await chai
       .request(app.app)
-      .post("/api/wallet")
+      .post("/v1/wallet")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })

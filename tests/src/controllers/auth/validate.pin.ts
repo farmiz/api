@@ -25,7 +25,7 @@ describe("VALIDATE PIN /auth/pin", function () {
   it("should not validate pin if code is not provided", async function () {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/pin/validate")
+      .post("/v1/auth/pin/validate")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -42,7 +42,7 @@ describe("VALIDATE PIN /auth/pin", function () {
   it("should not validate pin if new code is not valid", async function () {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/pin/validate")
+      .post("/v1/auth/pin/validate")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -58,7 +58,7 @@ describe("VALIDATE PIN /auth/pin", function () {
   it("should validate pin if code is valid", async function () {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/pin/validate")
+      .post("/v1/auth/pin/validate")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })

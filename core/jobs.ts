@@ -13,7 +13,7 @@ const {
 } = process.env;
 export default class JobBase<T> {
   queue: Bull.Queue<JobData<T>>;
-  readonly maxRetries: number = 5; // Increase max retries
+  readonly maxRetries: number = 5;
   private isConnected: boolean = false;
   constructor(queueName: string) {
     this.queue = new Bull(queueName, {

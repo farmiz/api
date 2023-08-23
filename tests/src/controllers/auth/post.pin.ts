@@ -30,7 +30,7 @@ describe("CREATE PIN /auth/pin", function () {
   it("should not create pin if code is not provided", async function () {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/pin")
+      .post("/v1/auth/pin")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -47,7 +47,7 @@ describe("CREATE PIN /auth/pin", function () {
   it("should not create pin if code is not invalid", async function () {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/pin")
+      .post("/v1/auth/pin")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -63,7 +63,7 @@ describe("CREATE PIN /auth/pin", function () {
   it("should not create if pin exists ", async function () {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/pin")
+      .post("/v1/auth/pin")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -79,7 +79,7 @@ describe("CREATE PIN /auth/pin", function () {
   it("should create pin with code ", async function () {
     const res = await chai
       .request(app.app)
-      .post("/api/auth/pin")
+      .post("/v1/auth/pin")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey2)}`,
       })
