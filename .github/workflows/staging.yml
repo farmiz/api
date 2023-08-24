@@ -1,9 +1,9 @@
-name: Staging CI
+name: Staging CI - Development
 
 on:
   push:
     branches:
-     - development
+      - development
 
 jobs:
   build:
@@ -13,29 +13,29 @@ jobs:
      - staging
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v2
     - name: Use Node.js 14
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v2
       with:
         node-version: 14
 
     - name: Set environment variables
       env:
-          APP_PORT: ${{ secrets.APP_PORT }}
+          APP_PORT: ${{ secrets.DEV_APP_PORT }}
           JWT_REFRESH_TOKEN_SECRET: ${{ secrets.JWT_REFRESH_TOKEN_SECRET }}
           JWT_TOKEN_SECRET: ${{ secrets.JWT_TOKEN_SECRET }}
           PASSWORD_HASH: ${{ secrets.PASSWORD_HASH }}
           PASSWORD_SALT: ${{ secrets.PASSWORD_SALT }}
-          DATABASE_URI: ${{ secrets.DATABASE_URI }}
-          PAYSTACK_SK: ${{secrets.PAYSTACK_SK}}
-          EMAIL_KEY: ${{secrets.EMAIL_KEY}}
-          EMAIL_SENDER: ${{secrets.EMAIL_SENDER}}
-          TREBLLE_API_KEY: ${{secrets.TREBLLE_API_KEY}}
-          TREBLLE_PROJECT_ID: ${{secrets.TREBLLE_PROJECT_ID}}
-          REDIS_PORT: ${{secrets.REDIS_PORT}}
-          REDIS_USER: ${{secrets.REDIS_USER}}
-          REDIS_PASSWORD: ${{secrets.REDIS_PASSWORD}}
-          REDIS_HOST: ${{secrets.REDIS_HOST}}
+          DATABASE_URI: ${{ secrets.DEV_DATABASE_URI }} 
+          PAYSTACK_SK: ${{ secrets.DEV_PAYSTACK_SK }}   
+          EMAIL_KEY: ${{ secrets.EMAIL_KEY }}
+          EMAIL_SENDER: ${{ secrets.EMAIL_SENDER }}
+          TREBLLE_API_KEY: ${{ secrets.DEV_TREBLLE_API_KEY }}   
+          TREBLLE_PROJECT_ID: ${{ secrets.DEV_TREBLLE_PROJECT_ID }} 
+          REDIS_PORT: ${{ secrets.DEV_REDIS_PORT }}     
+          REDIS_USER: ${{ secrets.REDIS_USER }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          REDIS_HOST: ${{ secrets.DEV_REDIS_HOST }}     
 
       run: |
           touch .env
