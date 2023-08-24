@@ -6,7 +6,7 @@
  * @apiDescription Endpoint use to login 
  * @apiSuccess {Object} response User Data
  * @apiPermission anyone
- * @apiSampleRequest https://farmiz.onrender.com
+ * @apiSampleRequest https://staging-api.farmiz.co
  * @apiBody {String} email  User's email
  * @apiBody {String} password  User's password
  * @apiSuccessExample {json}

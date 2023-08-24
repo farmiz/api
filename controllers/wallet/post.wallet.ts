@@ -6,7 +6,7 @@
  * @apiDescription Endpoint used to add a wallet.
  *
  * @apiPermission anyone
- * @apiSampleRequest https://farmiz.onrender.com
+ * @apiSampleRequest https://staging-api.farmiz.co
  *
  * @apiBody {String} type Type of wallet. Should be one of: `mobile money` or `credit card`.
  * @apiBody {Object} mobileMoneyDetails Mobile money details (required if type is "mobile money").
