@@ -56,5 +56,5 @@ jobs:
           echo "REDIS_HOST=${REDIS_HOST}" >> .env.development
 
     - run: npm install
-    - run: npm run staging-start
+    - run: npm run staging-ci
     - run: pm2 restart staging
