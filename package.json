@@ -16,7 +16,7 @@
     "prod-build": "tsc -p tsconfig.json",
     "prod-start": "cross-env NODE_ENV=production node ./build/index.js",
     "staging-start": "cross-env NODE_ENV=development node ./build/index.js",
-    "staging-ci": "npm run prod-build"
+    "staging-ci": "npm run build && npm run staging-start"
   },
   "keywords": [],
   "author": "",
