@@ -185,7 +185,7 @@ async function createWalletHandler(
       throw next(
         new RequestError(httpCodes.BAD_REQUEST.code, "Invalid wallet type"),
       );
-    if (accountVerified.status === false) {
+    if (accountVerified.status === false) {      
       return next(
         new RequestError(httpCodes.BAD_REQUEST.code, "Invalid wallet details"),
       );
