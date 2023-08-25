@@ -2,18 +2,25 @@ import mongoose, { Document, Schema, Types } from "mongoose";
 import { defaultPlugin } from "../utils";
 import { IDefaultPlugin } from "../../interfaces";
 import { MongooseDefaults } from "../../constants";
+import { isPast } from "date-fns";
 
-export type VerifyAccountTokenType = "signup" | "login";
+export type VerifyAccountTokenType = "signup" | "login" | "recovery";
 
-export const verifyAccountTokenTypeArr: VerifyAccountTokenType[] = ["login", "signup"];
+export const verifyAccountTokenTypeArr: VerifyAccountTokenType[] = [
+  "login",
+  "signup",
+  "recovery",
+];
+export type TokenWithExpiration = {
+  token: string;
+  expiresAt: Date;
+  type?: VerifyAccountTokenType;
+};
 export interface ITokens {
   accessToken: string;
   refreshToken: string[];
-  verifyAccountToken?: {
-    token: string;
-    expiresAt: Date;
-    type?: VerifyAccountTokenType;
-  } | null;
+  verifyAccountToken?: TokenWithExpiration | null;
+  emailRecoveryToken: TokenWithExpiration | null;
 }
 export interface TokenDocument extends IDefaultPlugin {
   tokens: ITokens;
@@ -36,12 +43,13 @@ const tokenSchema = new Schema<TokenDocument>(
         require: true,
       },
       verifyAccountToken: Object,
+      emailRecoveryToken: Object,
     },
     userId: { type: String, ref: "User", required: true },
   },
   MongooseDefaults,
 );
-tokenSchema.plugin(defaultPlugin)
+tokenSchema.plugin(defaultPlugin);
 
 tokenSchema.pre<TokenDocument>("save", async function (next) {
   const existingToken = await Tokens.findOne({ userId: this.userId });

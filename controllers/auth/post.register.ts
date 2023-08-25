@@ -114,8 +114,8 @@ import { constructPermission } from "../../helpers/permissions/permissions";
 import { RequestError } from "../../helpers/errors";
 import { hasValidPhone, phoneExists } from "../../helpers";
 import { differenceInYears, parseISO } from "date-fns";
-import User from "../../mongoose/models/Users";
-const { MAIN_ORIGIN } = process.env;
+import { TokenWithExpiration } from "../../mongoose/models/Tokens";
+import { generateVerificationUrl } from "../../utils";
 
 interface Body {
   email: string;
@@ -255,12 +255,8 @@ async function registerHandler(
       sameSite: "none",
     });
 
-    // Generate a unique URL with the token appended as a query parameter
-    const generateVerificationUrl = (token: any) => {
-      return `${MAIN_ORIGIN}/verify?token=${token.token}&type=${token.type}`;
-    };
     const verifyAccountToken = tokens.verifyAccountToken;
-    const verificationUrl = generateVerificationUrl(verifyAccountToken);
+    const verificationUrl = generateVerificationUrl(verifyAccountToken as TokenWithExpiration);
     // Send Email
     await EmailJob.accountVerification({
       email,
