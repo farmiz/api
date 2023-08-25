@@ -1,4 +1,4 @@
-name: Staging CI - Development
+name: Prod CI - Production
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
 
     runs-on: 
      - self-hosted
-     - production
+     - prod
 
     steps:
     - uses: actions/checkout@v2
