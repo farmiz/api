@@ -38,7 +38,7 @@ jobs:
           REDIS_HOST: ${{ secrets.DEV_REDIS_HOST }}     
 
       run: |
-          touch .env
+          touch .env.development
           echo "APP_PORT=${APP_PORT}" >> .env
           echo "JWT_REFRESH_TOKEN_SECRET=${JWT_REFRESH_TOKEN_SECRET}" >> .env
           echo "JWT_TOKEN_SECRET=${JWT_TOKEN_SECRET}" >> .env
