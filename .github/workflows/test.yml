@@ -42,21 +42,21 @@ jobs:
           REDIS_HOST: ${{ secrets.DEV_REDIS_HOST }}
 
         run: |
-          echo "APP_PORT=${APP_PORT}"
-          echo "JWT_REFRESH_TOKEN_SECRET=${JWT_REFRESH_TOKEN_SECRET}"
-          echo "JWT_TOKEN_SECRET=${JWT_TOKEN_SECRET}"
-          echo "PASSWORD_HASH=${PASSWORD_HASH}"
-          echo "PASSWORD_SALT=${PASSWORD_SALT}"
-          echo "DATABASE_URI=${DATABASE_URI}"
-          echo "PAYSTACK_SK=${PAYSTACK_SK}"
-          echo "EMAIL_KEY=${EMAIL_KEY}"
-          echo "EMAIL_SENDER=${EMAIL_SENDER}"
-          echo "TREBLLE_PROJECT_ID=${TREBLLE_PROJECT_ID}"
-          echo "TREBLLE_API_KEY=${TREBLLE_API_KEY}"
-          echo "REDIS_PORT=${REDIS_PORT}"
-          echo "REDIS_USER=${REDIS_USER}"
-          echo "REDIS_PASSWORD=${REDIS_PASSWORD}"
-          echo "REDIS_HOST=${REDIS_HOST}"
+          echo "APP_PORT=${APP_PORT}" >> $GITHUB_ENV
+          echo "JWT_REFRESH_TOKEN_SECRET=${JWT_REFRESH_TOKEN_SECRET}" >> $GITHUB_ENV
+          echo "JWT_TOKEN_SECRET=${JWT_TOKEN_SECRET}" >> $GITHUB_ENV
+          echo "PASSWORD_HASH=${PASSWORD_HASH}" >> $GITHUB_ENV
+          echo "PASSWORD_SALT=${PASSWORD_SALT}" >> $GITHUB_ENV
+          echo "DATABASE_URI=${DATABASE_URI}" >> $GITHUB_ENV
+          echo "PAYSTACK_SK=${PAYSTACK_SK}" >> $GITHUB_ENV
+          echo "EMAIL_KEY=${EMAIL_KEY}" >> $GITHUB_ENV
+          echo "EMAIL_SENDER=${EMAIL_SENDER}" >> $GITHUB_ENV
+          echo "TREBLLE_PROJECT_ID=${TREBLLE_PROJECT_ID}" >> $GITHUB_ENV
+          echo "TREBLLE_API_KEY=${TREBLLE_API_KEY}" >> $GITHUB_ENV
+          echo "REDIS_PORT=${REDIS_PORT}" >> $GITHUB_ENV
+          echo "REDIS_USER=${REDIS_USER}" >> $GITHUB_ENV
+          echo "REDIS_PASSWORD=${REDIS_PASSWORD}" >> $GITHUB_ENV
+          echo "REDIS_HOST=${REDIS_HOST}" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: npm install
