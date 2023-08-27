@@ -8,8 +8,8 @@ export interface IDiscovery {
     amount: number;
     profitPercentage: number;
     riskLevel: RiskLevel;
-    startDate: Date;
-    endDate: Date;
-    closingDate: Date;
+    startDate: Date | string;
+    endDate: Date | string;
+    closingDate: Date | string;
   }
   

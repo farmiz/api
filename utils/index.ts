@@ -185,3 +185,14 @@ const { MAIN_ORIGIN } = process.env;
     export const generateVerificationUrl = (tokenData: TokenWithExpiration | null) => {
       return `${MAIN_ORIGIN}/verify?token=${tokenData?.token}&type=${tokenData?.type}`;
     };
+ export function getRandomFutureDate() {
+      const currentDate = new Date();
+      
+      // Get a random number of days between 1 and 365
+      const randomDays = Math.floor(Math.random() * 365) + 1;
+      
+      // Add the random number of days to the current date
+      currentDate.setDate(currentDate.getDate() + randomDays);
+      
+      return currentDate.toDateString();
+    }
