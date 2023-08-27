@@ -5,7 +5,7 @@
  * @apiVersion 0.0.1
  * @apiDescription Endpoint used to retrieve wallets.
  *
- * @apiPermission authenticated user (with "wallet" and "read" permission)
+ * @apiPermission authenticated user (with "wallet" - "read" permission)
  * @apiSampleRequest https://staging-api.farmiz.co
  *
  * @apiSuccess {Boolean} success Indicates if the request was successful.

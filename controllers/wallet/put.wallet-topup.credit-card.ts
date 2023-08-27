@@ -5,7 +5,7 @@
  * @apiVersion 0.0.1
  * @apiDescription Endpoint used to top up a wallet using a credit card.
  *
- * @apiPermission authenticated user
+ * @apiPermission authenticated (with "wallet" - "create" permission)
  * @apiSampleRequest https://staging-api.farmiz.co
  *
  * @apiParam {String} id ID of the wallet to be topped up.

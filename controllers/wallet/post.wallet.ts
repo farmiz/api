@@ -5,7 +5,7 @@
  * @apiVersion 0.0.1
  * @apiDescription Endpoint used to add a wallet.
  *
- * @apiPermission anyone
+ * @apiPermission authenticated (with "wallet" - "create" permission)
  * @apiSampleRequest https://staging-api.farmiz.co
  *
  * @apiBody {String} type Type of wallet. Should be one of: `mobile money` or `credit card`.
