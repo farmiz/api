@@ -25,13 +25,21 @@ jobs:
 
       - name: Set environment variables
         env:
-          APP_PORT: ${{ secrets.APP_PORT }}
+          APP_PORT: ${{ secrets.DEV_APP_PORT }}
           JWT_REFRESH_TOKEN_SECRET: ${{ secrets.JWT_REFRESH_TOKEN_SECRET }}
           JWT_TOKEN_SECRET: ${{ secrets.JWT_TOKEN_SECRET }}
           PASSWORD_HASH: ${{ secrets.PASSWORD_HASH }}
           PASSWORD_SALT: ${{ secrets.PASSWORD_SALT }}
-          DATABASE_URI: ${{ secrets.DATABASE_URI }}
-          PAYSTACK_SK: ${{secrets.PAYSTACK_SK}}
+          DATABASE_URI: ${{ secrets.DEV_DATABASE_URI }}
+          PAYSTACK_SK: ${{ secrets.DEV_PAYSTACK_SK }}
+          EMAIL_KEY: ${{ secrets.EMAIL_KEY }}
+          EMAIL_SENDER: ${{ secrets.MAIL_SENDER }}
+          TREBLLE_API_KEY: ${{ secrets.DEV_TREBLLE_API_KEY }}
+          TREBLLE_PROJECT_ID: ${{ secrets.DEV_TREBLLE_PROJECT_ID }}
+          REDIS_PORT: ${{ secrets.DEV_REDIS_PORT }}
+          REDIS_USER: ${{ secrets.DEV_REDIS_USER }}
+          REDIS_PASSWORD: ${{ secrets.DEV_REDIS_PASSWORD }}
+          REDIS_HOST: ${{ secrets.DEV_REDIS_HOST }}
 
         run: |
           echo "APP_PORT=${APP_PORT}" >> $GITHUB_ENV
@@ -41,6 +49,14 @@ jobs:
           echo "PASSWORD_SALT=${PASSWORD_SALT}" >> $GITHUB_ENV
           echo "DATABASE_URI=${DATABASE_URI}" >> $GITHUB_ENV
           echo "PAYSTACK_SK=${PAYSTACK_SK}" >> $GITHUB_ENV
+          echo "EMAIL_KEY=${EMAIL_KEY}" >> $GITHUB_ENV
+          echo "EMAIL_SENDER=${EMAIL_SENDER}" >> $GITHUB_ENV
+          echo "TREBLLE_PROJECT_ID=${TREBLLE_PROJECT_ID}" >> $GITHUB_ENV
+          echo "TREBLLE_API_KEY=${TREBLLE_API_KEY}" >> $GITHUB_ENV
+          echo "REDIS_PORT=${REDIS_PORT}" >> $GITHUB_ENV
+          echo "REDIS_USER=${REDIS_USER}" >> $GITHUB_ENV
+          echo "REDIS_PASSWORD=${REDIS_PASSWORD}" >> $GITHUB_ENV
+          echo "REDIS_HOST=${REDIS_HOST}" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: npm install

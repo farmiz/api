@@ -11,9 +11,9 @@ export type IPermission = Record<
 
 export type RouteTypes = "post" | "get" | "delete" | "put" | "patch";
 
-export interface IResponseData {
+export interface IResponseData<T> {
   success: boolean;
-  response?: object | any[] | null;
+  response?: T;
   headers?: IRequestHeader;
   code?: number;
 }
@@ -97,9 +97,8 @@ export type Statuses = "failed" | "success" | "pending";
 
 export type JobId =
   | "reset-password"
-  | "user-registration"
   | "user-account-verification"
-  | "user-created"
+  | "account-password-recovery"
   | "wallet-topup";
 
 export interface JobData<T> {

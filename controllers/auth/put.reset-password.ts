@@ -15,18 +15,23 @@ import { RequestError } from "../../helpers/errors";
 import { ERROR_MESSAGES } from "../../constants";
 
 const data: IData = {
-  requireAuth: true,
+  requireAuth: false,
   rules: {
     body: {
-      oldPassword: {
+      password: {
         required: true,
         validate: Validator.isPasswordStrong,
         fieldName: "Old password",
       },
-      newPassword: {
+      confirmPassword: {
         required: true,
         validate: Validator.isPasswordStrong,
         fieldName: "New password",
+      },
+      email: {
+        required: true,
+        validate: Validator.isEmail,
+        fieldName: "Email",
       },
     },
   },
@@ -38,25 +43,19 @@ async function resetPasswordHandler(
   next: NextFunction,
 ) {
   try {
-    const { oldPassword, newPassword } = req.body;
-    if(oldPassword === newPassword) return next(new RequestError(400, ERROR_MESSAGES.samePasswordCombination));
+    const { password, confirmPassword, email } = req.body;
+    if (confirmPassword === password)
+      return next(
+        new RequestError(400, ERROR_MESSAGES.samePasswordCombination),
+      );
 
-    const user = await userService.findOne(
-      { _id: req?.user?.id },
-      { includes: ["password"] },
-    );
+    const user = await userService.findOne({ email });
 
-    if(!user) return next(new RequestError(400, ERROR_MESSAGES.userNotFound));
+    if (!user) return next(new RequestError(400, ERROR_MESSAGES.userNotFound));
 
-    const passwordIsValid = await passwordManager.comparePassword(oldPassword, user?.password);
-    if(!passwordIsValid) return next(new RequestError(400, ERROR_MESSAGES.invalidPassword));
+    const newPasswordHashed = await passwordManager.hashPassword(password);
 
-    const newPasswordHashed = await passwordManager.hashPassword(newPassword);
-
-    await userService.updateOne(
-      { _id: req?.user?.id },
-      { password: newPasswordHashed },
-    );
+    await userService.updateOne({ email }, { password: newPasswordHashed });
 
     sendSuccessResponse(res, next, {
       success: true,
@@ -67,7 +66,7 @@ async function resetPasswordHandler(
 }
 
 export default {
-  method: "patch",
+  method: "put",
   url: "/auth/reset-password",
   handler: resetPasswordHandler,
   data,

@@ -5,7 +5,7 @@ import {
   sendFailedResponse,
   sendSuccessResponse,
 } from "../../helpers/requestResponse";
-import { TokenService, generateTokens } from "../../helpers/auth/jwt";
+import { generateTokens, tokenService } from "../../helpers/auth/jwt";
 import { RATE_LIMITS, httpCodes } from "../../constants";
 import { userService } from "../../services/users";
 import Tokens from "../../mongoose/models/Tokens";
@@ -38,7 +38,7 @@ async function refreshTokenHandler(
     if (refreshToken !== refreshTokenIsActive)
       return next(new RequestError(code));
 
-    const verifyToken = TokenService.verifyRefreshToken(refreshToken);
+    const verifyToken = tokenService.verifyRefreshToken(refreshToken);
     if (!verifyToken) return next(new RequestError(code));
 
     const user = await userService.findOne({

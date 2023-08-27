@@ -9,7 +9,7 @@ chai.should();
 import { v4 as uuid } from "uuid";
 import { ERROR_MESSAGES } from "../../../../constants";
 
-describe("RESET PASSWORD /auth/reset-password", function () {
+describe("RESET PASSWORD /auth/update-password", function () {
   const password = `Test1234!`;
   const dummyKey = uuid();
   before(async () => {
@@ -22,36 +22,41 @@ describe("RESET PASSWORD /auth/reset-password", function () {
   it("should not change user password if oldPassword is not provided", async function () {
     const res = await chai
       .request(app.app)
-      .patch("/v1/auth/reset-password")
+      .patch("/v1/auth/update-password")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
-      .send({
-      });
+      .send({});
     res.should.have.status(400);
     res.body.should.have.property("error").be.a("boolean").eql(true);
-    res.body.should.have.property("response").be.a("object")
-    res.body.response.should.have.property("message").be.a("string").eql("Old password is required");
+    res.body.should.have.property("response").be.a("object");
+    res.body.response.should.have
+      .property("message")
+      .be.a("string")
+      .eql(ERROR_MESSAGES.fieldRequired("Old password"));
   });
   it("should not change user password if newPassword is not provided", async function () {
     const res = await chai
       .request(app.app)
-      .patch("/v1/auth/reset-password")
+      .patch("/v1/auth/update-password")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
       .send({
-        oldPassword: password
+        oldPassword: password,
       });
     res.should.have.status(400);
-    res.body.should.have.property("response").be.a("object")
-    res.body.response.should.have.property("message").be.a("string").eql("New password is required");
+    res.body.should.have.property("response").be.a("object");
+    res.body.response.should.have
+      .property("message")
+      .be.a("string")
+      .eql(ERROR_MESSAGES.fieldRequired("New password"));
   });
 
   it("should not change user password if passwords are the same", async function () {
     const res = await chai
       .request(app.app)
-      .patch("/v1/auth/reset-password")
+      .patch("/v1/auth/update-password")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -59,15 +64,18 @@ describe("RESET PASSWORD /auth/reset-password", function () {
         oldPassword: password,
         newPassword: password,
       });
-      res.should.have.status(400);
-      res.body.should.have.property("error").be.a("boolean").eql(true);
-      res.body.should.have.property("response").be.a("object")
-      res.body.response.should.have.property("message").be.a("string").eql(ERROR_MESSAGES.samePasswordCombination)
+    res.should.have.status(400);
+    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("response").be.a("object");
+    res.body.response.should.have
+      .property("message")
+      .be.a("string")
+      .eql(ERROR_MESSAGES.samePasswordCombination);
   });
   it("should change user password", async function () {
     const res = await chai
       .request(app.app)
-      .patch("/v1/auth/reset-password")
+      .patch("/v1/auth/update-password")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })

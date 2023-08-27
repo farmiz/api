@@ -1,5 +1,6 @@
 import { RequestError } from "../helpers/errors";
 import { IWallet, WalletPayload } from "../interfaces/wallet";
+import { TokenWithExpiration } from "../mongoose/models/Tokens";
 import { RouteTypes } from "./../interfaces";
 import * as crypto from "crypto";
 export function hasCorrectHttpVerb(httpVerb: RouteTypes): boolean | void {
@@ -179,3 +180,8 @@ export function generateRandomNumber(length: number): string {
   const randomHex = buffer.toString("hex");
   return randomHex.slice(0, length);
 }
+const { MAIN_ORIGIN } = process.env;
+    // Generate a unique URL with the token appended as a query parameter
+    export const generateVerificationUrl = (tokenData: TokenWithExpiration | null) => {
+      return `${MAIN_ORIGIN}/verify?token=${tokenData?.token}&type=${tokenData?.type}`;
+    };

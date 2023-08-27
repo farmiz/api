@@ -25,7 +25,7 @@ export class EmailService {
     }
 
     try {      
-      if (![ "testing", "development"].includes(NODE_ENV)) {
+      if (!["testing", "development"].includes(NODE_ENV)) {
         await this.transporter.emails.send({
           ...mailOptions,
           from: EMAIL_SENDER,

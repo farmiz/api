@@ -106,16 +106,16 @@ import { RATE_LIMITS, httpCodes } from "../../constants";
 import { createUser } from "../../services/auth/createUser";
 import { userService } from "../../services/users";
 import { Validator } from "../../mongoose/validators";
-import { EmailJob } from "../../jobs/EmailJob";
 import Permission from "../../mongoose/models/Permission";
 import { UserRole } from "../../interfaces/users";
 import { AuthRequest } from "../../middleware";
 import { constructPermission } from "../../helpers/permissions/permissions";
 import { RequestError } from "../../helpers/errors";
-import { hasValidPhone, phoneExists } from "../../helpers";
+import { hasValidPhone } from "../../helpers";
 import { differenceInYears, parseISO } from "date-fns";
-import User from "../../mongoose/models/Users";
-const { MAIN_ORIGIN } = process.env;
+import { TokenWithExpiration } from "../../mongoose/models/Tokens";
+import { generateVerificationUrl } from "../../utils";
+import { emailSender } from "../../services/email/EmailSender";
 
 interface Body {
   email: string;
@@ -255,16 +255,11 @@ async function registerHandler(
       sameSite: "none",
     });
 
-    // Generate a unique URL with the token appended as a query parameter
-    const generateVerificationUrl = (token: any) => {
-      return `${MAIN_ORIGIN}/verify?token=${token.token}&type=${token.type}`;
-    };
     const verifyAccountToken = tokens.verifyAccountToken;
-    const verificationUrl = generateVerificationUrl(verifyAccountToken);
+    const verificationUrl = generateVerificationUrl(verifyAccountToken as TokenWithExpiration);
     // Send Email
-    await EmailJob.accountVerification({
-      email,
-      jobId: "user-registration",
+    await emailSender.accountVerification({
+email,
       accountVerificationToken: verificationUrl,
     });
     sendSuccessResponse(

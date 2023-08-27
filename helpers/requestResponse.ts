@@ -3,10 +3,10 @@ import { IResponseData } from "../interfaces";
 import { AxiosError } from "axios";
 import { httpCodes } from "../constants";
 
-export function sendSuccessResponse(
+export function sendSuccessResponse<T>(
   res: Response,
   next: NextFunction,
-  data: IResponseData,
+  data: IResponseData<T>,
   statusCode: number = httpCodes.OK.code,
   doAfter?: Function,
 ): void {

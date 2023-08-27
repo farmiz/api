@@ -1,16 +1,16 @@
-name: Staging CI - Development
+name: Prod CI - Production
 
 on:
   push:
     branches:
-      - development
+      - main
 
 jobs:
   build:
 
     runs-on: 
      - self-hosted
-     - staging
+     - prod
 
     steps:
     - uses: actions/checkout@v2
@@ -38,23 +38,23 @@ jobs:
           REDIS_HOST: ${{ secrets.DEV_REDIS_HOST }}     
 
       run: |
-          touch .env.development
+          touch .env
           echo "APP_PORT=${APP_PORT}" >> .env
-          echo "JWT_REFRESH_TOKEN_SECRET=${JWT_REFRESH_TOKEN_SECRET}" >> .env.development
-          echo "JWT_TOKEN_SECRET=${JWT_TOKEN_SECRET}" >> .env.development
-          echo "PASSWORD_HASH=${PASSWORD_HASH}" >> .env.development
-          echo "PASSWORD_SALT=${PASSWORD_SALT}" >> .env.development
-          echo "DATABASE_URI=${DATABASE_URI}" >> .env.development
-          echo "PAYSTACK_SK=${PAYSTACK_SK}" >> .env.development
-          echo "EMAIL_KEY=${EMAIL_KEY}" >> .env.development
-          echo "EMAIL_SENDER=${EMAIL_SENDER}" >> .env.development
-          echo "TREBLLE_PROJECT_ID=${TREBLLE_PROJECT_ID}" >> .env.development
-          echo "TREBLLE_API_KEY=${TREBLLE_API_KEY}" >> .env.development
-          echo "REDIS_PORT=${REDIS_PORT}" >> .env.development
-          echo "REDIS_USER=${REDIS_USER}" >> .env.development
-          echo "REDIS_PASSWORD=${REDIS_PASSWORD}" >> .env.development
-          echo "REDIS_HOST=${REDIS_HOST}" >> .env.development
+          echo "JWT_REFRESH_TOKEN_SECRET=${JWT_REFRESH_TOKEN_SECRET}" >> .env
+          echo "JWT_TOKEN_SECRET=${JWT_TOKEN_SECRET}" >> .env
+          echo "PASSWORD_HASH=${PASSWORD_HASH}" >> .env
+          echo "PASSWORD_SALT=${PASSWORD_SALT}" >> .env
+          echo "DATABASE_URI=${DATABASE_URI}" >> .env
+          echo "PAYSTACK_SK=${PAYSTACK_SK}" >> .env
+          echo "EMAIL_KEY=${EMAIL_KEY}" >> .env
+          echo "EMAIL_SENDER=${EMAIL_SENDER}" >> .env
+          echo "TREBLLE_PROJECT_ID=${TREBLLE_PROJECT_ID}" >> .env
+          echo "TREBLLE_API_KEY=${TREBLLE_API_KEY}" >> .env
+          echo "REDIS_PORT=${REDIS_PORT}" >> .env
+          echo "REDIS_USER=${REDIS_USER}" >> .env
+          echo "REDIS_PASSWORD=${REDIS_PASSWORD}" >> .env
+          echo "REDIS_HOST=${REDIS_HOST}" >> .env
 
     - run: npm install
-    - run: npm run staging-ci
-    - run: pm2 restart staging
+    - run: npm run production-ci
+    - run: pm2 restart prod

@@ -1,7 +1,6 @@
 import { ILimiter, PermissionOperation, PermissionString } from "../interfaces";
 import { hasPermission } from "../helpers/permissions/permissions";
 import { Request, Response, NextFunction, RequestHandler } from "express";
-import { TokenService } from "../helpers/auth/jwt";
 import { BANNED_COUNTRIES, ERROR_MESSAGES, RATE_LIMITS, httpCodes } from "../constants";
 import Database from "../core/database";
 import { RateLimiterMongo } from "rate-limiter-flexible";
@@ -9,6 +8,7 @@ import { RateLimiterMongo } from "rate-limiter-flexible";
 import geoLocation from "geoip-lite";
 import { RequestError } from "../helpers/errors";
 import { UserModel } from "../mongoose/models/Users";
+import { tokenService } from "../helpers/auth/jwt";
 
 type CustomAuth = (req: AuthRequest, res: Response, next: NextFunction)=> Promise<any> | void | any;
 export interface AuthRequest<T = any> extends Request {
@@ -23,7 +23,7 @@ class AuthMiddleware {
     next: NextFunction,
   ): Promise<any> {
     try {
-      await TokenService.authenticate(req, next);
+      await tokenService.authenticate(req, next);
     } catch (err: any) {
       return res.status(401).json({ succes: false, response: { error: err.message } });
     }

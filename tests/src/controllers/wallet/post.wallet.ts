@@ -124,7 +124,7 @@ describe("CREATE WALLET /wallet", async () => {
       .be.a("string")
       .eql("Invalid wallet details");
   });
-  it.only("should create wallet with a validnumber", async () => {
+  it("should create wallet with a validnumber", async () => {
     const res = await chai
       .request(app.app)
       .post("/v1/wallet")

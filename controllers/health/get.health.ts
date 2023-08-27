@@ -11,9 +11,9 @@ const data: IData = {
 };
 async function postHandler(req: Request, res: Response) {
   try {
-    return res.send({ success: true });
+    return res.send({ success: true, message: "Health check modified, Welcome 1" });
   } catch (error: any) {
-    res.status(500).send({ error });
+    res.status(500).send({ error: error.message });
   }
 }
 

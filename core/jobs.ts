@@ -12,8 +12,8 @@ const {
   REDIS_HOST = "localhost",
 } = process.env;
 export default class JobBase<T> {
-  queue: Bull.Queue<JobData<T>>;
-  readonly maxRetries: number = 5;
+  protected queue: Bull.Queue<JobData<T>>;
+  protected maxRetries: number = 5;
   private isConnected: boolean = false;
   constructor(queueName: string) {
     this.queue = new Bull(queueName, {
@@ -24,6 +24,9 @@ export default class JobBase<T> {
         username: REDIS_USER,
       },
     });
+  this.setupQueue();
+  }
+  private setupQueue() {
     this.queue.isReady().then(() => {
       this.isConnected = true;
       console.log("Queue connection successful");
@@ -34,14 +37,13 @@ export default class JobBase<T> {
     this.queue.process(this.processJob.bind(this));
     this.queue.on("failed", this.failedJob.bind(this));
   }
-
-  handleQueueError(error: Error) {
+  protected handleQueueError(error: Error) {
     this.isConnected = false;
     console.error("Queue connection error:", error);
     // You can handle the connection failure here or emit an event, throw an error, etc.
   }
 
-  async processJob(job: Bull.Job<JobData<T>>): Promise<void> {
+  protected async processJob(job: Bull.Job<JobData<T>>): Promise<void> {
     try {
       await this.process(job.data.data);
       if (await job.isCompleted()) {
@@ -57,15 +59,15 @@ export default class JobBase<T> {
       await job.remove();
     }
   }
-  async failedJob(job: Bull.Job<JobData<T>>, error: Error): Promise<void> {
+  protected async failedJob(job: Bull.Job<JobData<T>>, error: Error): Promise<void> {
     console.log(`Job ${job.id} failed with error: ${error.message}`);
   }
 
-  async process(data: T): Promise<void> {
+ protected async process(data: T): Promise<void> {
     throw new Error("Method not implemented");
   }
 
-  async addJob(data: T, options: IJobOptions): Promise<Bull.Job<JobData<T>> | null>{
+   async addJob(data: T, options: IJobOptions): Promise<Bull.Job<JobData<T>> | null>{
     if (JobValidator.hasValidJobId(options.jobId)) {
       const modifiedOptions = modifyJobOptions(options);
       modifiedOptions.jobId = `${options.jobId}:${uuid()}` as JobId;
