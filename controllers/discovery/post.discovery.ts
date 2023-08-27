@@ -132,7 +132,7 @@ async function createDiscoveryHandler(
     sendSuccessResponse<DiscoveryModel>(res, next, {
       success: true,
       response: discoveryCreated,
-    });
+    }, 201);
   } catch (error: any) {
     sendFailedResponse(res, next, error);
   }

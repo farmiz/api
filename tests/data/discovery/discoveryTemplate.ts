@@ -4,7 +4,6 @@ import { v4 as uuid } from "uuid";
 import { DiscoveryModel, riskLevels } from "../../../mongoose/models/Discovery";
 import { RiskLevel } from "../../../interfaces/discovery";
 
-
 export const mockDiscoveryTemplate = (): Partial<DiscoveryModel> => {
   const selectedRisk = selectRandomItem<RiskLevel>(riskLevels);
   return {
