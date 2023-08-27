@@ -41,7 +41,7 @@ export class Validator {
         if (errors.length > 0) {
           return res
             .status(errors[0].status)
-            .json({ error: true, response: { message: errors[0].error } });
+            .json({ success: false, response: { message: errors[0].error } });
         }
         return next();
       }
@@ -57,7 +57,7 @@ export class Validator {
         if (errors.length > 0) {
           return res
             .status(errors[0].status)
-            .json({ error: true, response: { message: errors[0].error } });
+            .json({ success: false, response: { message: errors[0].error } });
         }
         return next();
       }
@@ -73,7 +73,7 @@ export class Validator {
         if (errors.length > 0) {
           return res
             .status(errors[0].status)
-            .json({ error: true, response: { message: errors[0].error } });
+            .json({ success: false, response: { message: errors[0].error } });
         }
         return next();
       }

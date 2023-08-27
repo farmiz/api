@@ -31,7 +31,7 @@ describe("UPADTE PIN /auth/pin", function () {
       })
       .send({});
     res.should.have.status(400);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -48,7 +48,7 @@ describe("UPADTE PIN /auth/pin", function () {
       })
       .send({ oldCode: "1234" });
     res.should.have.status(400);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -64,7 +64,7 @@ describe("UPADTE PIN /auth/pin", function () {
       })
       .send({ newCode: "1234", oldCode: "1234" });
     res.should.have.status(500);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")

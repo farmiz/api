@@ -48,4 +48,4 @@ const discoverySchema = new Schema<DiscoveryModel>({
 
 discoverySchema.plugin(defaultPlugin);
 
-export const Discovery = new Model(discoverySchema, "Discovery");
+export const Discovery = mongoose.model("Discovery", discoverySchema);

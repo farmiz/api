@@ -40,7 +40,7 @@ describe("REGISTER USER /auth/register", function () {
       .post("/v1/auth/register")
       .send({ firstName: "" });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -53,7 +53,7 @@ describe("REGISTER USER /auth/register", function () {
       .post("/v1/auth/register")
       .send({ firstName: "Sm" });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -66,7 +66,7 @@ describe("REGISTER USER /auth/register", function () {
       .post("/v1/auth/register")
       .send({ firstName: userDetails.firstName, lastName: "" });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -79,7 +79,7 @@ describe("REGISTER USER /auth/register", function () {
       .post("/v1/auth/register")
       .send({ firstName: userDetails.firstName, lastName: "Lf" });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -92,7 +92,7 @@ describe("REGISTER USER /auth/register", function () {
       .post("/v1/auth/register")
       .send({ ...pick(userDetails, ["firstName", "lastName"]), username: "" });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -108,7 +108,7 @@ describe("REGISTER USER /auth/register", function () {
         username: "Lf",
       });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -125,7 +125,7 @@ describe("REGISTER USER /auth/register", function () {
         email: "something.sss",
       });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -140,7 +140,7 @@ describe("REGISTER USER /auth/register", function () {
       .post("/v1/auth/register")
       .send({ ...omit(userDetails, ["dateOfBirth", "phone"]) });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -156,7 +156,7 @@ describe("REGISTER USER /auth/register", function () {
         phone: { number: "543814868" },
       });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -169,7 +169,7 @@ describe("REGISTER USER /auth/register", function () {
       .post("/v1/auth/register")
       .send({ ...omit(userDetails, ["dateOfBirth"]) });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -182,7 +182,7 @@ describe("REGISTER USER /auth/register", function () {
       .post("/v1/auth/register")
       .send({...userDetails, dateOfBirth: new Date()});
     res.should.have.status(httpCodes.BAD_REQUEST.code);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -198,7 +198,7 @@ describe("REGISTER USER /auth/register", function () {
         password: "12345",
       });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -215,7 +215,7 @@ describe("REGISTER USER /auth/register", function () {
         password: "12345678",
       });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -232,7 +232,7 @@ describe("REGISTER USER /auth/register", function () {
         password: "12345678a",
       });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -249,7 +249,7 @@ describe("REGISTER USER /auth/register", function () {
         password: "12345678aA",
       });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -262,7 +262,7 @@ describe("REGISTER USER /auth/register", function () {
       .post("/v1/auth/register")
       .send({ ...userDetails, username });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
@@ -276,7 +276,7 @@ describe("REGISTER USER /auth/register", function () {
       .post("/v1/auth/register")
       .send({ ...userDetails, email });
     res.should.have.status(httpCodes.BAD_REQUEST.code);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
@@ -295,7 +295,6 @@ describe("REGISTER USER /auth/register", function () {
     res.body.should.have.property("response");
     res.body.response.should.have.property("email").eql(newEmail);
     res.body.response.should.have.property("status").eql("pendingApproval");
-    console.log(res)
   });
 
   after(async () => {

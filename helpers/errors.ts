@@ -22,7 +22,7 @@ class ErrorHandler {
   ) {
     const { statusCode, message } = error;
     res.status(statusCode).json({
-      error: true,
+      success: false,
       response: {
         message
       }
