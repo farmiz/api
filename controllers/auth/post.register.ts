@@ -6,7 +6,7 @@
  * @apiDescription Endpoint used to register a new client.
  *
  * @apiPermission anyone
- * @apiSampleRequest https://farmiz.onrender.com
+ * @apiSampleRequest https://staging-api.farmiz.co
  *
  * @apiBody {String} email User's email.
  * @apiBody {String} password User's password.

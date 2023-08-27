@@ -6,7 +6,7 @@
  * @apiDescription Endpoint used to retrieve wallets.
  *
  * @apiPermission authenticated user (with "wallet" and "read" permission)
- * @apiSampleRequest https://farmiz.onrender.com
+ * @apiSampleRequest https://staging-api.farmiz.co
  *
  * @apiSuccess {Boolean} success Indicates if the request was successful.
  * @apiSuccess {Object} response Response object containing wallets.

@@ -6,7 +6,7 @@
  * @apiDescription Endpoint used to update a single wallet by its ID.
  *
  * @apiPermission authenticated user (with "wallet" and "read" permission)
- * @apiSampleRequest https://farmiz.onrender.com
+ * @apiSampleRequest https://staging-api.farmiz.co
  *
  * @apiParam {String} id The unique ID of the wallet to be updated.
  *

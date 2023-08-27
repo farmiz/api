@@ -6,7 +6,7 @@
  * @apiDescription Endpoint used to top up a wallet using mobile money.
  *
  * @apiPermission authenticated user
- * @apiSampleRequest https://farmiz.onrender.com
+ * @apiSampleRequest https://staging-api.farmiz.co
  *
  * @apiParam {String} id ID of the wallet to be topped up.
  *
