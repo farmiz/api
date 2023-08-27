@@ -110,5 +110,5 @@ export default {
   method: "post",
   url: "/auth/login",
   handler: loginHandler,
-  data,
+  data
 };
