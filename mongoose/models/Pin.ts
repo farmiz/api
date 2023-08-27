@@ -1,5 +1,4 @@
-// pinCodeModel.ts
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { IDefaultPlugin } from "../../interfaces";
 import { defaultPlugin } from "../utils";
 import { passwordManager } from "../../helpers/auth/password";

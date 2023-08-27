@@ -29,7 +29,7 @@ export function sendFailedResponse(
 
   res
     .status(statusCode)
-    .json({ error: true, response: { message: error.message } });
+    .json({ success: false, response: { message: error.message } });
   if (doAfter && doAfter instanceof Function) {
     doAfter();
   }

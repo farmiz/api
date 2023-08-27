@@ -295,6 +295,7 @@ describe("REGISTER USER /auth/register", function () {
     res.body.should.have.property("response");
     res.body.response.should.have.property("email").eql(newEmail);
     res.body.response.should.have.property("status").eql("pendingApproval");
+    console.log(res)
   });
 
   after(async () => {
