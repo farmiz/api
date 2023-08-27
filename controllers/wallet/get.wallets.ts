@@ -101,7 +101,7 @@ const getWalletsHandler = async (
         new RequestError(httpCodes.BAD_REQUEST.code, "No wallet found"),
       );
     }
-    const totalDocuments = await walletService.countDocuments();
+    const totalDocuments = await walletService.countDocuments(filter);
     const perPage = filter.perPage || 50;
     const response = {
       data: wallets,

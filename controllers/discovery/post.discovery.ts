@@ -72,7 +72,7 @@ async function createDiscoveryHandler(
   next: NextFunction,
 ) {
   try {
-    const discoveryCreated = await discoveryService.create(req.body);
+    const discoveryCreated = await discoveryService.create({...req.body, createdBy: req.user?.id});
     sendSuccessResponse<DiscoveryModel>(res, next, {
       success: true,
       response: discoveryCreated,
