@@ -36,3 +36,18 @@ export const newUserCreatedTemplate = (
   <p>For security reasons, we <b>highly</b> suggest you change your password once you login</p>
   `,
 });
+
+export const accountPasswordRecovery = (
+  email: string,
+  recoveryLink: string,
+  from?: string,
+) => ({
+  from: defaultFrom(from),
+  to: email,
+  subject: `${email}, Password reset`,
+  text: "You are trying to reset your password",
+  html: `
+      <h1>Passowrd Reset!</h1>
+      <p>${recoveryLink} is your new password reset code</p>
+    `,
+});

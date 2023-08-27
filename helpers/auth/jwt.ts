@@ -11,7 +11,7 @@ import { httpCodes } from "../../constants";
 import { userService } from "../../services/users";
 import { IUser } from "../../interfaces/users";
 import crypto from "crypto";
-import { addHours } from "date-fns";
+import { addHours, isAfter } from "date-fns";
 import { UserModel } from "../../mongoose/models/Users";
 const { JWT_TOKEN_SECRET = "", JWT_REFRESH_TOKEN_SECRET = "" } = process.env;
 // Token interfaces
@@ -58,6 +58,16 @@ class TokenService {
       throw new Error(error.message)
     }
   }
+  async verifyEmailRecoveryToken(token: string): Promise<boolean>{
+    const tokenVerified = await Tokens.findOne({"tokens.emailRecoveryToken": token});
+
+    if(!tokenVerified) return false;
+
+    // check if token is exired
+    const currentDate = new Date();
+    const emailRecoveryToken = tokenVerified?.tokens?.verifyAccountToken;
+    return isAfter(currentDate, new Date(emailRecoveryToken?.expiresAt as Date));
+  }
   public verifyRefreshToken(token: string): IUserPayload {
     const decoded = jwt.verify(token, this.RefreshSecret) as IUserPayload;
     return decoded;
@@ -84,6 +94,7 @@ class TokenService {
       throw new RequestError(httpCode, error.message);
     }
   }
+
 }
 
 export class TokenModel implements Partial<ITokens> {

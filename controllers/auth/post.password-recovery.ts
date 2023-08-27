@@ -11,11 +11,10 @@ import { userService } from "../../services/users";
 import { IData } from "../../interfaces";
 import { AuthRequest } from "../../middleware";
 import { Validator } from "../../mongoose/validators";
-import { RequestError } from "../../helpers/errors";
-import { ERROR_MESSAGES } from "../../constants";
 import { tokenService } from "../../helpers/auth/jwt";
 import { generateVerificationUrl } from "../../utils";
 import { TokenWithExpiration } from "../../mongoose/models/Tokens";
+import { emailSender } from "../../services/email/EmailSender";
 
 const data: IData = {
   requireAuth: false,
@@ -47,6 +46,7 @@ async function resetPasswordHandler(
       const recoveryLink = generateVerificationUrl(
         tokenCreated?.tokens.emailRecoveryToken as TokenWithExpiration,
       );
+      await emailSender.accountPasswordRecovery({email, recoveryLink})
     }
     sendSuccessResponse<{ message: string }>(res, next, {
       success: true,
