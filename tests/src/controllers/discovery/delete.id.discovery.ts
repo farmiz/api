@@ -32,20 +32,29 @@ describe("DELETE DISCOVERY /:id/discovery", () => {
   });
 
 
-  it.only("Should delete a valid discovery", async()=>{
+  it("Should delete a valid discovery", async()=>{
     const res = await chai
     .request(app.app)
     .delete(`/v1/${discoveryMock.getId(dummyKey)}/discovery`)
     .set({
       Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
     })
-//   res.should.have.status(200);
-//   res.body.should.have.property("success").be.a("boolean").eql(true);
-//   res.body.should.have.property("response").be.a("object");
-//   res.body.response.should.have.property("data").be.a("array");
-//   res.body.response.data.length.should.eql(20)
-console.log(res.body)
-
+  res.should.have.status(200);
+  res.body.should.have.property("success").be.a("boolean").eql(true);
+  res.body.should.have.property("response").be.a("object");
+  res.body.response.should.have.property("deleted").be.a("boolean").eql(true);
+  })
+  it("Should not delete a discovery discovery that is already deleted", async()=>{
+    const res = await chai
+    .request(app.app)
+    .delete(`/v1/${discoveryMock.getId(dummyKey2)}/discovery`)
+    .set({
+      Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
+    })
+  res.should.have.status(400);
+  res.body.should.have.property("success").be.a("boolean").eql(false);
+  res.body.should.have.property("response").be.a("object");
+  res.body.response.should.have.property("message").be.a("string").eql("Discovery doesn't exist");
   })
   after(async()=>{
     await discoveryMock.destroy();
