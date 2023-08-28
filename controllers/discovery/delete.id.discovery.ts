@@ -59,7 +59,7 @@ const data: IData = {
     params: {
       id: { 
         required: true,
-        authorize: discoveryService._exists
+        authorize: async()=> await discoveryService._exists({})
       },
     }
   },
@@ -81,7 +81,6 @@ const deleteSingleDiscoveryHandler = async (
     const filter: Record<string, any> = {
       _id: req.params.id,
     };
-
     const deletedDiscovery = await walletService.updateOne(filter, data);
     sendSuccessResponse(res, next, {
       success: true,

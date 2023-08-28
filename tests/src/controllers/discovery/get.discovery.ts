@@ -6,24 +6,17 @@ chai.use(chaiHttp);
 chai.should();
 import { v4 as uuid } from "uuid";
 import { mockUser } from "../../../data/users/UserMock";
-import { mobileMoneyWalletMock } from "../../../data/wallet/mobileMoney/MobileMoneyWalletMock";
 import { app } from "../../../core/app";
 import { discoveryMock } from "../../../data/discovery/DiscoveryMock";
 
 describe("GET ALL DISCOVERY /discovery", () => {
   const dummyKey = uuid();
-  const dummyKey2 = uuid();
   before(async () => {
 
     await mockUser.create({
         role: "admin",
       userPermission: "*",
       dummyKey,
-    });
-    await mockUser.create({
-        role: "admin",
-      userPermission: "*",
-      dummyKey: dummyKey2,
     });
 
    await discoveryMock.createMany(20, {

@@ -1,8 +1,9 @@
 import { faker } from "@faker-js/faker";
-import { getRandomFutureDate, selectRandomItem } from "../../../utils";
+import { selectRandomItem } from "../../../utils";
 import { v4 as uuid } from "uuid";
 import { DiscoveryModel, riskLevels } from "../../../mongoose/models/Discovery";
 import { RiskLevel } from "../../../interfaces/discovery";
+import { addMonths } from "date-fns";
 
 export const mockDiscoveryTemplate = (): Partial<DiscoveryModel> => {
   const selectedRisk = selectRandomItem<RiskLevel>(riskLevels);
@@ -13,9 +14,9 @@ export const mockDiscoveryTemplate = (): Partial<DiscoveryModel> => {
     profitPercentage:  Math.ceil(Math.random() * 100),
     riskLevel: selectedRisk,
     tags: ["something cool", "another cool thing"],
-    closingDate: getRandomFutureDate(),
+    closingDate:addMonths(new Date(), 2),
     startDate: new Date(),
-    endDate: getRandomFutureDate(),
+    endDate: addMonths(new Date(), 5),
     deleted: false,
     createdBy: uuid(),
     updatedBy: uuid(),
