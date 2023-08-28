@@ -6,10 +6,11 @@
  * @apiDescription Endpoint used to create a discovery.
  *
  * @apiPermission authenticated (with "discovery" - "create" permission)
-  * @apiSampleRequest https://staging-api.farmiz.co
+ * @apiSampleRequest https://staging-api.farmiz.co
  *
  * @apiBody {String} name Name of the discovery.
- * @apiBody {String} duration Duration of the discovery.
+ * @apiBody {String} duration.type Duration type of the discovery. should be one of these `day`,`month`, or `year`
+  * @apiBody {String} duration.value Duration value of the discovery.
  * @apiBody {String} description Description of the discovery.
  * @apiBody {String[]} tags Tags associated with the discovery..
  * @apiBody {Number} amount Amount of the discovery.
@@ -29,7 +30,10 @@
  *       "response": {
  *         "id": "43e25a93-c89e-4c98-8fcb-71f230498ec1",
  *         "name": "Sample Discovery",
- *         "duration": "2 weeks",
+ *         "duration": {
+ *          type: "month",
+ *          value: 10  
+ *          },
  *         "description": "A sample discovery",
  *         "tags": ["sample", "example"],
  *         "amount": 1000,
@@ -128,11 +132,19 @@ async function createDiscoveryHandler(
   next: NextFunction,
 ) {
   try {
-    const discoveryCreated = await discoveryService.create({...req.body, createdBy: req.user?.id});
-    sendSuccessResponse<DiscoveryModel>(res, next, {
-      success: true,
-      response: discoveryCreated,
-    }, 201);
+    const discoveryCreated = await discoveryService.create({
+      ...req.body,
+      createdBy: req.user?.id,
+    });
+    sendSuccessResponse<DiscoveryModel>(
+      res,
+      next,
+      {
+        success: true,
+        response: discoveryCreated,
+      },
+      201,
+    );
   } catch (error: any) {
     sendFailedResponse(res, next, error);
   }

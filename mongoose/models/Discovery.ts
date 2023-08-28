@@ -15,6 +15,10 @@ const discoverySchema = new Schema<DiscoveryModel>({
     type: Number,
     required: true,
   },
+  duration: {
+    type: Object,
+    required: true,
+  },
   profitPercentage: {
     type: Number,
     required: true,

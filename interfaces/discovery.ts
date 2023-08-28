@@ -2,7 +2,10 @@ export type RiskLevel = "high" | "moderate" | "low"
 export interface IDiscovery {
     id?: string;
     name: string;
-    duration: string;
+    duration: {
+      type: "day" | "month" | "year",
+      value: number;
+    };
     description: string;
     tags: string[];
     amount: number;
