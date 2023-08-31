@@ -13,6 +13,10 @@ export const mockDiscoveryTemplate = (): Partial<DiscoveryModel> => {
     amount: Math.ceil(Math.random() * 1000),
     profitPercentage:  Math.ceil(Math.random() * 100),
     riskLevel: selectedRisk,
+    duration: {
+      type: selectRandomItem(["day", "month", "year"]),
+      value: Math.ceil(Math.random() * 365)
+    },
     tags: ["something cool", "another cool thing"],
     closingDate:addMonths(new Date(), 2),
     startDate: new Date(),

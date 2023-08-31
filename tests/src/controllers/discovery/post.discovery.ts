@@ -13,7 +13,7 @@ import { discoveryMock } from "../../../data/discovery/DiscoveryMock";
 import { DiscoveryModel } from "../../../../mongoose/models/Discovery";
 import { mockDiscoveryTemplate } from "../../../data/discovery/discoveryTemplate";
 
-describe.only("POST DISCOVERY   /discovery", async () => {
+describe("POST DISCOVERY   /discovery", async () => {
   const dummyKey = uuid();
   const validDiscoveryData: Partial<DiscoveryModel> = {
     ...mockDiscoveryTemplate(),
