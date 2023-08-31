@@ -12,7 +12,7 @@ import { app } from "../../../core/app";
 import { ERROR_MESSAGES } from "../../../../constants";
 import { pick, set } from "lodash";
 
-describe("CREATE WALLET /wallet", async () => {
+describe("POST WALLET /wallet", async () => {
   const dummyKey = uuid();
   const validWalletData: WalletModel = {
     type: "mobile money",

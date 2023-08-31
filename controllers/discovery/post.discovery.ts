@@ -68,7 +68,8 @@ import {
   sendSuccessResponse,
 } from "../../helpers/requestResponse";
 import { DiscoveryModel } from "../../mongoose/models/Discovery";
-
+import { toNumber } from "lodash";
+import validator from "validator";
 const data: IData = {
   requireAuth: true,
   permission: ["discovery", "create"],
@@ -78,29 +79,32 @@ const data: IData = {
         required: true,
         fieldName: "Name",
         validate: [
-          ({}, name: string) => hasValidLength(name, 3),
+          ({}, name: string) => name.length >=3,
           "Name should be at least 3 chars long",
         ],
+        sanitize: validator.trim
+      },
+      amount: {
+        required: true,
+        fieldName: "Amount",
+        sanitize: toNumber
       },
       duration: {
         required: true,
-        fieldName: "Duration",
+        fieldName: "Duration"
       },
       description: {
         required: true,
         fieldName: "Description",
         validate: [
-          ({}, name: string) => hasValidLength(name, 3),
+          ({}, description: string) =>description.length >= 3,
           "Description should be at least 3 chars long",
         ],
+        sanitize: validator.trim
       },
       tags: {
         required: true,
         fieldName: "Tags",
-      },
-      amount: {
-        required: true,
-        fieldName: "Amount",
       },
       profitPercentage: {
         required: true,

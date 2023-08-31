@@ -5,18 +5,14 @@ import { DiscoveryModel, riskLevels } from "../../../mongoose/models/Discovery";
 import { RiskLevel } from "../../../interfaces/discovery";
 import { addMonths } from "date-fns";
 
+const selectedRisk = selectRandomItem<RiskLevel>(riskLevels);
 export const mockDiscoveryTemplate = (): Partial<DiscoveryModel> => {
-  const selectedRisk = selectRandomItem<RiskLevel>(riskLevels);
   return {
     name: faker.name.jobTitle(),
     description: faker.lorem.paragraph(2),
     amount: Math.ceil(Math.random() * 1000),
     profitPercentage:  Math.ceil(Math.random() * 100),
     riskLevel: selectedRisk,
-    duration: {
-      type: selectRandomItem(["day", "month", "year"]),
-      value: Math.floor(Math.random() * 365)
-    },
     tags: ["something cool", "another cool thing"],
     closingDate:addMonths(new Date(), 2),
     startDate: new Date(),
