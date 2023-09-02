@@ -10,7 +10,7 @@ jobs:
 
     runs-on: 
      - self-hosted
-     - prod
+     - prod-label
 
     steps:
     - uses: actions/checkout@v2
