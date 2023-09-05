@@ -12,7 +12,7 @@ import { app } from "../../../core/app";
 import { ERROR_MESSAGES } from "../../../../constants";
 import { pick, set } from "lodash";
 
-describe("CREATE WALLET /wallet", async () => {
+describe("POST WALLET /wallet", async () => {
   const dummyKey = uuid();
   const validWalletData: WalletModel = {
     type: "mobile money",
@@ -43,7 +43,7 @@ describe("CREATE WALLET /wallet", async () => {
       })
       .send({});
     res.should.have.status(400);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -59,7 +59,7 @@ describe("CREATE WALLET /wallet", async () => {
       })
       .send({ ...pick(validWalletData, ["type"]) });
     res.should.have.status(400);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -79,7 +79,7 @@ describe("CREATE WALLET /wallet", async () => {
           ...pick(validWalletData, ["type", `mobileMoneyDetails.${detail}`]),
         });
       res.should.have.status(400);
-      res.body.should.have.property("error").be.a("boolean").eql(true);
+      res.body.should.have.property("success").be.a("boolean").eql(false);
       res.body.should.have.property("response").be.a("object");
       res.body.response.should.have
         .property("message")
@@ -99,7 +99,7 @@ describe("CREATE WALLET /wallet", async () => {
         ...set(validWalletData, "mobileMoneyDetails.phone.number", "348594958"),
       });
     res.should.have.status(500);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -117,7 +117,7 @@ describe("CREATE WALLET /wallet", async () => {
         ...set(validWalletData, "mobileMoneyDetails.phone.number", "244000000"),
       });
     res.should.have.status(400);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")

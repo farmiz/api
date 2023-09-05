@@ -71,7 +71,7 @@ import { walletStatuses } from "../../mongoose/models/Wallet";
 
 const data: IData = {
   requireAuth: true,
-  permission: ["wallet", "read"],
+  permission: ["wallet", "update"],
   rules: {
     params: {
       id: {

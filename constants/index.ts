@@ -82,7 +82,7 @@ export const RATE_LIMITS: IRateLimiter = {
   },
 };
 
-export const BANNED_COUNTRIES: string[] = [];
+export const ALLOWED_COUNTRIES: string[] = ["GH"];
 
 export const MongooseDefaults = {
   timestamps: true,
