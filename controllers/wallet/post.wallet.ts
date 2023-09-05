@@ -4,7 +4,7 @@
  * @apiGroup Wallet
  * @apiVersion 0.0.1
  * @apiDescription Endpoint used to add a wallet.
- *
+ 
  * @apiPermission authenticated (with "wallet" - "create" permission)
  * @apiSampleRequest https://staging-api.farmiz.co
  *
