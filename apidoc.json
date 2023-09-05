@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "farmiz API",
   "title": "OFFICIAL FARMIZ Documentation",
-  "url": "https://myapi.com",
-  "sampleUrl": "https://myapi.com",
+  "url": "https://staging-api.farmiz.co",
+  "sampleUrl": "https://staging-api.farmiz.co",
   "header": {
     "title": "My API",
     "content": "<h1>My API</h1>\n<p>My awesome API documentation.</p>"

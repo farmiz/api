@@ -31,7 +31,7 @@ describe("VALIDATE PIN /auth/pin", function () {
       })
       .send({});
     res.should.have.status(400);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -48,7 +48,7 @@ describe("VALIDATE PIN /auth/pin", function () {
       })
       .send({ code: "1234" });
     res.should.have.status(400);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")

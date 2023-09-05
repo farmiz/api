@@ -1,17 +1,16 @@
 /**
- * @api {GET} /api/:id/wallet Get Single Wallet
- * @apiName GetSingleWallet
- * @apiGroup Wallet
+ * @api {GET} /api/:id/discovery Get Discovery
+ * @apiName Get Discovery
+ * @apiGroup Discovery
  * @apiVersion 0.0.1
- * @apiDescription Endpoint used to retrieve a single wallet by its ID.
+ * @apiDescription Endpoint used to get a single discovery.
  *
- * @apiPermission authenticated user (with "wallet" - "read" permission)
- * @apiSampleRequest https://staging-api.farmiz.co
+ * @apiPermission authenticated (with "discovery" - "read" permission)
+  * @apiSampleRequest https://staging-api.farmiz.co
  *
- * @apiParam {String} id The unique ID of the wallet.
- *
+ * @apiParam {String} id Id of the discovery.
  * @apiSuccess {Boolean} success Indicates if the request was successful.
- * @apiSuccess {Object} response Response object containing the wallet data.
+ * @apiSuccess {Object} response Created discovery data.
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -19,19 +18,17 @@
  *       "success": true,
  *       "response": {
  *         "id": "43e25a93-c89e-4c98-8fcb-71f230498ec1",
- *         "userId": "a3a9477b-b9b9-468c-9f3d-9de03297ebfd",
- *         "phone": {
- *           "prefix": "233",
- *           "number": "200000000",
- *           "country": "GH"
- *         },
- *         "network": "MTN",
- *         "type": "mobile money",
- *         "availableBalance": 0,
- *         "primary": true,
- *         "createdAt": "2020-04-21T03:32:05.615754Z",
- *         "deletedAt": "2020-04-21T03:32:05.615754Z",
- *         "deleted": false,
+ *         "name": "Sample Discovery",
+ *         "duration": "2 weeks",
+ *         "description": "A sample discovery",
+ *         "tags": ["sample", "example"],
+ *         "amount": 1000,
+ *         "profitPercentage": 10,
+ *         "riskLevel": "low",
+ *         "startDate": "2023-08-27T00:00:00Z",
+ *         "endDate": "2023-09-10T00:00:00Z",
+ *         "closingDate": "2023-08-31T00:00:00Z",
+ *         "deleted": false
  *       }
  *     }
  *
@@ -43,11 +40,9 @@
  * @apiErrorExample {json} Error-Response:
  *     HTTP/1.1 404 Not Found
  *     {
- *       "error": "Wallet not found"
+ *       "error": "Discovery not found"
  *     }
  */
-
-// The rest of your code remains unchanged
 
 import { IData } from "../../interfaces";
 import { AuthRequest } from "../../middleware";
@@ -58,11 +53,11 @@ import {
 } from "../../helpers/requestResponse";
 import { httpCodes } from "../../constants";
 import { RequestError } from "../../helpers/errors";
-import { walletService } from "../../services/wallet";
+import { discoveryService } from "../../services/discovery";
 
 const data: IData = {
   requireAuth: true,
-  permission: ["wallet", "read"],
+  permission: ["discovery", "read"],
   rules: {
     params: {
       id: {
@@ -72,7 +67,7 @@ const data: IData = {
   },
 };
 
-const getSingleWalletHandler = async (
+const getSingleDiscoveryHandler = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction,
@@ -84,15 +79,11 @@ const getSingleWalletHandler = async (
       deleted: false,
     };
 
-    if (req.user?.role === "customer") {
-      filter.userId = req.user.id;
-    }
-
-    const wallet = await walletService.findOne(filter);
+    const wallet = await discoveryService.findOne(filter);
 
     if (!wallet)
       return next(
-        new RequestError(httpCodes.NOT_FOUND.code, "Wallet not found"),
+        new RequestError(httpCodes.NOT_FOUND.code, "Discovery not found"),
       );
 
     sendSuccessResponse(res, next, {
@@ -106,7 +97,7 @@ const getSingleWalletHandler = async (
 
 export default {
   method: "get",
-  url: "/:id/wallet",
+  url: "/:id/discovery",
   data,
-  handler: getSingleWalletHandler,
+  handler: getSingleDiscoveryHandler,
 };

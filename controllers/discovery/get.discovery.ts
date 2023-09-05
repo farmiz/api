@@ -1,16 +1,16 @@
 /**
- * @api {GET} /api/wallets Get Wallets
- * @apiName GetWallets
- * @apiGroup Wallet
+ * @api {GET} /api/discovery Get Discoveries
+ * @apiName Get Discoveries
+ * @apiGroup Discovery
  * @apiVersion 0.0.1
- * @apiDescription Endpoint used to retrieve wallets.
- 
- * @apiPermission authenticated user (with "wallet" - "read" permission)
+ * @apiDescription Endpoint used to retrieve discoveries.
+ *
+ * @apiPermission authenticated user (with "discovery" - "read" permission)
  * @apiSampleRequest https://staging-api.farmiz.co
  *
  * @apiSuccess {Boolean} success Indicates if the request was successful.
- * @apiSuccess {Object} response Response object containing wallets.
- * @apiSuccess {Array} response.data List of wallets.
+ * @apiSuccess {Object} response Response object containing discoveries.
+ * @apiSuccess {Array} response.data List of discoveries.
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
@@ -19,18 +19,16 @@
  *       "response": {
  *         "data": [
  *         "id": "43e25a93-c89e-4c98-8fcb-71f230498ec1",
- *         "userId": "a3a9477b-b9b9-468c-9f3d-9de03297ebfd",
- *         "phone": {
- *           "prefix": "233",
- *           "number": "200000000",
- *           "country": "GH"
- *         },
- *         "network": "MTN",
- *         "type": "mobile money",
- *         "availableBalance": 20,
- *         "primary": true,
- *         "createdAt": "2020-04-21T03:32:05.615754Z",
- *         "deletedAt": "2020-04-21T03:32:05.615754Z",
+ *         "name": "Sample Discovery",
+ *         "duration": "2 weeks",
+ *         "description": "A sample discovery",
+ *         "tags": ["sample", "example"],
+ *         "amount": 1000,
+ *         "profitPercentage": 10,
+ *         "riskLevel": "low",
+ *         "startDate": "2023-08-27T00:00:00Z",
+ *         "endDate": "2023-09-10T00:00:00Z",
+ *         "closingDate": "2023-08-31T00:00:00Z",
  *         "deleted": false
  *            ],
  *        "totalBalance": 20,
@@ -49,9 +47,9 @@
  *     }
  */
 
+import { AuthRequest } from "../../middleware";
 import { NextFunction, Response } from "express";
 import { IData } from "../../interfaces";
-import { AuthRequest } from "../../middleware";
 import { httpCodes } from "../../constants";
 import { RequestError } from "../../helpers/errors";
 import {
@@ -59,16 +57,16 @@ import {
   sendSuccessResponse,
 } from "../../helpers/requestResponse";
 import { queryBuilder } from "../../utils";
-import { walletService } from "../../services/wallet";
-import { IWallet } from "../../interfaces/wallet";
 import { ceil } from "lodash";
+import { IDiscovery } from "../../interfaces/discovery";
+import { discoveryService } from "../../services/discovery";
 
 const data: IData = {
   requireAuth: true,
-  permission: ["wallet", "read"],
+  permission: ["discovery", "read"],
 };
 
-const getWalletsHandler = async (
+const getDiscoveryHandler = async (
   req: AuthRequest,
   res: Response,
   next: NextFunction,
@@ -79,35 +77,35 @@ const getWalletsHandler = async (
     const filter: Record<string, any> = {
       deleted: false,
     };
-    if (req.user?.role === "customer") {
-      filter.userId = req.user.id;
-    }
-    const buildQuery = queryBuilder<IWallet>(query, [
-      "status",
-      "type",
-      "primary",
-      "availableBalance",
+
+    const buildQuery = queryBuilder<IDiscovery>(query, [
+        "amount",
+        "closingDate",
+        "description",
+        "duration",
+        "endDate",
+        "name",
+        "profitPercentage",
+        "tags",
+        "riskLevel"
     ]);
     buildQuery.filter = { ...buildQuery.filter, ...filter };
 
-    const wallets = await walletService.findMany(
+    const discoveried = await discoveryService.findMany(
       buildQuery.filter,
       null,
       null,
       buildQuery.options,
     );
-    if (!wallets) {
+    if (!discoveried) {
       return next(
         new RequestError(httpCodes.BAD_REQUEST.code, "No wallet found"),
       );
     }
-    const totalDocuments = await walletService.countDocuments(filter);
+    const totalDocuments = await discoveryService.countDocuments(filter);
     const perPage = filter.perPage || 50;
     const response = {
-      data: wallets,
-      totalBalance: wallets
-        .map(wa => wa.availableBalance)
-        .reduce((acc = 0, inc = 0) => acc + inc, 0),
+      data: discoveried,
       paginator: {
         page: totalDocuments,
         perPage,
@@ -124,7 +122,7 @@ const getWalletsHandler = async (
 };
 export default {
   method: "get",
-  url: "/wallets",
+  url: "/discovery",
   data,
-  handler: getWalletsHandler,
+  handler: getDiscoveryHandler,
 };

@@ -28,7 +28,7 @@ describe("RESET PASSWORD /auth/update-password", function () {
       })
       .send({});
     res.should.have.status(400);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
@@ -65,7 +65,7 @@ describe("RESET PASSWORD /auth/update-password", function () {
         newPassword: password,
       });
     res.should.have.status(400);
-    res.body.should.have.property("error").be.a("boolean").eql(true);
+    res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
