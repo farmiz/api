@@ -81,7 +81,7 @@ const data: IData = {
           required: false,
           fieldName: "Name",
           validate: [
-            ({}, name: string) => hasValidLength(name, 3),
+            ({}, name: string) => name.length >=3,
             "Name should be at least 3 chars long",
           ],
         },
@@ -93,7 +93,7 @@ const data: IData = {
           required: false,
           fieldName: "Description",
           validate: [
-            ({}, name: string) => hasValidLength(name, 3),
+            ({}, description: string) => description.length >=3,
             "Description should be at least 3 chars long",
           ],
         },
