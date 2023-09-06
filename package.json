@@ -10,6 +10,7 @@
     "build": "npm run clean-build && tsc -v && tsc -p tsconfig.json",
     "start": "cross-env NODE_ENV=development nodemon --config nodemon.json --verbose --signal SIGINT --watch ./build --exec \"node build/index.js\"",
     "createModel": "node ./build/commands/createModel.js",
+    "make:ctrl": "node ./build/commands/scripts/makeController.js",
     "clean-build": "rm -rf ./.nyc_output ./node_modules/.cache ./coverage ./build",
     "type": "module",
     "build:docs": "apidoc -i ./controllers -o ./docs/",

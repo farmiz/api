@@ -3,7 +3,7 @@ import { ValidationRule } from "../helpers/validator";
 import { JobOptions } from "bull";
 
 export type PermissionOperation = "create" | "read" | "update" | "delete";
-export type PermissionString = "users" | "wallet" | "discovery";
+export type PermissionString = "users" | "wallet" | "discovery" | "sponsor";
 export type IPermission = Record<
   PermissionString,
   Record<PermissionOperation, number>

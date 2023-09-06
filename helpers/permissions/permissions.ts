@@ -1,7 +1,7 @@
 import { PermissionOperation } from "./../../interfaces";
 import { IPermission, PermissionString } from "../../interfaces";
 
-export const PERMISSIONS_LIST: PermissionString[] = ["users", "wallet", "discovery"];
+export const PERMISSIONS_LIST: PermissionString[] = ["users", "wallet", "discovery", "sponsor"];
 export const PERMISSIONS = structurePermissionsObject(PERMISSIONS_LIST);
 
 function structurePermissionsObject(
