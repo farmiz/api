@@ -1,7 +1,8 @@
 import * as readline from 'readline';
-import * as fs from 'fs/promises';
 import * as path from 'path';
-import { generateCode } from '../templates/controllerTemplate';
+import { generateControllerTemplate } from '../templates/controllerTemplate';
+import { createFolderAndFile } from '..';
+import { BASE_CONTROLLER_DIR, BASE_DIR } from '../../constants';
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -19,14 +20,14 @@ async function generateController() {
     const httpMethod = answers[4];
     const controllerHandler = answers[5];
 
-    const code = generateCode({
+    const code = generateControllerTemplate({
       endpoint,
       permissions,
       httpMethod,
       controllerHandler,
     });
 
-    const folderPath = path.join(path.resolve(__dirname, '../../..'), 'controllers', controllerName);
+    const folderPath = path.join(BASE_DIR, BASE_CONTROLLER_DIR, controllerName);
     const filePath = path.join(folderPath, `${fileName}.ts`);
 
     await createFolderAndFile(folderPath, filePath, code);
@@ -62,13 +63,6 @@ function askQuestions(): Promise<string[]> {
       });
     });
   });
-}
-
-
-
-async function createFolderAndFile(folderPath: string, filePath: string, code: string) {
-  await fs.mkdir(folderPath, { recursive: true });
-  await fs.writeFile(filePath, code);
 }
 
 generateController();

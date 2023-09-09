@@ -5,6 +5,7 @@ import { EmailJobOptions, JobId } from "../interfaces";
 import { EmailJobProps } from "../interfaces/email";
 import { accountPasswordRecovery, newUserEmailTemplate } from "../templates/userAccountTemplate";
 import { walletUpTemplate } from "../templates/walletTopup";
+import { walletDeductionTemplate } from "../templates/walletDeductionTemplate";
 
 const { NODE_ENV = "" } = process.env;
 
@@ -40,6 +41,12 @@ export class EmailJob extends JobBase<EmailJobProps> {
             content = accountPasswordRecovery(data.email, data.recoveryLink);
           }
           break;
+          case "wallet-deduction":
+            content = walletDeductionTemplate(data);
+            break;
+          case "program-sponsored":
+            content = walletDeductionTemplate(data);
+            break;
       default:
         break;
     }

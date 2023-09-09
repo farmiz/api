@@ -1,8 +1,11 @@
 import { Document } from "mongoose";
 import { HttpCodeNames, HttpCodes, IRateLimiter } from "./../interfaces";
 import { UserRole } from "../interfaces/users";
-// constants.js
+import path from "path";
 
+export const BASE_DIR = path.resolve(path.join(__dirname, "../.."));
+export const BASE_CONTROLLER_DIR = "controllers";
+export const BASE_SERVICE_DIR = "services";
 export const httpCodes: {
   [key in HttpCodeNames]: {
     code: HttpCodes;
@@ -83,7 +86,6 @@ export const RATE_LIMITS: IRateLimiter = {
 };
 
 export const ALLOWED_COUNTRIES: string[] = ["GH"];
-
 export const MongooseDefaults = {
   timestamps: true,
   strict: true,

@@ -1,6 +1,7 @@
 import {
   AccountPasswordRecoveryProps,
   AccountVerificationEmailProps,
+  WalletDeductionProps,
   WalletTopupEmailProps,
 } from "../../interfaces/email";
 import { emailJob } from "../../jobs/EmailJob";
@@ -31,6 +32,17 @@ class EmailSender {
     data: Omit<AccountPasswordRecoveryProps, "jobId">,
   ) {
     const jobId = "account-password-recovery";
+    await emailJob.addJob(
+      { ...data, jobId },
+      {
+        jobId,
+      },
+    );
+  }
+  async walletDeduction(
+    data: Omit<WalletDeductionProps, "jobId">,
+  ) {
+    const jobId = "wallet-deduction";
     await emailJob.addJob(
       { ...data, jobId },
       {

@@ -1,4 +1,4 @@
-export function generateCode({
+export function generateControllerTemplate({
     endpoint,
     permissions,
     httpMethod,
@@ -34,7 +34,7 @@ export function generateCode({
   }
   export default {
     data,
-    url: '${endpoint}',
+    url: '${endpoint.toLowerCase()}',
     handler: ${controllerHandler},
     method: '${httpMethod}',
   };
