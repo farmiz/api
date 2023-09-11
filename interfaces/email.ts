@@ -2,6 +2,7 @@ export interface AccountVerificationEmailProps {
   email: string;
   accountVerificationToken: string;
   jobId: "user-account-verification";
+  recipientName: string;
 }
 export interface WalletTopupEmailProps {
   email: string;

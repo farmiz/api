@@ -1,6 +1,6 @@
 import { defaultFrom } from "../utils";
 
-export const walletDeductionTemplate = (data: Record<string, any>) => ({
+export const walletDeductionTemplate = async(data: Record<string, any>) => ({
   from: defaultFrom(data.from),
   to: data.email,
   subject: `Wallet deduction`,

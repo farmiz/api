@@ -25,11 +25,12 @@ export class EmailService {
     }
 
     try {      
-      if (!["testing", "development"].includes(NODE_ENV)) {
+      if (!["testing"].includes(NODE_ENV)) {
         await this.transporter.emails.send({
           ...mailOptions,
           from: EMAIL_SENDER,
         } as any) ;
+        console.log("I was here")
       } else {
         console.log({ mailOptions });
       }

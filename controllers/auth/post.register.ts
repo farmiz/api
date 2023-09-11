@@ -187,28 +187,28 @@ async function registerHandler(
 
     const user = await userService.findOne({ ...filter });
 
-    if (user) {
-      if (user.email === email)
-        return next(
-          new RequestError(400, `User with email ${email} already exists`),
-        );
+    // if (user) {
+    //   if (user.email === email)
+    //     return next(
+    //       new RequestError(400, `User with email ${email} already exists`),
+    //     );
 
-      if (user.username === username)
-        return next(
-          new RequestError(
-            400,
-            `User with username ${username} already exists`,
-          ),
-        );
+    //   if (user.username === username)
+    //     return next(
+    //       new RequestError(
+    //         400,
+    //         `User with username ${username} already exists`,
+    //       ),
+    //     );
 
-      if (user.phone?.number === req.body.phone.number)
-        return next(
-          new RequestError(
-            400,
-            `User with phone 0${user.phone.number} already exists`,
-          ),
-        );
-    }
+    //   if (user.phone?.number === req.body.phone.number)
+    //     return next(
+    //       new RequestError(
+    //         400,
+    //         `User with phone 0${user.phone.number} already exists`,
+    //       ),
+    //     );
+    // }
 
     const createdUser = await createUser({
       ...req.body,
@@ -256,11 +256,14 @@ async function registerHandler(
     });
 
     const verifyAccountToken = tokens.verifyAccountToken;
-    const verificationUrl = generateVerificationUrl(verifyAccountToken as TokenWithExpiration);
+    const verificationUrl = generateVerificationUrl(
+      verifyAccountToken as TokenWithExpiration,
+    );
     // Send Email
     await emailSender.accountVerification({
-email,
+      email,
       accountVerificationToken: verificationUrl,
+      recipientName: req.body.firstName
     });
     sendSuccessResponse(
       res,

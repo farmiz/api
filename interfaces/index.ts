@@ -132,11 +132,13 @@ export interface MailOptions {
   bcc?: string | string[];
   cc?: string | string[];
   from: string;
+  headers?: Record<string, string>;
+  react?: React.ReactElement | React.ReactNode | null;
   html?: string;
+  text: string;
   reply_to?: string | string[];
   subject: string;
   tags?: Tag[];
-  text?: string;
   to: string | string[];
 }
 

@@ -11,18 +11,18 @@ async function readHtmlTemplate(templateRelativePath: string): Promise<string> {
   return await readFile(absolutePath, { encoding: "utf8" });
 }
 
-async function main() {
+export async function renderEmailTemplate(bodyHtml: string, data: Record<string, string>) {
   try {
-    const d = await readHtmlTemplate("welcome.ejs");
-    const data = {
-      year: new Date().getFullYear(),
-      recipientName: "Rex"
-    }
-    const html = render(d, data);
-    console.log({ html });
+    const header = await readHtmlTemplate("header.ejs");
+    const main = await readHtmlTemplate(bodyHtml);
+    const footer = await readHtmlTemplate("footer.ejs");
+    
+    const headerHtml = render(header, {});
+    const footerHtml = render(footer, data);
+    const mainHtml = render(main, data);
+    const html = `${headerHtml}${mainHtml}${footerHtml}`
+    return html
   } catch (err) {
     console.log({ err });
   }
 }
-
-main();
