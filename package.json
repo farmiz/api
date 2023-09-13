@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test-worker": "node ./build/jobs/Test.js",
     "test": "cross-env NODE_ENV=test mocha --timeout 20000 --recursive build/tests/src/**  --exit",
     "ci-test": "cross-env NODE_ENV=test nyc mocha --timeout 20000 --recursive build/tests/src/**  --exit",
     "start-build": "npm run clean-build && tsc -v && tsc -p tsconfig.json -w",

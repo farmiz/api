@@ -100,6 +100,7 @@ export type JobId =
   | "user-account-verification"
   | "account-password-recovery"
   | "wallet-topup"
+  | "wallet-topup"
   | "wallet-deduction"
   | "program-sponsored";
 
