@@ -1,4 +1,4 @@
-import { Model, FilterQuery, PopulateOptions } from "mongoose";
+import  { Model, FilterQuery, PopulateOptions, startSession } from "mongoose";
 import { formatModelPopulate, formatModelProjection } from "../helpers";
 import { AuthRequest } from "../middleware";
 
@@ -28,8 +28,10 @@ export interface IService<T> {
 type FilterOpts = "$inc" | "$in" | "$dec"; 
 export abstract class BaseService<T> implements IService<T> {
   protected readonly model: Model<T>;
+  readonly session;
   constructor(model: Model<T>) {
     this.model = model;
+    this.session = startSession()
   }
   async _exists(filter: FilterQuery<T>) {
     return !!(await this.findOne({ ...filter, deleted: false }));

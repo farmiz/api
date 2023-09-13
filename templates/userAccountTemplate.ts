@@ -1,5 +1,4 @@
 import { defaultFrom } from "../utils";
-
 const {  MAIN_ORIGIN = "", APP_NAME= "" } = process.env;
 
 export const newUserEmailTemplate = (
