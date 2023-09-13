@@ -10,7 +10,7 @@ export const newUserEmailTemplate = async (data: {
 }) => ({
   from: defaultFrom(data.from),
   to: data.email,
-  subject: `${data.email}, Welcome to the our platform`,
+  subject: `${data.recipientName}, Welcome to the our platform`,
   text: "Welcome to the our platform",
   html: await renderEmailTemplate("confirmEmail.ejs", data),
 });
