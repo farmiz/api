@@ -99,7 +99,7 @@ export type JobId =
   | "reset-password"
   | "user-account-verification"
   | "account-password-recovery"
-  | "wallet-topup";
+  | "wallet-topup" | "testing-job1" | "testing-job2";
 
 export interface JobData<T> {
   data: T;
