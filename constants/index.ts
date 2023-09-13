@@ -1,5 +1,10 @@
 import { Document } from "mongoose";
-import { HttpCodeNames, HttpCodes, IRateLimiter } from "./../interfaces";
+import {
+  HttpCodeNames,
+  HttpCodes,
+  IRateLimiter,
+  PermissionOperation,
+} from "./../interfaces";
 import { UserRole } from "../interfaces/users";
 import path from "path";
 
@@ -139,9 +144,20 @@ export const ERROR_MESSAGES = {
   samePasswordCombination: "Passwords can't be the same",
   roleRequired: "role is required",
   userCreationFailed: "Unable to catch (error: any)",
-  fieldRequired: (field: string)=> `${field} is required`,
-  invalidField: (field: string)=> `${field} is invalid.`,
-  userFieldExists: (field: string, value: string)=> `User with ${field} ${value} already exists`
+  fieldRequired: (field: string) => `${field} is required`,
+  invalidField: (field: string) => `${field} is invalid.`,
+  userFieldExists: (field: string, value: string) =>
+    `User with ${field} ${value} already exists`,
 } as const;
 
-export const UNALLOWED_ENV = ["test"];
+export const UNALLOWED_ENV = ["test", "development"];
+
+export const DEFAULT_USER_PERMISSION: {
+  [key: string]: PermissionOperation[];
+} = {
+  users: ["read", "update"],
+  wallet: ["create", "read", "delete", "update"],
+  discovery: ["read"],
+  sponsor: ["create", "read", "update"],
+  settings: ["create", "update", "read"]
+};
