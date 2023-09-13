@@ -12,7 +12,7 @@ export const newUserEmailTemplate = async (data: {
   to: data.email,
   subject: `${data.email}, Welcome to the our platform`,
   text: "Welcome to the our platform",
-  html:"<h1>DATA WORKED</h1>",
+  html: await renderEmailTemplate("confirmEmail.ejs", data),
 });
 
 export const accountPasswordRecovery = async (

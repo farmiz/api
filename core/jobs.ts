@@ -67,12 +67,13 @@ export default class JobBase<T> {
     throw new Error("Method not implemented");
   }
 
-  async addJob(data: T, options: IJobOptions):Promise<Bull.Job<JobData<T>>> {
+  async addJob(data: T, options: IJobOptions):Promise<Bull.Job<JobData<T>> | null> {
     let modifiedOptions: Partial<IJobOptions> ={};
     if (JobValidator.hasValidJobId(options.jobId)) {
        modifiedOptions = modifyJobOptions(options);
       modifiedOptions.jobId = `${options.jobId}:${uuid()}` as JobId;
+      return await this.queue.add({ data }, options);
     }
-    return await this.queue.add({ data });
+    return null;
   }
 }
