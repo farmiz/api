@@ -19,7 +19,7 @@ export class EmailService {
     // only send email to domains that is not from company
     if (WHITELISTED_EMAIL_DOMAIN && toEmail.length) {
       validToEmail = toEmail.filter((email: string) => {
-        return !isWhiteListedEmail(email);
+        return isWhiteListedEmail(email);
       });
       mailOptions.to = validToEmail;
     }

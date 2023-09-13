@@ -1,7 +1,7 @@
 import { UNALLOWED_ENV } from "../constants";
 import JobBase from "../core/jobs";
 import { EmailService } from "../services/email/Email";
-import { EmailJobOptions, JobId } from "../interfaces";
+import { EmailJobOptions } from "../interfaces";
 import { EmailJobProps } from "../interfaces/email";
 import {
   accountPasswordRecovery,
