@@ -46,7 +46,8 @@ export default class JobBase<T> {
   protected async processJob(job: Bull.Job<JobData<T>>): Promise<void> {
     try {
       await this.process(job.data.data);
-      if (await job.isCompleted()) {
+      // @ts-ignore
+      if (job.isCompleted()) {
         console.log(`Job with Id ${job.id} has completed successfully`);
       }
     } catch (error: any) {
