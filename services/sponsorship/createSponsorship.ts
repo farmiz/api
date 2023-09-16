@@ -1,20 +1,24 @@
 import { sponsorshipService } from ".";
+import { AuthRequest } from "../../middleware";
 import { DiscoveryModel } from "../../mongoose/models/Discovery";
+import { SponsorshipModel } from "../../mongoose/models/Sponsorship";
+import { emailSender } from "../email/EmailSender";
 import { walletService } from "../wallet";
 
 export const createSponsorship = async (
-  userId: string,
+  req: AuthRequest,
   discovery: DiscoveryModel,
   wallettId: string,
-): Promise<boolean> => {
+): Promise<Partial<SponsorshipModel>> => {
+  const discoveryId = discovery.id;
   const session = await sponsorshipService.session;
-  let programSponsored: boolean = false;
+  let programSponsored: Partial<SponsorshipModel>= {};
   try {
     session.startTransaction();
 
-    const sponsored = await sponsorshipService.create({
-      userId,
-      discoveryId: discovery._id,
+     programSponsored = await sponsorshipService.create({
+      userId: String(req.user?.id),
+      discoveryId,
       endDate: discovery.endDate,
       estimatedProfitPercentage: discovery.profitPercentage,
       isActive: true,
@@ -27,9 +31,12 @@ export const createSponsorship = async (
       { $inc: { availableBalance: -discovery.amount } },
     );
 
-    if (amountDeducted && sponsored) {
-      programSponsored = true;
-      // send email
+    if (amountDeducted && programSponsored) {
+
+      await emailSender.programSponsored({
+        discoveryId: String(discoveryId),
+        email: String(req.user?.email),
+      });
       session.commitTransaction();
     }
   } catch (error) {

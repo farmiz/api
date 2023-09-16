@@ -33,6 +33,12 @@ const sponsorshipSchema = new Schema<SponsorshipModel>({
     type: Boolean,
     required: true,
   },
+  status: {
+    type: String,
+    required: false,
+    enum: ["active", "cancelled"],
+    default: "active"
+  },
 });
 
 sponsorshipSchema.plugin(defaultPlugin);

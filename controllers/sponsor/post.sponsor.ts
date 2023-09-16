@@ -13,6 +13,7 @@ import { createSponsorship } from "../../services/sponsorship/createSponsorship"
 import { sponsorshipService } from "../../services/sponsorship";
 import { assert } from "../../helpers/asserts";
 import { walletService } from "../../services/wallet";
+import { SponsorshipModel } from "../../mongoose/models/Sponsorship";
 
 const data: IData = {
   requireAuth: true,
@@ -44,7 +45,8 @@ async function createSponsorshipHandler(
 ) {
   try {
     const userId = String(req.user?.id);
-    const discovery = await discoveryService.findOne({});
+    const discoveryId = req.body.id;
+    const discovery = await discoveryService.findOne({_id: discoveryId, deleted: false});
 
     if (!discovery) {
       return next(
@@ -82,24 +84,22 @@ async function createSponsorshipHandler(
 
     const hasSponsoredProgram = await sponsorshipService.findOne({
       userId,
-      _id: req.body.discoveryId,
+      discoveryId,
       isActive: true,
     });
     if (hasSponsoredProgram) {
       assert(false, "Programmed is already sponsored by you");
     }
     const programSponsored = await createSponsorship(
-      userId,
+      req,
       discovery,
       req.body.walletId,
     );
 
     const response = {
-      message: programSponsored
-        ? "Program sponsorship successful"
-        : "Program sponsorship unfailed",
+     ...programSponsored
     };
-    sendSuccessResponse<{ message: string }>(res, next, {
+    sendSuccessResponse<Partial<SponsorshipModel>>(res, next, {
       response,
       success: true,
     });

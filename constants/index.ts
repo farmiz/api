@@ -150,7 +150,7 @@ export const ERROR_MESSAGES = {
     `User with ${field} ${value} already exists`,
 } as const;
 
-export const UNALLOWED_ENV = ["test"];
+export const UNALLOWED_ENV = ["test", "development"];
 
 export const DEFAULT_USER_PERMISSION: {
   [key: string]: PermissionOperation[];
