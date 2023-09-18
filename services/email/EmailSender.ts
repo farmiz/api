@@ -1,8 +1,6 @@
-import { JobId } from "../../interfaces";
 import {
   AccountPasswordRecoveryProps,
   AccountVerificationEmailProps,
-  EmailJobProps,
   ProgramSponseredProps,
   SponsorshipCancelledProps,
   WalletDeductionProps,
