@@ -102,7 +102,7 @@ import {
   sendSuccessResponse,
 } from "../../helpers/requestResponse";
 import { generateTokens } from "../../helpers/auth/jwt";
-import { RATE_LIMITS, httpCodes } from "../../constants";
+import { DEFAULT_USER_PERMISSION, RATE_LIMITS, httpCodes } from "../../constants";
 import { createUser } from "../../services/auth/createUser";
 import { userService } from "../../services/users";
 import { Validator } from "../../mongoose/validators";
@@ -214,13 +214,7 @@ async function registerHandler(
       ...req.body,
     });
 
-    const permission: {
-      [key: string]: PermissionOperation[];
-    } = {
-      users: ["read", "update"],
-      wallet: ["create", "read", "delete", "update"],
-    };
-    const constructedPermission = constructPermission(permission);
+    const constructedPermission = constructPermission(DEFAULT_USER_PERMISSION);
 
     // store user permission
     const createdPermission = await Permission.create({
@@ -256,11 +250,14 @@ async function registerHandler(
     });
 
     const verifyAccountToken = tokens.verifyAccountToken;
-    const verificationUrl = generateVerificationUrl(verifyAccountToken as TokenWithExpiration);
+    const verificationUrl = generateVerificationUrl(
+      verifyAccountToken as TokenWithExpiration,
+    );
     // Send Email
     await emailSender.accountVerification({
-email,
+      email,
       accountVerificationToken: verificationUrl,
+      recipientName: req.body.firstName
     });
     sendSuccessResponse(
       res,

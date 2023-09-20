@@ -168,7 +168,7 @@ export function modeMomoTypeForPaystack(phone: string) {
 
 const { EMAIL_SENDER, APP_NAME } = process.env;
 
-export const defaultFrom = (from?: string) => `${APP_NAME} ${EMAIL_SENDER || from}`;
+export const defaultFrom = (from?: string) => `${APP_NAME} <${EMAIL_SENDER || from}>`;
 export const roundNumber = (data: number | string, round: number = 2)=> (Number(data) / 100).toFixed(round);
 
 export function generateRandomNumber(length: number): string {
