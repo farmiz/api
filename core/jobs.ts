@@ -12,8 +12,8 @@ const {
   REDIS_HOST = "localhost",
 } = process.env;
 export default class JobBase<T> {
-  protected queue: Bull.Queue<JobData<T>>;
-  protected maxRetries: number = 5;
+  queue: Bull.Queue<JobData<T>>;
+  readonly maxRetries: number = 5; // Increase max retries
   private isConnected: boolean = false;
   constructor(queueName: string) {
     this.queue = new Bull(queueName, {
@@ -24,32 +24,32 @@ export default class JobBase<T> {
         username: REDIS_USER,
       },
     });
-  this.setupQueue();
-  }
-  private setupQueue() {
     this.queue.isReady().then(() => {
       this.isConnected = true;
       console.log("Queue connection successful");
     });
 
+    this.queue.process(this.processJob.bind(this));
     this.queue.on("error", this.handleQueueError.bind(this));
 
-    this.queue.process(this.processJob.bind(this));
     this.queue.on("failed", this.failedJob.bind(this));
   }
-  protected handleQueueError(error: Error) {
+
+  handleQueueError(error: Error) {
     this.isConnected = false;
     console.error("Queue connection error:", error);
     // You can handle the connection failure here or emit an event, throw an error, etc.
   }
 
-  protected async processJob(job: Bull.Job<JobData<T>>): Promise<void> {
+  async processJob(job: Bull.Job<JobData<T>>): Promise<void> {
     try {
+
       await this.process(job.data.data);
-      if (await job.isCompleted()) {
+      // @ts-ignore
+      if (job.isCompleted()) {
         console.log(`Job with Id ${job.id} has completed successfully`);
       }
-    } catch (error: any) {
+    } catch (error) {
       if (job.attemptsMade < this.maxRetries) {
         console.log(`Job ${job.id} failed, retrying...`);
         await job.retry();
@@ -59,19 +59,20 @@ export default class JobBase<T> {
       await job.remove();
     }
   }
-  protected async failedJob(job: Bull.Job<JobData<T>>, error: Error): Promise<void> {
+  async failedJob(job: Bull.Job<JobData<T>>, error: Error): Promise<void> {
     console.log(`Job ${job.id} failed with error: ${error.message}`);
   }
 
- protected async process(data: T): Promise<void> {
+  protected async  process(data: T): Promise<void> {
     throw new Error("Method not implemented");
   }
 
-   async addJob(data: T, options: IJobOptions): Promise<Bull.Job<JobData<T>> | null>{
+  async addJob(data: T, options: IJobOptions):Promise<Bull.Job<JobData<T>> | null> {
+    let modifiedOptions: Partial<IJobOptions> ={};
     if (JobValidator.hasValidJobId(options.jobId)) {
-      const modifiedOptions = modifyJobOptions(options);
+       modifiedOptions = modifyJobOptions(options);
       modifiedOptions.jobId = `${options.jobId}:${uuid()}` as JobId;
-      return await this.queue.add({ data }, modifiedOptions);
+      return await this.queue.add({ data }, options);
     }
     return null;
   }
