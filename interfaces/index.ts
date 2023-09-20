@@ -3,7 +3,7 @@ import { ValidationRule } from "../helpers/validator";
 import { JobOptions } from "bull";
 
 export type PermissionOperation = "create" | "read" | "update" | "delete";
-export type PermissionString = "users" | "wallet";
+export type PermissionString = "users" | "wallet" | "discovery" | "sponsor" | "settings";
 export type IPermission = Record<
   PermissionString,
   Record<PermissionOperation, number>
@@ -97,10 +97,13 @@ export type Statuses = "failed" | "success" | "pending";
 
 export type JobId =
   | "reset-password"
-  | "user-registration"
   | "user-account-verification"
-  | "user-created"
-  | "wallet-topup";
+  | "account-password-recovery"
+  | "wallet-topup"
+  | "wallet-topup"
+  | "wallet-deduction"
+  | "program-sponsored"
+  | "sponsorship-cancelled";
 
 export interface JobData<T> {
   data: T;
@@ -131,11 +134,13 @@ export interface MailOptions {
   bcc?: string | string[];
   cc?: string | string[];
   from: string;
+  headers?: Record<string, string>;
+  react?: React.ReactElement | React.ReactNode | null;
   html?: string;
+  text: string;
   reply_to?: string | string[];
   subject: string;
   tags?: Tag[];
-  text?: string;
   to: string | string[];
 }
 

@@ -5,8 +5,8 @@
  * @apiVersion 0.0.1
  * @apiDescription Endpoint used to retrieve a single wallet by its ID.
  *
- * @apiPermission authenticated user (with "wallet" and "read" permission)
- * @apiSampleRequest https://farmiz.onrender.com
+ * @apiPermission authenticated user (with "wallet" - "read" permission)
+ * @apiSampleRequest https://staging-api.farmiz.co
  *
  * @apiParam {String} id The unique ID of the wallet.
  *

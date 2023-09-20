@@ -1,4 +1,4 @@
-import { Model, FilterQuery, PopulateOptions } from "mongoose";
+import { Model, FilterQuery, PopulateOptions, startSession } from "mongoose";
 import { formatModelPopulate, formatModelProjection } from "../helpers";
 import { AuthRequest } from "../middleware";
 
@@ -10,6 +10,7 @@ export interface IOptions {
 interface PopulateOpt {
   [key: string]: string[];
 }
+type UpdateResult<T> = T & { isNew: boolean };
 export interface IService<T> {
   findOne(
     filter: FilterQuery<T>,
@@ -21,15 +22,20 @@ export interface IService<T> {
     options?: IOptions,
   ): Promise<T | null>;
   findMany(filter?: any): Promise<T[]>;
-  updateOne(filter: FilterQuery<T>, update: any): Promise<T | null>;
+  updateOne(
+    filter: FilterQuery<T>,
+    update: any,
+  ): Promise<UpdateResult<T> | null>;
   updateMany(filter: FilterQuery<T>, update: any): Promise<void>;
 }
 
-type FilterOpts = "$inc" | "$in" | "$dec"; 
+type FilterOpts = "$inc" | "$in" | "$dec";
 export abstract class BaseService<T> implements IService<T> {
   protected readonly model: Model<T>;
+  readonly session;
   constructor(model: Model<T>) {
     this.model = model;
+    this.session = startSession();
   }
   async _exists(filter: FilterQuery<T>) {
     return !!(await this.findOne({ ...filter, deleted: false }));
@@ -105,11 +111,16 @@ export abstract class BaseService<T> implements IService<T> {
     return result;
   }
 
-  async updateOne(filter: FilterQuery<T>, update: Partial<Record<keyof T | FilterOpts, any>>): Promise<T | null> {
+  async updateOne(
+    filter: FilterQuery<T>,
+    update: Partial<Record<keyof T | FilterOpts, any>>,
+  ): Promise<UpdateResult<T> | null> {
     const result = await this.model.findOneAndUpdate(filter, update, {
       new: true,
     });
-    return result ? result.toObject() : result;
+    return result && result.isNew
+      ? { ...result.toObject(), isNew: result.isNew }
+      : result;
   }
 
   async updateMany(filter: FilterQuery<T>, update: any): Promise<void> {
@@ -122,7 +133,7 @@ export abstract class BaseService<T> implements IService<T> {
     const result = await this.model.create(data);
     return result ? result.toObject() : result;
   }
-  async countDocuments(): Promise<number>{
-    return await this.model.countDocuments();
+  async countDocuments(filter: FilterQuery<T>): Promise<number> {
+    return await this.model.countDocuments(filter);
   }
 }

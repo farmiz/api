@@ -1,9 +1,9 @@
 import { ceil } from "lodash";
 import { ITransaction } from "../interfaces/transaction";
 import { walletTopupService } from "../services/transaction/topup";
-import { EmailJob } from "../jobs/EmailJob";
 import { roundNumber } from "../utils";
 import { walletService } from "../services/wallet";
+import { emailSender } from "../services/email/EmailSender";
 
 export type PaystackWebhookEvent =
   | "charge.success"
@@ -40,9 +40,8 @@ export class PaystackWebhookHandler {
     );
 
     // send email
-    await EmailJob.walletTopup({
+    await emailSender.walletTopup({
       email: data.customer?.email,
-      jobId: "wallet-topup",
       amount: roundNumber(data.amount as number),
     });
   }

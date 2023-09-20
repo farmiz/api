@@ -4,9 +4,9 @@
  * @apiGroup Wallet
  * @apiVersion 0.0.1
  * @apiDescription Endpoint used to retrieve wallets.
- *
- * @apiPermission authenticated user (with "wallet" and "read" permission)
- * @apiSampleRequest https://farmiz.onrender.com
+ 
+ * @apiPermission authenticated user (with "wallet" - "read" permission)
+ * @apiSampleRequest https://staging-api.farmiz.co
  *
  * @apiSuccess {Boolean} success Indicates if the request was successful.
  * @apiSuccess {Object} response Response object containing wallets.
@@ -101,7 +101,7 @@ const getWalletsHandler = async (
         new RequestError(httpCodes.BAD_REQUEST.code, "No wallet found"),
       );
     }
-    const totalDocuments = await walletService.countDocuments();
+    const totalDocuments = await walletService.countDocuments(filter);
     const perPage = filter.perPage || 50;
     
     const response = {

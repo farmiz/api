@@ -5,8 +5,8 @@
  * @apiVersion 0.0.1
  * @apiDescription Endpoint used to delete a single wallet by its ID.
  *
- * @apiPermission authenticated user (with "wallet" and "delete" permission)
- * @apiSampleRequest https://farmiz.onrender.com
+ * @apiPermission authenticated user (with "wallet" - "delete" permission)
+ * @apiSampleRequest https://staging-api.farmiz.co
  *
  * @apiParam {String} walletId The unique ID of the wallet to be deleted.
  * @apiParam {String} [userId] Optional user ID of the wallet owner (if different from the authenticated user). Required for non-customer users.

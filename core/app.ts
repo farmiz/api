@@ -73,9 +73,9 @@ export class App implements HttpServer {
           }
         },
         //AUTHENTICATE CLIENT IP ADDRESS
-        //async (req: Request, res: Response, next: NextFunction) => {
-        //await authMiddleware.getServerIp(req, res, next);
-        //},
+        async (req: Request, res: Response, next: NextFunction) => {
+        await authMiddleware.getServerIp(req, res, next);
+        },
 
         // RATE LIMITING
         async function checkRequestLimit(

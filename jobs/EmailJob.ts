@@ -1,11 +1,18 @@
 import { UNALLOWED_ENV } from "../constants";
 import JobBase from "../core/jobs";
-import { IJobBase } from "../interfaces";
 import { EmailService } from "../services/email/Email";
-import { emailJobDeterminer } from "./JobDeterminer";
+import { EmailJobOptions } from "../interfaces";
+import { EmailJobProps } from "../interfaces/email";
+import {
+  accountPasswordRecovery,
+  newUserEmailTemplate,
+} from "../templates/userAccountTemplate";
+import { walletUpTemplate } from "../templates/walletTopup";
+import { walletDeductionTemplate } from "../templates/walletDeductionTemplate";
 
-const {NODE_ENV = ""}= process.env
-export class EmailJob extends JobBase<IJobBase> {
+const { NODE_ENV = "" } = process.env;
+
+export class EmailJob extends JobBase<EmailJobProps> {
   private emailService: EmailService;
   constructor() {
     super("email");
@@ -13,28 +20,52 @@ export class EmailJob extends JobBase<IJobBase> {
   }
 
   // All email processing logic comes here
-  async process(data: IJobBase): Promise<void> {
-    const content = emailJobDeterminer(data);
-
+  protected async process(data: EmailJobProps): Promise<void> {
+    const content = await this.emailJobDeterminer(data);
     if (UNALLOWED_ENV.includes(NODE_ENV)) {
       console.info(JSON.stringify(content, null, 2));
-    } else this.emailService.sendEmail(content);
+    } else {
+      try {
+        await this.emailService.sendEmail(content);
+      } catch (error) {
+        console.log({ error });
+      }
+    }
   }
+  emailJobDeterminer = async (
+    data: EmailJobProps,
+  ): Promise<EmailJobOptions> => {
+    let content = {};
 
-  static async accountVerification(data: IJobBase): Promise<void> {
-    await new EmailJob().addJob(data, {
-      jobId: data.jobId,
-    });
-  }
-  static async sendUserCreatedEmail(data: IJobBase) {
-    await new EmailJob().addJob(data, {
-      jobId: data.jobId,
-    });
-  }
-  static async walletTopup(data: IJobBase) {
-    await new EmailJob().addJob(data, {
-      jobId: data.jobId,
-    });
-  }
-
+    switch (data.jobId) {
+      case "user-account-verification":
+        if ("accountVerificationToken" in data)
+          content = await newUserEmailTemplate({
+            accountVerificationToken: data.accountVerificationToken,
+            email: data.email,
+            recipientName: data.recipientName,
+          });
+        break;
+      case "wallet-topup":
+        content = await walletUpTemplate(data);
+      case "account-password-recovery":
+        if ("recoveryLink" in data) {
+          content = await accountPasswordRecovery(
+            data.email,
+            data.recoveryLink,
+          );
+        }
+        break;
+      case "wallet-deduction":
+        content = await walletDeductionTemplate(data);
+        break;
+      case "program-sponsored":
+        content = await walletDeductionTemplate(data);
+        break;
+      default:
+        break;
+    }
+    return content as EmailJobOptions;
+  };
 }
+export const emailJob = new EmailJob();

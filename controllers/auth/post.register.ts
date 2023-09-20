@@ -6,7 +6,7 @@
  * @apiDescription Endpoint used to register a new client.
  *
  * @apiPermission anyone
- * @apiSampleRequest https://farmiz.onrender.com
+ * @apiSampleRequest https://staging-api.farmiz.co
  *
  * @apiBody {String} email User's email.
  * @apiBody {String} password User's password.
@@ -102,20 +102,20 @@ import {
   sendSuccessResponse,
 } from "../../helpers/requestResponse";
 import { generateTokens } from "../../helpers/auth/jwt";
-import { RATE_LIMITS, httpCodes } from "../../constants";
+import { DEFAULT_USER_PERMISSION, RATE_LIMITS, httpCodes } from "../../constants";
 import { createUser } from "../../services/auth/createUser";
 import { userService } from "../../services/users";
 import { Validator } from "../../mongoose/validators";
-import { EmailJob } from "../../jobs/EmailJob";
 import Permission from "../../mongoose/models/Permission";
 import { UserRole } from "../../interfaces/users";
 import { AuthRequest } from "../../middleware";
 import { constructPermission } from "../../helpers/permissions/permissions";
 import { RequestError } from "../../helpers/errors";
-import { hasValidPhone, phoneExists } from "../../helpers";
+import { hasValidPhone } from "../../helpers";
 import { differenceInYears, parseISO } from "date-fns";
 import { TokenWithExpiration } from "../../mongoose/models/Tokens";
 import { generateVerificationUrl } from "../../utils";
+import { emailSender } from "../../services/email/EmailSender";
 
 interface Body {
   email: string;
@@ -214,13 +214,7 @@ async function registerHandler(
       ...req.body,
     });
 
-    const permission: {
-      [key: string]: PermissionOperation[];
-    } = {
-      users: ["read", "update"],
-      wallet: ["create", "read", "delete", "update"],
-    };
-    const constructedPermission = constructPermission(permission);
+    const constructedPermission = constructPermission(DEFAULT_USER_PERMISSION);
 
     // store user permission
     const createdPermission = await Permission.create({
@@ -256,12 +250,14 @@ async function registerHandler(
     });
 
     const verifyAccountToken = tokens.verifyAccountToken;
-    const verificationUrl = generateVerificationUrl(verifyAccountToken as TokenWithExpiration);
+    const verificationUrl = generateVerificationUrl(
+      verifyAccountToken as TokenWithExpiration,
+    );
     // Send Email
-    await EmailJob.accountVerification({
+    await emailSender.accountVerification({
       email,
-      jobId: "user-registration",
       accountVerificationToken: verificationUrl,
+      recipientName: req.body.firstName
     });
     sendSuccessResponse(
       res,
