@@ -4,8 +4,7 @@ import { App } from "./core/app";
 import { bucketService } from "./services/s3/Bucket";
 
 const {
-  APP_PORT = 3000,
-  PORT,
+  PORT = 3000,
   DATABASE_URI = "",
   BUCKET_ENDPOINT = "",
   BUCKET_CLUSTER = "",
@@ -31,7 +30,7 @@ class Server {
     assert(DATABASE_URI, "Database URI required");
     try {
       await Database.start(DATABASE_URI);
-      this.server.start(Number(PORT || APP_PORT));
+      this.server.start(Number(PORT));
       bucketService.setConfig({
         accessKeyId: BUCKET_ACCESS_TOKEN,
         endpoint: BUCKET_ENDPOINT,
