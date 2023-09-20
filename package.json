@@ -8,7 +8,7 @@
     "test": "cross-env NODE_ENV=test mocha --timeout 20000 --recursive build/tests/src/**  --exit",
     "ci-test": "cross-env NODE_ENV=test nyc mocha --timeout 20000 --recursive build/tests/src/**  --exit",
     "start-build": "npm run clean-build && tsc -v && tsc -p tsconfig.json -w",
-    "build": "npm run clean-build && tsc -v && tsc -p tsconfig.json",
+    "build": "tsc -v && tsc -p tsconfig.json",
     "start": "cross-env NODE_ENV=development nodemon --config nodemon.json --verbose --signal SIGINT --watch ./build --exec \"node build/index.js\"",
     "createModel": "node ./build/commands/createModel.js",
     "make:ctrl": "node ./build/commands/scripts/makeController.js",
