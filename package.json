@@ -16,7 +16,7 @@
     "clean-build": "rm -rf ./.nyc_output ./node_modules/.cache ./coverage ./build",
     "type": "module",
     "build:docs": "apidoc -i ./controllers -o ./docs/",
-    "prod-start": "cross-env NODE_ENV=production node ./build/index.js",
+    "prod-start": "node ./build/index.js",
     "staging-start": "cross-env NODE_ENV=development node ./build/index.js",
     "staging-ci": "npm run build",
     "production-ci": "npm run build"
