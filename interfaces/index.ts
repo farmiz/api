@@ -103,7 +103,8 @@ export type JobId =
   | "wallet-topup"
   | "wallet-deduction"
   | "program-sponsored"
-  | "sponsorship-cancelled";
+  | "sponsorship-cancelled"
+   | "cleanup-job";
 
 export interface JobData<T> {
   data: T;
