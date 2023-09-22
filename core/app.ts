@@ -33,6 +33,7 @@ import hpp from "hpp";
 // @ts-ignore
 import trebble from "@treblle/express";
 import { RATE_LIMITS, UNALLOWED_ENV } from "../constants";
+import { cleanupJob } from "../jobs/CleanerJob";
 const { MAIN_ORIGIN = "", NODE_ENV = "", APP_VERSION= "v1" } = process.env;
 
 type RequestValidation = {
@@ -168,6 +169,11 @@ export class App implements HttpServer {
   async start(port: number) {
     await this.addRoutes();
     this.config();
+    await cleanupJob.addJob(null, {
+      jobId: "cleanup-job",
+      removeOnComplete: true,
+      delay: 10000
+    })
     this.app.listen(port, () => {
       console.log(`App is running on port ${port}`);
     });

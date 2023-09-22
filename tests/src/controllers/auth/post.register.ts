@@ -284,7 +284,7 @@ describe("REGISTER USER /auth/register", function () {
       .be.a("string")
       .eql(ERROR_MESSAGES.userFieldExists("email", email));
   });
-  it.only("should register user with valid user credentials", async function () {
+  it("should register user with valid user credentials", async function () {
     const newEmail = faker.internet.email();
     const res = await chai
       .request(app.app)

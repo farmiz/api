@@ -7,5 +7,6 @@ export const jobIdsArr: JobId[] = [
   "account-password-recovery",
   "wallet-deduction",
   "program-sponsored",
-  "sponsorship-cancelled"
+  "sponsorship-cancelled",
+  "cleanup-job"
 ];
