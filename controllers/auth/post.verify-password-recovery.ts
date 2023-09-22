@@ -5,14 +5,10 @@ import {
   sendSuccessResponse,
 } from "../../helpers/requestResponse";
 
-import { userService } from "../../services/users";
 
 import { IData } from "../../interfaces";
 import { AuthRequest } from "../../middleware";
 import { tokenService } from "../../helpers/auth/jwt";
-import { generateVerificationUrl } from "../../utils";
-import Tokens, { TokenWithExpiration } from "../../mongoose/models/Tokens";
-import { emailSender } from "../../services/email/EmailSender";
 import { RequestError } from "../../helpers/errors";
 import { httpCodes } from "../../constants";
 

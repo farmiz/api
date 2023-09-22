@@ -67,26 +67,26 @@ export const RATE_LIMITS: IRateLimiter = {
   register: {
     max: 10,
     windowMs: 30000,
-    message: "Too many attempts, please try again in a few minutes.",
+    message: "Too many request attempts, please try again in a few minutes.",
     name: "register",
   },
   login: {
     name: "login",
     max: 15,
     windowMs: 300000,
-    message: "Too many attempts, please try again in a few minutes.",
+    message: "Too many request attempts, please try again in a few minutes.",
   },
   refreshToken: {
     name: "refreshToken",
     max: 15,
     windowMs: 3000,
-    message: "Too many attempts, please try again in a few minutes.",
+    message: "Too many request attempts, please try again in a few minutes.",
   },
   addWallet: {
     name: "addWallet",
     max: 10,
     windowMs: 200,
-    message: "Too many attempts, please try again in a few minutes.",
+    message: "Too many request attempts, please try again in a few minutes.",
   },
 };
 

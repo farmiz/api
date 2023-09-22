@@ -1,9 +1,9 @@
 import mongoose, { Model, Schema } from "mongoose";
 import { IDefaultPlugin } from "../../interfaces";
-import { IDiscovery, RiskLevel } from "../../interfaces/discovery";
+import { DiscoveryProps, RiskLevel } from "../../interfaces/discovery";
 import { defaultPlugin } from "../utils";
 
-export interface DiscoveryModel extends IDiscovery, IDefaultPlugin {}
+export interface DiscoveryModel extends DiscoveryProps, IDefaultPlugin {}
 
 export const riskLevels: RiskLevel[] = ["high", "low", "moderate"];
 const discoverySchema = new Schema<DiscoveryModel>({

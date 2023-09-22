@@ -74,7 +74,7 @@ async function validatePinHandler(
     body: { code },
   } = req;
   try {
-    const pin = await pinService.findOne({ userId: req.user?.id });
+    const pin = await pinService.findOne({ userId: req.user?.id, deleted: false });
 
     const validPin = await passwordManager.comparePassword(
       code,

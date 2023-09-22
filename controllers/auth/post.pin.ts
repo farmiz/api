@@ -38,7 +38,7 @@ import {
   sendFailedResponse,
   sendSuccessResponse,
 } from "../../helpers/requestResponse";
-import {  httpCodes } from "../../constants";
+import { httpCodes } from "../../constants";
 interface Body {
   code: string;
 }
@@ -70,21 +70,29 @@ async function pinHandler(
     body: { code },
   } = req;
   try {
-    const pinExists = await pinService._exists({ userId: req.user?.id });
+    const pinExists = await pinService._exists({
+      userId: req.user?.id,
+      deleted: false,
+    });
 
     if (pinExists)
       return next(
         new RequestError(httpCodes.BAD_REQUEST.code, "Pin already exists"),
       );
-    const response = await pinService.create({
+    await pinService.create({
       userId: req.user?.id,
       createdBy: req.user?.id,
       code,
     });
-    sendSuccessResponse(res, next, {
-      success: true,
-      response: {message: "Pin created"},
-    }, httpCodes.CREATED.code);
+    sendSuccessResponse(
+      res,
+      next,
+      {
+        success: true,
+        response: { message: "Pin created" },
+      },
+      httpCodes.CREATED.code,
+    );
   } catch (error: any) {
     sendFailedResponse(res, next, error);
   }

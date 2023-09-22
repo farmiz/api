@@ -1,7 +1,13 @@
 import { PermissionOperation } from "./../../interfaces";
 import { IPermission, PermissionString } from "../../interfaces";
 
-export const PERMISSIONS_LIST: PermissionString[] = ["users", "wallet", "discovery", "sponsor", "settings"];
+export const PERMISSIONS_LIST: PermissionString[] = [
+  "users",
+  "wallet",
+  "discovery",
+  "sponsor",
+  "settings",
+];
 export const PERMISSIONS = structurePermissionsObject(PERMISSIONS_LIST);
 
 function structurePermissionsObject(
@@ -54,7 +60,8 @@ export const hasPermission = (
   userPermission: string,
   permissions: [PermissionString, PermissionOperation],
 ): boolean => {
+  const [permissionService, permisssionOperation] = permissions;
   return userPermission.includes(
-    String.fromCharCode(PERMISSIONS[permissions[0]][permissions[1]]),
+    String.fromCharCode(PERMISSIONS[permissionService][permisssionOperation]),
   );
 };

@@ -61,7 +61,7 @@ const data: IData = {
   rules: {
     params: {
       id: {
-        required: true,
+        required: true
       },
     },
   },
@@ -79,16 +79,16 @@ const getSingleDiscoveryHandler = async (
       deleted: false,
     };
 
-    const wallet = await discoveryService.findOne(filter);
+    const discovery = await discoveryService.findOne(filter);
 
-    if (!wallet)
+    if (!discovery)
       return next(
         new RequestError(httpCodes.NOT_FOUND.code, "Discovery not found"),
       );
 
     sendSuccessResponse(res, next, {
       success: true,
-      response: { ...wallet },
+      response: { ...discovery },
     });
   } catch (error: any) {
     sendFailedResponse(res, next, error);

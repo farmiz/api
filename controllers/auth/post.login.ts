@@ -63,7 +63,7 @@ async function loginHandler(
     body: { email, password },
   } = req;
   try {
-    const user = await userService.findOne({ email }, null, {
+    const user = await userService.findOne({ email, deleted: false }, null, {
       permission: ["access"],
     });
 

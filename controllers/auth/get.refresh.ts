@@ -1,4 +1,3 @@
-import { assert } from "../../helpers/asserts";
 import { IData } from "../../interfaces";
 import { NextFunction, Request, Response } from "express";
 import {
@@ -22,28 +21,27 @@ async function refreshTokenHandler(
 ) {
   try {
     const cookies = req.cookies;
-    const {code} = httpCodes.FORBIDDEN;
-    if (!cookies?.refreshAuthToken)
-      return next(new RequestError(code));
-    const refreshToken = cookies.refreshAuthToken;
+    const { code } = httpCodes.FORBIDDEN;
+    if (!cookies?.refreshAuthToken) return next(new RequestError(code));
+    const refreshAuthToken = cookies.refreshAuthToken;
 
     const token = await Tokens.findOne({
-      "tokens.refreshToken": { $in: [refreshToken] },
+      "tokens.refreshToken": { $in: [refreshAuthToken] },
     });
 
     if (!token) return next(new RequestError(code));
-
+    const refreshToken = token.tokens.refreshToken;
     const refreshTokenIsActive =
-      token.tokens.refreshToken[token.tokens.refreshToken.length - 1];
-    if (refreshToken !== refreshTokenIsActive)
+      refreshToken[refreshToken.length - 1];
+    if (refreshAuthToken !== refreshTokenIsActive)
       return next(new RequestError(code));
 
-    const verifyToken = tokenService.verifyRefreshToken(refreshToken);
+    const verifyToken = tokenService.verifyRefreshToken(refreshAuthToken);
     if (!verifyToken) return next(new RequestError(code));
 
-    const user = await userService.findOne({
+    const user = (await userService.findOne({
       _id: token.userId,
-    }) as UserModel;
+    })) as UserModel;
 
     if (!!user && Object.keys(user).length && !user?.email)
       return next(new RequestError(403, "Forbidden"));

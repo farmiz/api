@@ -1,4 +1,3 @@
-import { ceil } from "lodash";
 import { ITransaction } from "../interfaces/transaction";
 import { walletTopupService } from "../services/transaction/topup";
 import { roundNumber } from "../utils";

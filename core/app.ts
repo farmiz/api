@@ -33,7 +33,7 @@ import hpp from "hpp";
 // @ts-ignore
 import trebble from "@treblle/express";
 import { RATE_LIMITS, UNALLOWED_ENV } from "../constants";
-const { MAIN_ORIGIN = "", NODE_ENV = "" } = process.env;
+const { MAIN_ORIGIN = "", NODE_ENV = "", APP_VERSION= "v1" } = process.env;
 
 type RequestValidation = {
   [x: string]: ValidationRule;
@@ -61,7 +61,7 @@ export class App implements HttpServer {
       data && data.rules && data.rules.query ? data.rules.query : {};
 
     this.router[method](
-      `/v1${url}`,
+      `/${APP_VERSION}${url}`,
       [
         // LIMIT THE METHODS ALLOWED ON EACH ROUTE
         (req: Request, res: Response, next: NextFunction) => {

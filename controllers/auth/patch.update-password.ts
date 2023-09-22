@@ -42,7 +42,7 @@ async function updatePasswordHandler(
     if(oldPassword === newPassword) return next(new RequestError(400, ERROR_MESSAGES.samePasswordCombination));
 
     const user = await userService.findOne(
-      { _id: req?.user?.id },
+      { _id: req?.user?.id, deleted: false },
       { includes: ["password"] },
     );
 
