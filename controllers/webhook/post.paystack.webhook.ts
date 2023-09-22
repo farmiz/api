@@ -14,7 +14,7 @@ async function paystackWebhookHandler(
 ) {
   const event = req.body.event;
   await paystackWebhook.handleEvent(event, req.body.data);
-  res.status(200).send({ sent: "yes" });
+  res.status(200).send({ message: "recieved" });
 }
 
 export default {

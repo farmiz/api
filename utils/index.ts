@@ -19,12 +19,12 @@ interface QueryBuilderResult {
   filter: any;
   options: any;
 }
-
+// /api/items?search=apple&searchSelection=name,description&sort=-price,rating&limit=20&currentPage=3&columns=name,price,description
 export function queryBuilder<T = any>(
   reqQuery: any,
   searchableFields: (keyof T)[],
 ): QueryBuilderResult {
-  const { search, searchSelection, limit, sort, currentPage } = reqQuery;
+  const { search, searchSelection, limit, sort, currentPage, columns } = reqQuery;
   // Filter
   let filter: any = {};
   if (search && searchSelection && searchableFields.includes(searchSelection)) {

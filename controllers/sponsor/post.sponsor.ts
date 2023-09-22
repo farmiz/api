@@ -46,7 +46,10 @@ async function createSponsorshipHandler(
   try {
     const userId = String(req.user?.id);
     const discoveryId = req.body.id;
-    const discovery = await discoveryService.findOne({_id: discoveryId, deleted: false});
+    const discovery = await discoveryService.findOne({
+      _id: discoveryId,
+      deleted: false,
+    });
 
     if (!discovery) {
       return next(
@@ -56,6 +59,7 @@ async function createSponsorshipHandler(
 
     const walletBalance = await walletService.findOne({
       _id: req.body.walletId,
+      deleted: false,
     });
     if (!walletBalance) {
       return next(
@@ -90,14 +94,15 @@ async function createSponsorshipHandler(
     if (hasSponsoredProgram) {
       assert(false, "Programmed is already sponsored by you");
     }
-    const programSponsored = await createSponsorship(
+    const programSponsored = await createSponsorship({
       req,
       discovery,
-      req.body.walletId,
-    );
+      walletId: req.body.walletId,
+      walletType: walletBalance.type,
+    });
 
     const response = {
-     ...programSponsored
+      ...programSponsored,
     };
     sendSuccessResponse<Partial<SponsorshipModel>>(res, next, {
       response,

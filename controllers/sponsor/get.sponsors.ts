@@ -58,7 +58,7 @@ async function getSponsorsHandler(
     const response = {
       data: sponsorships,
       paginator: {
-        page: totalDocuments,
+        page: ceil(perPage / totalDocuments),
         perPage,
         totalPages: ceil(totalDocuments / perPage),
       },

@@ -61,7 +61,6 @@
 import { NextFunction, Response } from "express";
 import { IData } from "../../interfaces";
 import { AuthRequest } from "../../middleware";
-import { hasValidLength } from "../../helpers";
 import { discoveryService } from "../../services/discovery";
 import {
   sendFailedResponse,

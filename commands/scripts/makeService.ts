@@ -11,7 +11,8 @@ const rl = readline.createInterface({
 
 async function generateController() {
   try {
-    const [serviceName, fileName, modelName, serviceClass] = await askQuestions();
+    const [serviceName, fileName, modelName, serviceClass] =
+      await askQuestions();
 
     const code = generateServiceTemplate({
       serviceClass,
@@ -22,7 +23,7 @@ async function generateController() {
     const folderPath = path.join(BASE_DIR, BASE_SERVICE_DIR, serviceName);
     const filePath = path.join(folderPath, `${fileName}.ts`);
 
-    await createFolderAndFile(folderPath, filePath, code);
+    await createFolderAndFile({ folderPath, filePath, code });
     console.log("Code generated and saved successfully!");
     process.exit(0);
   } catch (error: any) {

@@ -7,3 +7,4 @@ dump.rdb
 .nyc_output
 .coverage
 .env
+dont.txt

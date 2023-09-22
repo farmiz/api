@@ -51,12 +51,10 @@ async function checkAuthHandler(
       { permission: ["access"] },
     );
 
-    const initData = {};
     if (!authUser) return next(new RequestError(404, "Not Found"));
 
     const response = {
       user: authUser,
-      initData,
       authorized: true,
     };
 

@@ -109,7 +109,7 @@ const getWalletsHandler = async (
         .map(wa => wa.availableBalance)
         .reduce((acc = 0, inc = 0) => acc + inc, 0),
       paginator: {
-        page: totalDocuments,
+        page: ceil(perPage / totalDocuments),
         perPage,
         totalPages: ceil(totalDocuments / perPage),
       },

@@ -61,5 +61,17 @@ export const WalletTopup = Transaction.discriminator<TransactionModel>(
   "WalletTopup",
   transactionSchema,
 );
+export interface ProgramSponoredTransactionModelProps extends TransactionModel{
+  discoveryId: string
+}
+export const ProgramSponoredTransaction = Transaction.discriminator<ProgramSponoredTransactionModelProps>(
+  "ProgramSponoredTransaction",
+  new Schema({
+    discoveryId: {
+      type: String, 
+      required: true
+    }
+  }),
+);
 
 export default Transaction;

@@ -58,7 +58,7 @@ import {
 } from "../../helpers/requestResponse";
 import { queryBuilder } from "../../utils";
 import { ceil } from "lodash";
-import { IDiscovery } from "../../interfaces/discovery";
+import { DiscoveryProps } from "../../interfaces/discovery";
 import { discoveryService } from "../../services/discovery";
 
 const data: IData = {
@@ -78,7 +78,7 @@ const getDiscoveryHandler = async (
       deleted: false,
     };
 
-    const buildQuery = queryBuilder<IDiscovery>(query, [
+    const buildQuery = queryBuilder<DiscoveryProps>(query, [
         "amount",
         "closingDate",
         "description",
@@ -107,7 +107,7 @@ const getDiscoveryHandler = async (
     const response = {
       data: discoveried,
       paginator: {
-        page: totalDocuments,
+        page: ceil(perPage / totalDocuments),
         perPage,
         totalPages: ceil(totalDocuments / perPage),
       },

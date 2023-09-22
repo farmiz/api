@@ -1,5 +1,5 @@
 export type RiskLevel = "high" | "moderate" | "low"
-export interface IDiscovery {
+export interface DiscoveryProps {
     id?: string;
     name: string;
     duration: {

@@ -64,7 +64,6 @@ import {
 } from "../../helpers/requestResponse";
 import { buildPayloadUpdates } from "../../utils";
 import { discoveryService } from "../../services/discovery";
-import { hasValidLength } from "../../helpers";
 
 const data: IData = {
   requireAuth: true,

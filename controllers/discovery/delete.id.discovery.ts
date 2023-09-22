@@ -6,7 +6,7 @@
  * @apiDescription Endpoint used to delete a single discovery.
  *
  * @apiPermission authenticated (with "discovery" - "delete" permission)
-  * @apiSampleRequest https://staging-api.farmiz.co
+ * @apiSampleRequest https://staging-api.farmiz.co
  *
  * @apiParam {String} id Id of the discovery.
  * @apiSuccess {Boolean} success Indicates if the request was successful.
@@ -50,18 +50,21 @@ import {
   sendFailedResponse,
   sendSuccessResponse,
 } from "../../helpers/requestResponse";
-import { walletService } from "../../services/wallet";
 import { discoveryService } from "../../services/discovery";
+import { discoveryExists } from "../../services/discovery/discoveryExists";
 const data: IData = {
   requireAuth: true,
   permission: ["discovery", "delete"],
   rules: {
     params: {
-      id: { 
+      id: {
         required: true,
-        validate: [async({}, _id: string)=> await discoveryService._exists({_id}), "Discovery doesn't exist"]
+        validate: [
+          async ({}, _id: string) => await discoveryExists(_id),
+          "Discovery doesn't exist",
+        ],
       },
-    }
+    },
   },
 };
 

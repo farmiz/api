@@ -185,7 +185,7 @@ async function registerHandler(
       $or: [{ email }, { username }, { phone: { ...phone, country: "GH" } }],
     };
 
-    const user = await userService.findOne({ ...filter });
+    const user = await userService.findOne({ ...filter, deleted: false });
 
     if (user) {
       if (user.email === email)
