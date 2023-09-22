@@ -68,7 +68,7 @@ export const ProgramSponoredTransaction = Transaction.discriminator<ProgramSpono
   "ProgramSponoredTransaction",
   new Schema({
     discoveryId: {
-      tyoe: String, 
+      type: String, 
       required: true
     }
   }),
