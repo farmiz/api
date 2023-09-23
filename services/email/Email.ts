@@ -26,7 +26,7 @@ export class EmailService {
         console.info(JSON.stringify(mailOptions, null, 2));
         return;
       }
-      if (NODE_ENV === "developemnt" || isWhiteListedEmail(toEmail)) {
+      if (NODE_ENV === "production" || isWhiteListedEmail(toEmail)) {
          await this.transporter.emails.send({
           ...mailOptions
         } as any);
