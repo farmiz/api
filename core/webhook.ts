@@ -40,9 +40,14 @@ export class PaystackWebhookHandler {
     );
 
     const user = await userService.findOne({ email: data.customer?.email });
-    const wallet = await walletService.findOne({_id: data.metadata?.walletId});
+    const wallet = await walletService.findOne({
+      _id: data.metadata?.walletId,
+    });
 
-    let walletNumbers = wallet?.type  === "credit card" ? wallet.cardDetails.number : wallet?.mobileMoneyDetails.network;
+    let walletNumbers =
+      wallet?.type === "credit card"
+        ? wallet.cardDetails.number
+        : `0${wallet?.mobileMoneyDetails.phone.number}`;
     await emailSender.walletTopup({
       email: data.customer?.email,
       amount: roundNumber(data.amount as number),
@@ -69,7 +74,7 @@ function determinePaymentMethod(data?: Record<string, any>): string {
     : "Unknown";
 }
 function maskString(inputString: string) {
-  if(!inputString) return "";
+  if (!inputString) return "";
   // Check if the inputString has a length of 10
   if (inputString.length === 10) {
     return (
