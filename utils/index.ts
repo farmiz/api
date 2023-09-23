@@ -24,7 +24,8 @@ export function queryBuilder<T = any>(
   reqQuery: any,
   searchableFields: (keyof T)[],
 ): QueryBuilderResult {
-  const { search, searchSelection, limit, sort, currentPage, columns } = reqQuery;
+  const { search, searchSelection, limit, sort, currentPage, columns } =
+    reqQuery;
   // Filter
   let filter: any = {};
   if (search && searchSelection && searchableFields.includes(searchSelection)) {
@@ -168,8 +169,19 @@ export function modeMomoTypeForPaystack(phone: string) {
 
 const { EMAIL_SENDER, APP_NAME } = process.env;
 
-export const defaultFrom = (from?: string) => `${APP_NAME} <${EMAIL_SENDER || from}>`;
-export const roundNumber = (data: number | string, round: number = 2)=> (Number(data) / 100).toFixed(round);
+type DefaultSenderEmails = "sales" | "support" | "payment" | "welcome";
+const defaultSenderEmails: { [K in DefaultSenderEmails]: string } = {
+  sales: "sales-noreply@farmiz.co",
+  support: "support-noreply@farmiz.co",
+  payment: "payment-noreply@farmiz.co",
+  welcome: "welcome-noreply@farmiz.co",
+};
+export const defaultFrom = (type: DefaultSenderEmails, from?: string) => {
+  const sender = from ? from : defaultSenderEmails[type];
+  `${APP_NAME} <${sender}>`;
+};
+export const roundNumber = (data: number | string, round: number = 2) =>
+  (Number(data) / 100).toFixed(round);
 
 export function generateRandomNumber(length: number): string {
   if (length <= 0) {
@@ -181,7 +193,9 @@ export function generateRandomNumber(length: number): string {
   return randomHex.slice(0, length);
 }
 const { MAIN_ORIGIN } = process.env;
-    // Generate a unique URL with the token appended as a query parameter
-    export const generateVerificationUrl = (tokenData: TokenWithExpiration | null) => {
-      return `${MAIN_ORIGIN}/verify?token=${tokenData?.token}&type=${tokenData?.type}`;
-    };
+// Generate a unique URL with the token appended as a query parameter
+export const generateVerificationUrl = (
+  tokenData: TokenWithExpiration | null,
+) => {
+  return `${MAIN_ORIGIN}/verify?token=${tokenData?.token}&type=${tokenData?.type}`;
+};

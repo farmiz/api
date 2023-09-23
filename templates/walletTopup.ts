@@ -3,7 +3,7 @@ import { defaultFrom } from "../utils";
 
 export const walletTopUpTemplate = async (data: Record<string, any>) => {
   return {
-    from: defaultFrom(data.from),
+    from: defaultFrom("payment"),
     to: data.email,
     subject: `WALLET TOPUP`,
     text: "Your farmiz wallet has been topped up",
