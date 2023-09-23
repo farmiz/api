@@ -8,7 +8,7 @@ export const newUserEmailTemplate = async (data: {
   from?: string;
   recipientName: string;
 }) => ({
-  from: defaultFrom(data.from),
+  from: defaultFrom("welcome"),
   to: data.email,
   subject: `${data.recipientName}, Welcome to the our platform`,
   text: "Welcome to the our platform",
@@ -20,7 +20,7 @@ export const accountPasswordRecovery = async (
   recoveryLink: string,
   from?: string,
 ) => ({
-  from: defaultFrom(from),
+  from: defaultFrom("support"),
   to: email,
   subject: `${email}, Password reset`,
   text: "You are trying to reset your password",

@@ -1,9 +1,7 @@
 import { Resend } from "resend";
 import { MailOptions } from "../../interfaces";
-import { UNALLOWED_ENV } from "../../constants";
 const {
   EMAIL_KEY = "",
-  EMAIL_SENDER = "",
   WHITELISTED_EMAIL_DOMAIN,
   NODE_ENV = "",
 } = process.env;
