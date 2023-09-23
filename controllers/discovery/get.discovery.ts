@@ -91,13 +91,13 @@ const getDiscoveryHandler = async (
     ]);
     buildQuery.filter = { ...buildQuery.filter, ...filter };
 
-    const discoveried = await discoveryService.findMany(
+    const discoveries = await discoveryService.findMany(
       buildQuery.filter,
       null,
       null,
       buildQuery.options,
     );
-    if (!discoveried) {
+    if (!discoveries) {
       return next(
         new RequestError(httpCodes.BAD_REQUEST.code, "No wallet found"),
       );
@@ -105,7 +105,7 @@ const getDiscoveryHandler = async (
     const totalDocuments = await discoveryService.countDocuments(filter);
     const perPage = filter.perPage || 50;
     const response = {
-      data: discoveried,
+      data: discoveries,
       paginator: {
         page: ceil(perPage / totalDocuments),
         perPage,
