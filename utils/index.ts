@@ -167,7 +167,7 @@ export function modeMomoTypeForPaystack(phone: string) {
     : network;
 }
 
-const { EMAIL_SENDER, APP_NAME } = process.env;
+const { APP_NAME } = process.env;
 
 type DefaultSenderEmails = "sales" | "support" | "payment" | "welcome";
 const defaultSenderEmails: { [K in DefaultSenderEmails]: string } = {
@@ -176,9 +176,9 @@ const defaultSenderEmails: { [K in DefaultSenderEmails]: string } = {
   payment: "payment-noreply@farmiz.co",
   welcome: "welcome-noreply@farmiz.co",
 };
-export const defaultFrom = (type: DefaultSenderEmails, from?: string) => {
+export const defaultFrom = (type: DefaultSenderEmails, from?: string) => {  
   const sender = from ? from : defaultSenderEmails[type];
-  `${APP_NAME} <${sender}>`;
+ return `${APP_NAME} <${sender}>`;
 };
 export const roundNumber = (data: number | string, round: number = 2) =>
   (Number(data) / 100).toFixed(round);

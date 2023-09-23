@@ -2,6 +2,7 @@ import { renderEmailTemplate } from "../template";
 import { defaultFrom } from "../utils";
 
 export const walletTopUpTemplate = async (data: Record<string, any>) => {
+  console.log({jghj:  defaultFrom("payment")})
   return {
     from: defaultFrom("payment"),
     to: data.email,
