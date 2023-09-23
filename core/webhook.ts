@@ -4,6 +4,7 @@ import { roundNumber } from "../utils";
 import { walletService } from "../services/wallet";
 import { emailSender } from "../services/email/EmailSender";
 import { userService } from "../services/users";
+import { startCase } from "lodash";
 
 export type PaystackWebhookEvent =
   | "charge.success"
@@ -67,11 +68,13 @@ export class PaystackWebhookHandler {
 function determinePaymentMethod(data?: Record<string, any>): string {
   if (!data || !Object.keys(data).length) return "";
   const channelArray = data.channel.split("_");
-  return channelArray.includes("mobile")
+  const result = 
+   channelArray.includes("mobile")
     ? "Mobile Money"
     : channelArray.includes("card")
-    ? `${data.channel}${data.card_type}`
+    ? `${data.card_type} ${data.channel}`
     : "Unknown";
+    return startCase(result)
 }
 function maskString(inputString: string) {
   if (!inputString) return "";
