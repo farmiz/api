@@ -7,6 +7,7 @@ export const PERMISSIONS_LIST: PermissionString[] = [
   "discovery",
   "sponsor",
   "settings",
+  "transaction"
 ];
 export const PERMISSIONS = structurePermissionsObject(PERMISSIONS_LIST);
 
