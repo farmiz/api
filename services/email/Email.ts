@@ -22,13 +22,16 @@ export class EmailService {
 
     mailOptions.to = toEmail;
     try {
-      if (!UNALLOWED_ENV.includes(NODE_ENV)) {
-        await this.transporter.emails.send({
-          ...mailOptions,
-          from: EMAIL_SENDER,
+      if (NODE_ENV === "test") {
+        console.info(JSON.stringify(mailOptions, null, 2));
+        return;
+      }
+      if (NODE_ENV === "developemnt" || isWhiteListedEmail(toEmail)) {
+         await this.transporter.emails.send({
+          ...mailOptions
         } as any);
       } else {
-        console.log({ mailOptions });
+        console.info(JSON.stringify(mailOptions, null, 2));
       }
     } catch (error: any) {
       console.log({ error: error.message });
@@ -36,6 +39,8 @@ export class EmailService {
   }
 }
 
-export function isWhiteListedEmail(email: string) {
-  return WHITELISTED_EMAIL_DOMAIN === email.split("@")[1];
+export function isWhiteListedEmail(emails: string[]) {
+  return emails.some((email: string) => {
+    return WHITELISTED_EMAIL_DOMAIN === email.split("@")[1];
+  });
 }
