@@ -3,6 +3,7 @@ import { walletTopupService } from "../services/transaction/topup";
 import { roundNumber } from "../utils";
 import { walletService } from "../services/wallet";
 import { emailSender } from "../services/email/EmailSender";
+import { userService } from "../services/users";
 
 export type PaystackWebhookEvent =
   | "charge.success"
@@ -34,14 +35,20 @@ export class PaystackWebhookHandler {
       },
     );
     await walletService.updateOne(
-      {_id: data.metadata?.walletId, deleted: false},
-     {$inc: {availableBalance: data.amount as number / 100}},
+      { _id: data.metadata?.walletId, deleted: false },
+      { $inc: { availableBalance: (data.amount as number) / 100 } },
     );
 
-    // send email
+    const user = await userService.findOne({ email: data.customer?.email });
     await emailSender.walletTopup({
       email: data.customer?.email,
       amount: roundNumber(data.amount as number),
+      recipientName: user?.firstName as string,
+      transactionDate: new Date(),
+      transactionStatus: data.status as string,
+      paymentMethod: data.channel?.split("_").join(" ").toUpperCase() as string,
+      paymentNumber: `${data.authorization?.bin}${data.authorization?.last4}`,
+      transactionId: data.reference as string
     });
   }
   private async handleChargeFailure(data: any) {

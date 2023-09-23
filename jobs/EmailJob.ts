@@ -1,4 +1,3 @@
-import { UNALLOWED_ENV } from "../constants";
 import JobBase from "../core/jobs";
 import { EmailService } from "../services/email/Email";
 import { EmailJobOptions } from "../interfaces";
@@ -7,10 +6,8 @@ import {
   accountPasswordRecovery,
   newUserEmailTemplate,
 } from "../templates/userAccountTemplate";
-import { walletUpTemplate } from "../templates/walletTopup";
+import { walletTopUpTemplate } from "../templates/walletTopup";
 import { walletDeductionTemplate } from "../templates/walletDeductionTemplate";
-
-const { NODE_ENV = "" } = process.env;
 
 export class EmailJob extends JobBase<EmailJobProps> {
   private emailService: EmailService;
@@ -22,14 +19,10 @@ export class EmailJob extends JobBase<EmailJobProps> {
   // All email processing logic comes here
   protected async process(data: EmailJobProps): Promise<void> {
     const content = await this.emailJobDeterminer(data);
-    if (UNALLOWED_ENV.includes(NODE_ENV)) {
-      console.info(JSON.stringify(content, null, 2));
-    } else {
       try {
         await this.emailService.sendEmail(content);
       } catch (error) {
         console.log({ error });
-      }
     }
   }
   emailJobDeterminer = async (
@@ -47,7 +40,7 @@ export class EmailJob extends JobBase<EmailJobProps> {
           });
         break;
       case "wallet-topup":
-        content = await walletUpTemplate(data);
+        content = await walletTopUpTemplate(data);
       case "account-password-recovery":
         if ("recoveryLink" in data) {
           content = await accountPasswordRecovery(
