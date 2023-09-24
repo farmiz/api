@@ -3,6 +3,7 @@ import * as path from "path";
 import { generateControllerTemplate } from "../templates/controllerTemplate";
 import { createFolderAndFile } from "..";
 import { BASE_CONTROLLER_DIR, BASE_DIR } from "../../constants";
+import { farmizLogger } from "../../core/logger";
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -35,9 +36,16 @@ async function generateController() {
 
     await createFolderAndFile({ folderPath, filePath, code });
 
-    console.log("Code generated and saved successfully!");
+  farmizLogger.log("info", "generateController",  "Code generated and saved successfully!", {
+    controllerName,
+    fileName,
+    endpoint,
+    permissions,
+    httpMethod,
+    controllerHandler,
+  });
   } catch (error: any) {
-    console.error("Error:", error.message);
+    farmizLogger.log("error", "generateController",  error.message)
   } finally {
     rl.close();
   }

@@ -10,4 +10,5 @@ export interface SponsorshipProps {
   isActive: boolean;
   status?: "cancelled" | "active";
   walletId: string;
+  delayDays: number;
 }

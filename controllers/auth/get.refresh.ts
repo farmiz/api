@@ -10,6 +10,7 @@ import { userService } from "../../services/users";
 import Tokens from "../../mongoose/models/Tokens";
 import { RequestError } from "../../helpers/errors";
 import { UserModel } from "../../mongoose/models/Users";
+import { farmizLogger } from "../../core/logger";
 
 const data: IData = {
   requestRateLimiter: RATE_LIMITS.refreshToken,
@@ -68,6 +69,7 @@ async function refreshTokenHandler(
     });
   } catch (error: any) {
     sendFailedResponse(res, next, error);
+    farmizLogger.log("error", "refreshTokenHandler",  error.message)
   }
 }
 

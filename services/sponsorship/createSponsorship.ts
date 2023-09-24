@@ -27,6 +27,8 @@ export const createSponsorship = async (data: {
       isActive: true,
       sponsoredAmount: discovery.amount,
       startDate: discovery.startDate,
+      walletId,
+      delayDays: req.body.delayDays
     });
 
     const amountDeducted = await walletService.updateOne(

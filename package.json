@@ -94,6 +94,7 @@
     "socket.io": "^4.6.1",
     "uuid": "^9.0.0",
     "validator": "^13.9.0",
+    "winston": "^3.10.0",
     "xss-clean": "^0.1.1"
   }
 }

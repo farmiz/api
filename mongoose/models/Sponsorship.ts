@@ -44,7 +44,10 @@ const sponsorshipSchema = new Schema<SponsorshipModel>({
     type: String,
     required: true,
     ref: "Wallet"
-
+  },
+  delayDays: {
+    type: Number,
+    required: true
   }
 });
 

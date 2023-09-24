@@ -1,5 +1,6 @@
 import { Resend } from "resend";
 import { MailOptions } from "../../interfaces";
+import { farmizLogger } from "../../core/logger";
 const {
   EMAIL_KEY = "",
   WHITELISTED_EMAIL_DOMAIN,
@@ -21,7 +22,9 @@ export class EmailService {
     mailOptions.to = toEmail;
     try {
       if (NODE_ENV === "test") {
-        console.info(JSON.stringify(mailOptions, null, 2));
+      farmizLogger.log("info", "EmailService:sendEmail:[test]", "Email sent", {
+        ...mailOptions
+      })
         return;
       }
       if (NODE_ENV === "production" || isWhiteListedEmail(toEmail)) {
@@ -29,10 +32,11 @@ export class EmailService {
           ...mailOptions
         } as any);
       } else {
-        console.info(JSON.stringify(mailOptions, null, 2));
-      }
+        farmizLogger.log("info", "EmailService:sendEmail:[development]", "Email sent", {
+          ...mailOptions
+        })      }
     } catch (error: any) {
-      console.log({ error: error.message });
+      farmizLogger.log("error", "EmailService:sendEmail",  error.message)
     }
   }
 }

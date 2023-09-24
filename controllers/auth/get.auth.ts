@@ -31,6 +31,7 @@ import {
 import { userService } from "../../services/users";
 import { RequestError } from "../../helpers/errors";
 import { AuthRequest } from "../../middleware";
+import { farmizLogger } from "../../core/logger";
 
 const data: IData = {
   requireAuth: true,
@@ -64,6 +65,7 @@ async function checkAuthHandler(
     });
   } catch (error: any) {
     sendFailedResponse(res, next, error);
+    farmizLogger.log("error", "checkAuthHandler",  error.message)
   }
 }
 

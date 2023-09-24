@@ -3,13 +3,14 @@ import * as path from "path";
 import { createFolderAndFile } from "..";
 import { BASE_SERVICE_DIR, BASE_DIR } from "../../constants";
 import { generateServiceTemplate } from "../templates/serviceTemplate";
+import { farmizLogger } from "../../core/logger";
 
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
 
-async function generateController() {
+async function generateService() {
   try {
     const [serviceName, fileName, modelName, serviceClass] =
       await askQuestions();
@@ -24,10 +25,11 @@ async function generateController() {
     const filePath = path.join(folderPath, `${fileName}.ts`);
 
     await createFolderAndFile({ folderPath, filePath, code });
-    console.log("Code generated and saved successfully!");
+    farmizLogger.log("info", "generateService",  "Service generated successfully 💥🔥")
+
     process.exit(0);
   } catch (error: any) {
-    console.error("Error:", error.message);
+    farmizLogger.log("error", "generateService",  error.message)
   } finally {
     rl.close();
   }
@@ -47,4 +49,4 @@ function askQuestions(): Promise<string[]> {
   });
 }
 
-generateController();
+generateService();

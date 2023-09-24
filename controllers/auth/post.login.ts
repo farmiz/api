@@ -36,6 +36,7 @@ interface Body {
 import { ERROR_MESSAGES } from "../../constants";
 import { RequestError } from "../../helpers/errors";
 import { AuthRequest } from "../../middleware";
+import { farmizLogger } from "../../core/logger";
 interface Body {
   email: string;
   password: string;
@@ -103,6 +104,9 @@ async function loginHandler(
     });
   } catch (error: any) {
     sendFailedResponse(res, next, error);
+    farmizLogger.log("error", "refreshTokenHandler", error.message, {
+      body: { ...req.body },
+    });
   }
 }
 

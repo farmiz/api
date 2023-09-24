@@ -2,6 +2,7 @@ import { readFile } from "fs/promises";
 import path from "path";
 import { render } from "ejs";
 import { BASE_DIR } from "../constants";
+import { farmizLogger } from "../core/logger";
 
 async function readHtmlTemplate(templateRelativePath: string): Promise<string> {
   const absolutePath = path.join(
@@ -22,7 +23,6 @@ export async function renderEmailTemplate(bodyHtml: string, data: Record<string,
     const mainHtml = render(main, data);
     const html = `${headerHtml}${mainHtml}${footerHtml}`
     return html
-  } catch (err) {
-    console.log({ err });
-  }
+  } catch (err: any) {
+    farmizLogger.log("error", "renderEmailTemplate", err.message)}
 }
