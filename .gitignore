@@ -1,0 +1,6 @@
+# Ignore everything by default
+*
+
+# Exclude specific files and directories
+!docs/
+!.gitignore
