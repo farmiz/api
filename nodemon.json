@@ -1,9 +1,0 @@
-{
-    "verbose": true,
-    "signal": "SIGINT",
-    "watch": ["build/"],
-    "ignore": [
-        "*.pdf",
-        "tests/*"
-    ]
-}
