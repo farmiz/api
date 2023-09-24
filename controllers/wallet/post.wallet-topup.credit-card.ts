@@ -1,12 +1,12 @@
 /**
- * @api {POST} /api/wallet/:id/topup/credit-card Top Up Wallet with Credit Card
+ * @api {POST} /wallet/:id/topup/credit-card Top Up Wallet with Credit Card
  * @apiName TopUpWalletWithCreditCard
  * @apiGroup Wallet
  * @apiVersion 0.0.1
  * @apiDescription Endpoint used to top up a wallet using a credit card.
  *
  * @apiPermission authenticated (with "wallet" - "create" permission)
- * @apiSampleRequest https://staging-api.farmiz.co
+ * @apiSampleRequest https://staging-api.farmiz.co/v1
  *
  * @apiParam {String} id ID of the wallet to be topped up.
  *

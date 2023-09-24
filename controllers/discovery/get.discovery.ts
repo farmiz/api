@@ -1,12 +1,12 @@
 /**
- * @api {GET} /api/discovery Get Discoveries
+ * @api {GET} /discovery Get Discoveries
  * @apiName Get Discoveries
  * @apiGroup Discovery
  * @apiVersion 0.0.1
  * @apiDescription Endpoint used to retrieve discoveries.
  *
  * @apiPermission authenticated user (with "discovery" - "read" permission)
- * @apiSampleRequest https://staging-api.farmiz.co
+ * @apiSampleRequest https://staging-api.farmiz.co/v1
  *
  * @apiSuccess {Boolean} success Indicates if the request was successful.
  * @apiSuccess {Object} response Response object containing discoveries.

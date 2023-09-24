@@ -1,12 +1,12 @@
 /**
- * @api {GET} /api/wallets Get Wallets
+ * @api {GET} /wallets Get Wallets
  * @apiName GetWallets
  * @apiGroup Wallet
  * @apiVersion 0.0.1
  * @apiDescription Endpoint used to retrieve wallets.
  
  * @apiPermission authenticated user (with "wallet" - "read" permission)
- * @apiSampleRequest https://staging-api.farmiz.co
+ * @apiSampleRequest https://staging-api.farmiz.co/v1
  *
  * @apiSuccess {Boolean} success Indicates if the request was successful.
  * @apiSuccess {Object} response Response object containing wallets.

@@ -1,12 +1,12 @@
 /**
- * @api {POST} /api/auth/login Login
+ * @api {POST} /auth/login Login
  * @apiName Login
  * @apiGroup Auth
  * @apiVersion 0.0.1
  * @apiDescription Endpoint use to login 
  * @apiSuccess {Object} response User Data
  * @apiPermission anyone
- * @apiSampleRequest https://staging-api.farmiz.co
+ * @apiSampleRequest https://staging-api.farmiz.co/v1
  * @apiBody {String} email  User's email
  * @apiBody {String} password  User's password
  * @apiSuccessExample {json}

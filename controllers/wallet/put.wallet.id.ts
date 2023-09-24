@@ -1,12 +1,12 @@
 /**
- * @api {PUT} /api/:id/wallet Update Single Wallet
+ * @api {PUT} /:id/wallet Update Single Wallet
  * @apiName UpdateSingleWallet
  * @apiGroup Wallet
  * @apiVersion 0.0.1
  * @apiDescription Endpoint used to update a single wallet by its ID.
  *
  * @apiPermission authenticated user (with "wallet" and "read" permission)
- * @apiSampleRequest https://staging-api.farmiz.co
+ * @apiSampleRequest https://staging-api.farmiz.co/v1/v1
  *
  * @apiParam {String} id The unique ID of the wallet to be updated.
  *

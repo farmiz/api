@@ -6,7 +6,7 @@
  * @apiDescription Endpoint used to register a new client.
  *
  * @apiPermission anyone
- * @apiSampleRequest https://staging-api.farmiz.co
+ * @apiSampleRequest https://staging-api.farmiz.co/v1
  *
  * @apiBody {String} email User's email.
  * @apiBody {String} password User's password.
@@ -15,8 +15,8 @@
  * @apiBody {String} firstName User's first name.
  * @apiBody {String} LastName User's last name.
  * @apiBody {Object} phone User's phone details.
- * @apiBody {Number} phone.prefix Phone number prefix.
- * @apiBody {Number} phone.number Phone number.
+ * @apiBody {String} phone.prefix Phone number prefix.
+ * @apiBody {String} phone.number Phone number.
  * @apiBody {String} phone.country Phone number country code.
  * @apiBody {Date} dateOfBirthday User's date of birth (format: YYYY-MM-DD).
  *
@@ -26,8 +26,8 @@
  * @apiSuccess {String} response.token.accessToken Access token.
  * @apiSuccess {String} response.email User's email.
  * @apiSuccess {Object} response.phone User's phone details.
- * @apiSuccess {Number} response.phone.prefix Phone number prefix.
- * @apiSuccess {Number} response.phone.number Phone number.
+ * @apiSuccess {String} response.phone.prefix Phone number prefix.
+ * @apiSuccess {String} response.phone.number Phone number.
  * @apiSuccess {String} response.phone.country Phone number country code.
  * @apiSuccess {String} response.role User's role.
  * @apiSuccess {String} response.status User's status.
@@ -95,7 +95,7 @@
 
 // The rest of your code remains unchanged
 
-import { IData, IPhone, PermissionOperation } from "../../interfaces";
+import { IData, IPhone } from "../../interfaces";
 import { NextFunction, Response } from "express";
 import {
   sendFailedResponse,

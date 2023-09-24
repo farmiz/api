@@ -3,7 +3,13 @@ import { ValidationRule } from "../helpers/validator";
 import { JobOptions } from "bull";
 
 export type PermissionOperation = "create" | "read" | "update" | "delete";
-export type PermissionString = "users" | "wallet" | "discovery" | "sponsor" | "settings" | "transaction";
+export type PermissionString =
+  | "users"
+  | "wallet"
+  | "discovery"
+  | "sponsor"
+  | "settings"
+  | "transaction";
 export type IPermission = Record<
   PermissionString,
   Record<PermissionOperation, number>
@@ -104,7 +110,8 @@ export type JobId =
   | "wallet-deduction"
   | "program-sponsored"
   | "sponsorship-cancelled"
-   | "cleanup-job";
+  | "cleanup-job"
+  | "update-sponsorship-status";
 
 export interface JobData<T> {
   data: T;

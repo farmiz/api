@@ -1,5 +1,5 @@
 /**
- * @api {GET} /api/auth Auth
+ * @api {GET} /auth Auth
  * @apiName Authenticate
  * @apiGroup Auth
  * @apiVersion 0.0.1

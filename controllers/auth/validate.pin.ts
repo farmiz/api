@@ -1,5 +1,6 @@
 /**
  * @api {POST} /auth/pin/validate Validate PIN
+ * @apiSampleRequest https://staging-api.farmiz.co/v1
  * @apiName ValidatePIN
  * @apiGroup Auth
  * @apiVersion 0.0.1

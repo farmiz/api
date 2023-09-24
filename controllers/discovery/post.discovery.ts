@@ -1,12 +1,12 @@
 /**
- * @api {POST} /api/discovery Create Discovery
+ * @api {POST} /discovery Create Discovery
  * @apiName Create Discovery
  * @apiGroup Discovery
  * @apiVersion 0.0.1
  * @apiDescription Endpoint used to create a discovery.
  *
  * @apiPermission authenticated (with "discovery" - "create" permission)
- * @apiSampleRequest https://staging-api.farmiz.co
+ * @apiSampleRequest https://staging-api.farmiz.co/v1
  *
  * @apiBody {String} name Name of the discovery.
  * @apiBody {String} duration.type Duration type of the discovery. should be one of these `day`,`month`, or `year`
