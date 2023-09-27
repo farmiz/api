@@ -1,6 +1,9 @@
-# Ignore everything by default
-*
+node_modules/
+build/
+tests/
+*.log
+test.ts
+.vscode
+*.rdb
+controllers/
 
-# Exclude specific files and directories
-!docs/
-!.gitignore
