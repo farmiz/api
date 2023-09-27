@@ -19,3 +19,5 @@ services/
 .github
 utils/
 interfaces/
+package.json
+apidoc.json
