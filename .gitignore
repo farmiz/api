@@ -1,9 +1,0 @@
-node_modules/
-build/
-tests/
-*.log
-test.ts
-.vscode
-*.rdb
-controllers/
-
