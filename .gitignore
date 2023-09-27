@@ -16,6 +16,5 @@ template/
 templates/
 .env.development
 services/
-.github
 utils/
 interfaces/
