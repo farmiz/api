@@ -18,3 +18,4 @@ templates/
 services/
 .github
 utils/
+interfaces/
