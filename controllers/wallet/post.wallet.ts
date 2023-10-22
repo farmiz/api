@@ -120,7 +120,7 @@ const data: IData = {
       },
       primary: {
         required: false,
-      },
+      }
     },
   },
   requestRateLimiter: RATE_LIMITS.addWallet,

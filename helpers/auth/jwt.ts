@@ -99,7 +99,7 @@ class TokenService {
 
 export class TokenModel implements Partial<ITokens> {
   public accessToken: string;
-  public refreshToken: string[];
+  public refreshToken: string;
 
   constructor(tokens: ITokens) {
     this.accessToken = tokens.accessToken;
@@ -118,7 +118,7 @@ export async function generateTokens(
   const refreshToken = tokenService.createRefreshToken({ _id: user.id });
 
   const tokens: Omit<ITokens, "accessToken"> = {
-    refreshToken: [refreshToken],
+    refreshToken: refreshToken,
     verifyAccountToken: null,
     emailRecoveryToken: null
   };
@@ -129,14 +129,13 @@ export async function generateTokens(
       expiresAt: addHours(new Date(), 5),
     };
   }
-  //   store tokens in tokens model
   await Tokens.create({
     tokens,
     userId: user.id,
   });
   return {
     accessToken,
-    refreshToken: [refreshToken],
+    refreshToken: refreshToken,
     verifyAccountToken: tokens.verifyAccountToken,
     emailRecoveryToken: null
   };

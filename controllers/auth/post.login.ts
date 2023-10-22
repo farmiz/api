@@ -37,6 +37,7 @@ import { ERROR_MESSAGES } from "../../constants";
 import { RequestError } from "../../helpers/errors";
 import { AuthRequest } from "../../middleware";
 import { farmizLogger } from "../../core/logger";
+import { addDays } from "date-fns";
 interface Body {
   email: string;
   password: string;
@@ -87,13 +88,13 @@ async function loginHandler(
     });
     const response = {
       accessToken: tokens.accessToken,
-      ...userData,
+      user: userData,
     };
-
-    res.cookie("refreshAuthToken", tokens.refreshToken[0], {
+    res.cookie("refreshAuthToken", "", { expires: new Date(0) });
+    res.cookie("refreshAuthToken", tokens.refreshToken, {
       httpOnly: true,
       secure: true,
-      expires: new Date(Date.now() + 60 * 60 * 1000),
+      expires: addDays(new Date(), 10),
       sameSite: "none",
       path: "/",
     });

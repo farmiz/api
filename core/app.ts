@@ -177,9 +177,10 @@ export class App implements HttpServer {
     });
   }
   private config() {
+    console.log(MAIN_ORIGIN.split(","))
     this.app.use(
       cors({
-        origin: MAIN_ORIGIN, // Allow requests from this origin
+        origin: MAIN_ORIGIN.split(","), // Allow requests from this origin
         methods: "GET, POST, DELETE, PUT", // Allow these HTTP methods
         allowedHeaders: ["Content-Type", "Authorization"], // Allow these headers
         credentials: true, // Allow cookies to be sent with requests
@@ -236,6 +237,7 @@ export class App implements HttpServer {
           method: req.method,
           url: req.url,
           ip: req.ip,
+          cookie: req.cookies
         });
       }
       next();

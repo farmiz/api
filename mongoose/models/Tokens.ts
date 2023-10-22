@@ -18,7 +18,7 @@ export type TokenWithExpiration = {
 };
 export interface ITokens {
   accessToken: string;
-  refreshToken: string[];
+  refreshToken: string;
   verifyAccountToken?: TokenWithExpiration | null;
   emailRecoveryToken: TokenWithExpiration | null;
 }
@@ -31,7 +31,7 @@ const tokenSchema = new Schema<TokenDocument>(
   {
     tokens: {
       refreshToken: {
-        type: Array,
+        type: String,
         require: true,
       },
       accessTokenExpiresAt: {
