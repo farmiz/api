@@ -8,6 +8,7 @@ import {
 } from "../templates/userAccountTemplate";
 import { walletTopUpTemplate } from "../templates/walletTopup";
 import { walletDeductionTemplate } from "../templates/walletDeductionTemplate";
+import { farmizLogger } from "../core/logger";
 
 export class EmailJob extends JobBase<EmailJobProps> {
   private emailService: EmailService;
@@ -21,8 +22,8 @@ export class EmailJob extends JobBase<EmailJobProps> {
     const content = await this.emailJobDeterminer(data);
       try {
         await this.emailService.sendEmail(content);
-      } catch (error) {
-        console.log({ error });
+      } catch (error: any) {
+        farmizLogger.log("error", "EmailJob:process",  error.message)
     }
   }
   emailJobDeterminer = async (

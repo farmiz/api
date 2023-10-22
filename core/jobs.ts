@@ -43,7 +43,6 @@ export default class JobBase<T> {
 
   async processJob(job: Bull.Job<JobData<T>>): Promise<void> {
     try {
-
       await this.process(job.data.data);
       // @ts-ignore
       if (job.isCompleted()) {
@@ -63,15 +62,24 @@ export default class JobBase<T> {
     console.log(`Job ${job.id} failed with error: ${error.message}`);
   }
 
-  protected async  process(data: T): Promise<void> {
+  protected async process(data: T): Promise<void> {
     throw new Error("Method not implemented");
   }
 
-  async addJob(data: T, options: IJobOptions):Promise<Bull.Job<JobData<T>> | null> {
-    let modifiedOptions: Partial<IJobOptions> ={};
+  async addJob(
+    data: T,
+    options: IJobOptions,
+  ): Promise<Bull.Job<JobData<T>> | null> {
+    let modifiedOptions: Partial<IJobOptions> = {};
     if (JobValidator.hasValidJobId(options.jobId)) {
-       modifiedOptions = modifyJobOptions(options);
-      modifiedOptions.jobId = `${options.jobId}:${uuid()}` as JobId;
+      modifiedOptions = modifyJobOptions(options);
+      const specialJobIds: JobId[] = [
+        "cleanup-job",
+        "update-sponsorship-status",
+      ];
+      modifiedOptions.jobId = specialJobIds.includes(options.jobId)
+        ? options.jobId
+        : (`${options.jobId}:${uuid()}` as JobId);
       return await this.queue.add({ data }, options);
     }
     return null;

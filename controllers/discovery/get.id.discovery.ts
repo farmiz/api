@@ -1,12 +1,12 @@
 /**
- * @api {GET} /api/:id/discovery Get Discovery
+ * @api {GET} /:id/discovery Get Discovery
  * @apiName Get Discovery
  * @apiGroup Discovery
  * @apiVersion 0.0.1
  * @apiDescription Endpoint used to get a single discovery.
  *
  * @apiPermission authenticated (with "discovery" - "read" permission)
-  * @apiSampleRequest https://staging-api.farmiz.co
+  * @apiSampleRequest https://staging-api.farmiz.co/v1
  *
  * @apiParam {String} id Id of the discovery.
  * @apiSuccess {Boolean} success Indicates if the request was successful.

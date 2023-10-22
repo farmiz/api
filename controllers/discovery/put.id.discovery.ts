@@ -1,12 +1,12 @@
 /**
- * @api {PUT} /api/:id/discovery Update Discovery
+ * @api {PUT} /:id/discovery Update Discovery
  * @apiName Update Discovery
  * @apiGroup Discovery
  * @apiVersion 0.0.1
  * @apiDescription Endpoint used to update a discovery.
  *
  * @apiPermission authenticated (with "discovery" - "update" permission)
-  * @apiSampleRequest https://staging-api.farmiz.co
+  * @apiSampleRequest https://staging-api.farmiz.co/v1
  *
  * @apiParam {String} id Id of the discovery.
  * @apiBody {String} [duration] Duration of the discovery.

@@ -1,5 +1,7 @@
 import { sponsorshipService } from ".";
 import { SponsorshipModel } from "../../mongoose/models/Sponsorship";
+import { programRefundedTransactionService } from "../transaction/programRefunded";
+import { walletService } from "../wallet";
 
 export async function cancelSponsorship(
   sponsorShipId: string,
@@ -13,8 +15,11 @@ export async function cancelSponsorship(
       status: "cancelled",
     },
   );
-
-  // TODO: add a transaction reversal worker
+  await walletService.updateOne(
+    { _id: updated?.walletId },
+    { $inc: { availableBalance: (updated?.sponsoredAmount as number) / 100 } },
+  );
   // TODO: add a cancelled sponsorship email
+  // await programRefundedTransactionService.create({sponsorId: sponsorShipId, amount: updated.});
   return updated;
 }

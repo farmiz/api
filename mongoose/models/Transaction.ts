@@ -64,10 +64,22 @@ export const WalletTopup = Transaction.discriminator<TransactionModel>(
 export interface ProgramSponoredTransactionModelProps extends TransactionModel{
   discoveryId: string
 }
+export interface ProgramRefundedTransactionModelProps extends TransactionModel{
+  sponsorId: string
+}
 export const ProgramSponoredTransaction = Transaction.discriminator<ProgramSponoredTransactionModelProps>(
   "ProgramSponoredTransaction",
   new Schema({
     discoveryId: {
+      type: String, 
+      required: true
+    }
+  }),
+);
+export const ProgramRefundedTransaction = Transaction.discriminator<ProgramRefundedTransactionModelProps>(
+  "ProgramRefundedTransaction",
+  new Schema({
+    sponsorId: {
       type: String, 
       required: true
     }

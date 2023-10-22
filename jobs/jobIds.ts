@@ -8,5 +8,6 @@ export const jobIdsArr: JobId[] = [
   "wallet-deduction",
   "program-sponsored",
   "sponsorship-cancelled",
-  "cleanup-job"
+  "cleanup-job",
+  "update-sponsorship-status"
 ];

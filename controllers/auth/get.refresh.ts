@@ -10,7 +10,8 @@ import { userService } from "../../services/users";
 import Tokens from "../../mongoose/models/Tokens";
 import { RequestError } from "../../helpers/errors";
 import { UserModel } from "../../mongoose/models/Users";
-
+import { farmizLogger } from "../../core/logger";
+import { addDays } from "date-fns";
 const data: IData = {
   requestRateLimiter: RATE_LIMITS.refreshToken,
 };
@@ -24,23 +25,20 @@ async function refreshTokenHandler(
     const { code } = httpCodes.FORBIDDEN;
     if (!cookies?.refreshAuthToken) return next(new RequestError(code));
     const refreshAuthToken = cookies.refreshAuthToken;
-
     const token = await Tokens.findOne({
-      "tokens.refreshToken": { $in: [refreshAuthToken] },
+      "tokens.refreshToken": refreshAuthToken,
     });
 
     if (!token) return next(new RequestError(code));
     const refreshToken = token.tokens.refreshToken;
-    const refreshTokenIsActive =
-      refreshToken[refreshToken.length - 1];
-    if (refreshAuthToken !== refreshTokenIsActive)
-      return next(new RequestError(code));
 
-    const verifyToken = tokenService.verifyRefreshToken(refreshAuthToken);
+    const verifyToken = tokenService.verifyRefreshToken(refreshToken);
     if (!verifyToken) return next(new RequestError(code));
 
     const user = (await userService.findOne({
       _id: token.userId,
+    }, {
+       excludes: ["password"]
     })) as UserModel;
 
     if (!!user && Object.keys(user).length && !user?.email)
@@ -49,11 +47,11 @@ async function refreshTokenHandler(
     const { email, id, role } = user;
 
     const newGeneratedTokens = await generateTokens({ email, id, role });
-
-    res.cookie("refreshAuthToken", newGeneratedTokens.refreshToken[0], {
+    res.cookie("refreshAuthToken", "", { expires: new Date(0) });
+    res.cookie("refreshAuthToken", newGeneratedTokens.refreshToken, {
       httpOnly: true,
       secure: true,
-      expires: new Date(Date.now() + 60 * 60 * 1000),
+      expires: addDays(new Date(), 10),
       sameSite: "none",
       path: "/",
     });
@@ -68,6 +66,7 @@ async function refreshTokenHandler(
     });
   } catch (error: any) {
     sendFailedResponse(res, next, error);
+    farmizLogger.log("error", "refreshTokenHandler", error.message);
   }
 }
 

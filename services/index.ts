@@ -1,4 +1,4 @@
-import { Model, FilterQuery, PopulateOptions, startSession } from "mongoose";
+import { Model, FilterQuery, PopulateOptions, startSession, UpdateWriteOpResult } from "mongoose";
 import { formatModelPopulate, formatModelProjection } from "../helpers";
 import { AuthRequest } from "../middleware";
 
@@ -26,7 +26,7 @@ export interface IService<T> {
     filter: FilterQuery<T>,
     update: any,
   ): Promise<UpdateResult<T> | null>;
-  updateMany(filter: FilterQuery<T>, update: any): Promise<void>;
+  updateMany(filter: FilterQuery<T>, update: any): Promise<UpdateWriteOpResult>;
 }
 
 type FilterOpts = "$inc" | "$in" | "$dec";
@@ -123,8 +123,8 @@ export abstract class BaseService<T> implements IService<T> {
       : result;
   }
 
-  async updateMany(filter: FilterQuery<T>, update: any): Promise<void> {
-    await this.model.updateMany(filter, update).exec();
+  async updateMany(filter: FilterQuery<T>,  update: Partial<Record<keyof T | FilterOpts, any>>) {
+    return await this.model.updateMany(filter, update).exec();
   }
   async countDocument(filter: FilterQuery<T>): Promise<number> {
     return await this.model.countDocuments(filter);

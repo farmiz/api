@@ -19,7 +19,7 @@ interface QueryBuilderResult {
   filter: any;
   options: any;
 }
-// /api/items?search=apple&searchSelection=name,description&sort=-price,rating&limit=20&currentPage=3&columns=name,price,description
+// /items?search=apple&searchSelection=name,description&sort=-price,rating&limit=20&currentPage=3&columns=name,price,description
 export function queryBuilder<T = any>(
   reqQuery: any,
   searchableFields: (keyof T)[],
@@ -167,18 +167,20 @@ export function modeMomoTypeForPaystack(phone: string) {
     : network;
 }
 
-const { APP_NAME } = process.env;
+const { APP_NAME, WHITELISTED_EMAIL_DOMAIN = "farmiz.co" } = process.env;
 
-type DefaultSenderEmails = "sales" | "support" | "payment" | "welcome";
+type DefaultSenderEmails = "SALES" | "SUPPORT" | "PAYMENT" | "WELCOME";
 const defaultSenderEmails: { [K in DefaultSenderEmails]: string } = {
-  sales: "sales-noreply@farmiz.co",
-  support: "support-noreply@farmiz.co",
-  payment: "payment-noreply@farmiz.co",
-  welcome: "welcome-noreply@farmiz.co",
+  SALES: "sales",
+  SUPPORT: "support",
+  PAYMENT: "payment",
+  WELCOME: "welcome",
 };
-export const defaultFrom = (type: DefaultSenderEmails, from?: string) => {  
-  const sender = from ? from : defaultSenderEmails[type];
- return `${APP_NAME} <${sender}>`;
+export const defaultFrom = (type: DefaultSenderEmails, from?: string) => {
+  const sender = from
+    ? from
+    : `${defaultSenderEmails[type]}-no-reply@${WHITELISTED_EMAIL_DOMAIN}`;
+  return `${APP_NAME} <${sender}>`;
 };
 export const roundNumber = (data: number | string, round: number = 2) =>
   (Number(data) / 100).toFixed(round);
