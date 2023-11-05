@@ -69,8 +69,12 @@ export function queryBuilder<T = any>(
   const skip = (page - 1) * perPage;
   options.skip = skip;
   options.limit = perPage;
-  options.page = page
-  return { filter, options, columns: columns.split(",") || searchableFields };
+  options.page = page;
+  return {
+    filter,
+    options,
+    columns: columns && columns.length ? columns.split(",") : searchableFields,
+  };
 }
 
 export type NetworkTypes = "MTN" | "VODAFONE" | "Airtel Tigo";

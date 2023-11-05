@@ -33,6 +33,7 @@ describe("GET ALL DISCOVERY /discovery", () => {
     .set({
       Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
     })
+    console.log(res.body)
   res.should.have.status(200);
   res.body.should.have.property("success").be.a("boolean").eql(true);
   res.body.should.have.property("response").be.a("object");

@@ -99,7 +99,7 @@ const getDiscoveryHandler = async (
     );
     if (!discoveries) {
       return next(
-        new RequestError(httpCodes.BAD_REQUEST.code, "No wallet found"),
+        new RequestError(httpCodes.BAD_REQUEST.code, "No discoveries found"),
       );
     }
     const totalDocuments = await discoveryService.countDocuments(filter);
