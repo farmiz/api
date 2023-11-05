@@ -57,6 +57,7 @@ export const formatModelPopulate = (
       : {};
     fields.push({
       path: field,
+      ...populateField
     });
   }
   return fields;

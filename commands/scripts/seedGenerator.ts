@@ -1,5 +1,5 @@
 
-// import { Model, Schema } from "mongoose";
+// import { Model } from "mongoose";
 // import Database from "../../core/database";
 // import User from "../../mongoose/models/Users";
 // import { mockUser } from "../../tests/data/users/UserMock";
@@ -20,4 +20,5 @@
 //     process.exit(0);
 //   }
 // }
-// collectionSeedGenerator(User, 100);
+// collectionSeedGenerator(User, 500);
+// // 

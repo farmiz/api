@@ -15,15 +15,16 @@ export const selectRandomItem = <T>(data: T[]): T => {
   return data[Math.floor(Math.random() * convertedArray.length)];
 };
 
-interface QueryBuilderResult {
+interface QueryBuilderResult<T> {
   filter: any;
   options: any;
+  columns: (keyof T)[];
 }
 // /items?search=apple&searchSelection=name,description&sort=-price,rating&limit=20&currentPage=3&columns=name,price,description
 export function queryBuilder<T = any>(
   reqQuery: any,
   searchableFields: (keyof T)[],
-): QueryBuilderResult {
+): QueryBuilderResult<T> {
   const { search, searchSelection, limit, sort, currentPage, columns } =
     reqQuery;
   // Filter
@@ -63,12 +64,13 @@ export function queryBuilder<T = any>(
   }
 
   // Pagination
-  const perPage = parseInt(limit) || 10;
+  const perPage = parseInt(limit) || 30;
   const page = parseInt(currentPage) || 1;
   const skip = (page - 1) * perPage;
   options.skip = skip;
-
-  return { filter, options };
+  options.limit = perPage;
+  options.page = page
+  return { filter, options, columns: columns.split(",") || searchableFields };
 }
 
 export type NetworkTypes = "MTN" | "VODAFONE" | "Airtel Tigo";
