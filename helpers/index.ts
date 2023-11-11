@@ -2,11 +2,20 @@ import { PopulateOptions } from "mongoose";
 import { AuthRequest } from "../middleware";
 import { UserRole, userRoles } from "../interfaces/users";
 import { differenceInYears, isFuture, isToday, parseISO } from "date-fns";
-import { IAddress, IPhone, PermissionOperation } from "../interfaces";
+import {
+  IAddress,
+  IPhone,
+  PermissionOperation,
+  PermissionString,
+} from "../interfaces";
 import { userService } from "../services/users";
 import { SPECIAL_ROLES } from "../constants";
 import { TCreditCardWallet, TMobileMoneyWallet } from "../interfaces/wallet";
 import { networkTypes } from "../mongoose/models/Wallet";
+import {
+  PERMISSIONS_LIST,
+  PERMISSION_OPERATIONS,
+} from "./permissions/permissions";
 
 export const isActualObject = (obj: Record<string, any>): boolean =>
   !!(!Array.isArray(obj) && obj && Object.keys(obj).length);
@@ -57,7 +66,7 @@ export const formatModelPopulate = (
       : {};
     fields.push({
       path: field,
-      ...populateField
+      ...populateField,
     });
   }
   return fields;
@@ -65,6 +74,34 @@ export const formatModelPopulate = (
 
 export const trimAndClean = (value: string) => value.trim();
 
+export type PermissionObject = {
+  [key in PermissionString]: PermissionOperation[];
+};
+function isValidPermissionObject(
+  permissions: PermissionObject,
+  permissionOperations: PermissionOperation[],
+) {
+  for (const key in permissions) {
+    if (permissions.hasOwnProperty(key)) {
+      const values: PermissionOperation[] =
+        permissions[key as PermissionString];
+      if (!values.every(value => permissionOperations.includes(value))) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+export const validatePermission = ({}, permissions: PermissionObject) => {
+  const permissionKeys = Object.keys(permissions) as PermissionString[];
+  const permissionHasValidKeys = permissionKeys.every((key: PermissionString) =>
+    PERMISSIONS_LIST.includes(key),
+  );
+  return (
+    isValidPermissionObject(permissions, PERMISSION_OPERATIONS) &&
+    permissionHasValidKeys
+  );
+};
 export const hasValidRole = (req: AuthRequest, role: UserRole) => {
   if (!["support", "admin"].includes(req.user?.role as string)) {
     return !["admin", "support"].includes(role);
@@ -74,7 +111,7 @@ export const hasValidRole = (req: AuthRequest, role: UserRole) => {
   );
   return filteredRoles.includes(role);
 };
-
+export const validName = ({}, val: string) => val.length >= 3;
 export const dataHasValidLength = (data: string, dataLength: number) =>
   data.length >= dataLength;
 
@@ -138,9 +175,12 @@ export const hasValidCreditCardDetails = (
 ): boolean => {
   return !!(
     isActualObject(details) &&
-    details.cvv && hasValidLength(details.cvv, 3) &&
-    details.expiry_month &&  hasValidLength(details.expiry_month, 2) &&
-    details.expiry_year &&  hasValidLength(details.expiry_year, 2) &&
+    details.cvv &&
+    hasValidLength(details.cvv, 3) &&
+    details.expiry_month &&
+    hasValidLength(details.expiry_month, 2) &&
+    details.expiry_year &&
+    hasValidLength(details.expiry_year, 2) &&
     details.number
   );
 };

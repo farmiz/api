@@ -17,7 +17,7 @@ const data: IData = {
   permission: ["users", "read"]
 };
 
-async function getUsers(req: AuthRequest, res: Response, next: NextFunction) {
+async function getUsersHandler(req: AuthRequest, res: Response, next: NextFunction) {
   try {
     let { query } = req;
 
@@ -30,6 +30,7 @@ async function getUsers(req: AuthRequest, res: Response, next: NextFunction) {
       "status",
       "gender",
       "role",
+      "phone"
     ]);
     buildQuery.filter = { ...buildQuery.filter, ...filter };
     const users = await userService.findMany(
@@ -63,6 +64,6 @@ async function getUsers(req: AuthRequest, res: Response, next: NextFunction) {
 export default {
   data,
   url: "/users",
-  handler: getUsers,
+  handler: getUsersHandler,
   method: "get",
 };

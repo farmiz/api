@@ -1,6 +1,5 @@
 import { sponsorshipService } from ".";
 import { SponsorshipModel } from "../../mongoose/models/Sponsorship";
-import { programRefundedTransactionService } from "../transaction/programRefunded";
 import { walletService } from "../wallet";
 
 export async function cancelSponsorship(

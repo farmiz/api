@@ -1,5 +1,3 @@
-import { model } from "mongoose";
-
 export function generateServiceTemplate({
   serviceClass,
   serviceName,

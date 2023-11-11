@@ -7,7 +7,7 @@ class CleanupJob extends JobBase<null> {
     super("cleanup");
   }
 
-  async process(data: null): Promise<void> {
+  async process(): Promise<void> {
     try {
       // Clean up non-repeatable jobs
       await this.cleanNonRepeatableJobs();

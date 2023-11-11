@@ -21,8 +21,6 @@ export class PaystackWebhookHandler {
       case "charge.success":
         await this.handleChargeSuccess(data);
         break;
-      case "charge.failure":
-        await this.handleChargeFailure(data);
     }
   }
   private async handleChargeSuccess(data: ITransaction) {
@@ -59,10 +57,6 @@ export class PaystackWebhookHandler {
       paymentNumber: maskString(walletNumbers as string),
       transactionId: data.reference as string,
     });
-  }
-  private async handleChargeFailure(data: any) {
-    // store data to db
-    // send email
   }
 }
 function determinePaymentMethod(data?: Record<string, any>): string {

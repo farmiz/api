@@ -1,15 +1,13 @@
 import JobBase from "../core/jobs";
 import { farmizLogger } from "../core/logger";
-import { sponsorshipService } from "../services/sponsorship";
 
 class SponsorJob extends JobBase<null> {
   constructor() {
     super("sponsor");
   }
 
-  async process(data: null): Promise<void> {
+  async process(): Promise<void> {
     try {
-
       await this.checkAndChangeSponsorshipStatus();
     } catch (error: any) {
       console.info("UNABLE TO UPDATE SPONSORSHIP STATUS", error.message);
@@ -20,7 +18,7 @@ class SponsorJob extends JobBase<null> {
 
 
   async checkAndChangeSponsorshipStatus() {
-    const today = new Date();
+    // const today = new Date();
 
     try {
       // await sponsorshipService.updateMany(
