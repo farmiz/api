@@ -1,4 +1,4 @@
-import mongoose, { Model, Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { IDefaultPlugin } from "../../interfaces";
 import { DiscoveryProps, RiskLevel } from "../../interfaces/discovery";
 import { defaultPlugin } from "../utils";

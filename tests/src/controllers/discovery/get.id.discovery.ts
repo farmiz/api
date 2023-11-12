@@ -6,7 +6,6 @@ chai.use(chaiHttp);
 chai.should();
 import { v4 as uuid } from "uuid";
 import { mockUser } from "../../../data/users/UserMock";
-import { mobileMoneyWalletMock } from "../../../data/wallet/mobileMoney/MobileMoneyWalletMock";
 import { app } from "../../../core/app";
 import { discoveryMock } from "../../../data/discovery/DiscoveryMock";
 

@@ -1,9 +1,10 @@
 import dotenv from "dotenv";
-const path = process.env.NODE_ENV !== "production"
-? `.env.${process.env.NODE_ENV}`
-: ".env";
+const path =
+  process.env.NODE_ENV !== "production"
+    ? `.env.${process.env.NODE_ENV}`
+    : ".env";
 dotenv.config({
-  path
+  path,
 });
 import { HttpServer } from "./../interfaces";
 import { IData, RouteTypes } from "../interfaces";
@@ -34,7 +35,7 @@ import hpp from "hpp";
 import trebble from "@treblle/express";
 import { RATE_LIMITS, UNALLOWED_ENV } from "../constants";
 import { WORKERS } from "../services/workers";
-const { MAIN_ORIGIN = "", NODE_ENV = "", APP_VERSION= "v1" } = process.env;
+const { MAIN_ORIGIN = "", NODE_ENV = "", APP_VERSION = "v1" } = process.env;
 
 type RequestValidation = {
   [x: string]: ValidationRule;
@@ -75,7 +76,7 @@ export class App implements HttpServer {
         },
         //AUTHENTICATE CLIENT IP ADDRESS
         async (req: Request, res: Response, next: NextFunction) => {
-        await authMiddleware.getServerIp(req, res, next);
+          await authMiddleware.getServerIp(req, res, next);
         },
 
         // RATE LIMITING
@@ -169,7 +170,7 @@ export class App implements HttpServer {
   async start(port: number) {
     await this.addRoutes();
     this.config();
-    for(const WORKER of WORKERS){
+    for (const WORKER of WORKERS) {
       await WORKER();
     }
     this.app.listen(port, () => {
@@ -177,7 +178,6 @@ export class App implements HttpServer {
     });
   }
   private config() {
-    console.log(MAIN_ORIGIN.split(","))
     this.app.use(
       cors({
         origin: MAIN_ORIGIN.split(","), // Allow requests from this origin
@@ -214,6 +214,7 @@ export class App implements HttpServer {
         replaceWith: "_",
         allowDots: true,
         dryRun: true,
+        // @ts-ignore
         onSanitize: ({ key, req }) => {
           console.warn({ key });
         },
@@ -230,6 +231,7 @@ export class App implements HttpServer {
       next();
     });
 
+    // @ts-ignore
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       if (process.env.NODE_ENV !== "test") {
         console.debug({
@@ -237,12 +239,13 @@ export class App implements HttpServer {
           method: req.method,
           url: req.url,
           ip: req.ip,
-          cookie: req.cookies
+          cookie: req.cookies,
         });
       }
       next();
     });
     this.app.use(this.router);
+    // @ts-ignore
     this.app.all("*", (req, res, next) => {
       res.status(404).send("Route not found");
       next();

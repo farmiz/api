@@ -8,111 +8,99 @@ import {
 import { IUser } from "../../interfaces/users";
 import { hasValidPhone, validName, validatePermission } from "../../helpers";
 import { Validator } from "../../mongoose/validators";
-import { addHours, differenceInYears, parseISO } from "date-fns";
+import { differenceInYears, parseISO } from "date-fns";
 import { constructPermission } from "../../helpers/permissions/permissions";
 import Permission from "../../mongoose/models/Permission";
-import { createUser } from "../../services/auth/createUser";
-import crypto from "crypto";
-
-import { emailSender } from "../../services/email/EmailSender";
-import Tokens, { TokenWithExpiration } from "../../mongoose/models/Tokens";
-import { generateVerificationUrl } from "../../utils";
+import { buildPayloadUpdates } from "../../utils";
+import { userService } from "../../services/users";
 const data: IData<IUser> = {
   requireAuth: true,
   permission: ["users", "create"],
   rules: {
     body: {
       firstName: {
-        required: true,
+        required: false,
         validate: validName,
         fieldName: "First name",
       },
       lastName: {
-        required: true,
+        required: false,
         validate: validName,
         fieldName: "Last name",
       },
       username: {
-        required: true,
+        required: false,
         validate: validName,
         fieldName: "Username",
       },
       email: {
-        required: true,
+        required: false,
         fieldName: "Email",
         validate: Validator.isEmail,
       },
       phone: {
-        required: true,
+        required: false,
         validate: ({}, phone: IPhone) => hasValidPhone(phone),
         fieldName: "Phone",
       },
       dateOfBirth: {
-        required: true,
+        required: false,
         validate: ({}, date: string) =>
           !!(differenceInYears(new Date(), parseISO(date)) >= 18),
         fieldName: "Date of birth",
       },
       password: {
-        required: true,
+        required: false,
         fieldName: "Password",
         validate: Validator.isPasswordStrong,
       },
       permission: {
-        required: true,
+        required: false,
         validate: validatePermission,
       },
     },
   },
 };
 
-async function createUserHandler(
+async function updateUserHandler(
   req: AuthRequest,
   res: Response,
   next: NextFunction,
 ) {
   try {
-    const constructedPermission = constructPermission(req.body.permission);
-    const { permission, ...rest } = req.body;
+    const { id } = req.params;
+    let constructedPermission = "";
+    if (req.body.permission && Object.keys(req.body.permission).length) {
+      constructedPermission = constructPermission(req.body.permission);
+    }
 
-    const data = {
-      ...rest,
-      createdBy: req.user?.id,
-    };
-    const createdUser = await createUser(data);
-    await Permission.create({
-      access: constructedPermission,
-      userId: createdUser.id,
-    });
+    const fieldsToUpdate = buildPayloadUpdates(req.body);
+    const updatedUser = await userService.updateOne(
+      { _id: id },
+      {
+        ...fieldsToUpdate,
+        updatedBy: req.user?.id,
+      },
+    );
+
+    if (constructedPermission) {
+      await Permission.create({
+        access: constructedPermission,
+        userId: id,
+      });
+    }
 
     const response = {
-      ...createdUser,
+      ...updatedUser,
     };
     sendSuccessResponse(res, next, { response, success: true });
-
-    // send user created email
-    const verifyAccountToken: TokenWithExpiration = {
-      type: "signup",
-      token: `mha_${crypto.randomBytes(60).toString("hex")}`,
-      expiresAt: addHours(new Date(), 5),
-    };
-    await Tokens.create({
-      tokens: verifyAccountToken,
-      userId: createdUser.id,
-    });
-    const verificationUrl = generateVerificationUrl(verifyAccountToken);
-    await emailSender.accountVerification({
-      email: req.body.email,
-      accountVerificationToken: verificationUrl,
-      recipientName: req.body.firstName,
-    });
   } catch (error: any) {
     sendFailedResponse(res, next, error);
   }
 }
 export default {
   data,
-  url: "/users",
-  handler: createUserHandler,
-  method: "post",
+  url: "/:id/users",
+  handler: updateUserHandler,
+  method: "put",
 };

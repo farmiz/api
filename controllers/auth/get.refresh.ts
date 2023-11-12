@@ -35,11 +35,17 @@ async function refreshTokenHandler(
     const verifyToken = tokenService.verifyRefreshToken(refreshToken);
     if (!verifyToken) return next(new RequestError(code));
 
-    const user = (await userService.findOne({
-      _id: token.userId,
-    }, {
-       excludes: ["password"]
-    })) as UserModel;
+    const user = (await userService.findOne(
+      {
+        _id: token.userId,
+      },
+      {
+        excludes: ["password"],
+      },
+      {
+        permission: ["access"],
+      }
+    )) as UserModel;
 
     if (!!user && Object.keys(user).length && !user?.email)
       return next(new RequestError(403, "Forbidden"));

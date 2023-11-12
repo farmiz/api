@@ -4,6 +4,7 @@ import { JobValidator } from "../jobs/validator";
 import { v4 as uuid } from "uuid";
 import { IJobOptions, JobData, JobId } from "../interfaces";
 import { modifyJobOptions } from "../utils/jobs";
+import { farmizLogger } from "./logger";
 dotenv.config();
 const {
   REDIS_PORT = 6379,
@@ -14,7 +15,7 @@ const {
 export default class JobBase<T> {
   queue: Bull.Queue<JobData<T>>;
   readonly maxRetries: number = 5; // Increase max retries
-  private isConnected: boolean = false;
+  protected isConnected: boolean = false;
   constructor(queueName: string) {
     this.queue = new Bull(queueName, {
       redis: {
@@ -63,6 +64,12 @@ export default class JobBase<T> {
   }
 
   protected async process(data: T): Promise<void> {
+    farmizLogger.log(
+      "error",
+      "proccssWorker",
+      "Error processing worker",
+      data as any,
+    );
     throw new Error("Method not implemented");
   }
 

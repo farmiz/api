@@ -54,7 +54,6 @@ export abstract class BaseService<T> implements IService<T> {
       excludes?: (keyof T)[];
     } | null,
     populate?: PopulateOpt,
-    options?: IOptions,
   ): Promise<T | null> {
     let objectToProject = {};
 
@@ -68,12 +67,6 @@ export abstract class BaseService<T> implements IService<T> {
     if (populate) {
       const populatedFields: PopulateOptions[] = formatModelPopulate(populate);
       query.populate(populatedFields);
-    }
-    if (options && options.limit) {
-      query.limit(options.limit);
-    }
-    if (options && options.sort) {
-      query.sort(options.sort);
     }
     const result = await query.exec();
     return result ? result.toObject() : result;
@@ -100,6 +93,10 @@ export abstract class BaseService<T> implements IService<T> {
     if (populate) {
       const populatedFields: PopulateOptions[] = formatModelPopulate(populate);
       query.populate(populatedFields);
+    }
+
+    if(options && options.skip){
+      query.skip(options.skip) 
     }
     if (options && options.limit) {
       query.limit(options.limit);

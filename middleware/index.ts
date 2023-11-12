@@ -108,7 +108,7 @@ class AuthMiddleware {
     }
   }
 
-  async getServerIp(req: AuthRequest, res: Response, next: NextFunction) {
+  async getServerIp(req: AuthRequest, {}, next: NextFunction) {
     if (process.env.NODE_ENV === "test") {
       return next();
     }

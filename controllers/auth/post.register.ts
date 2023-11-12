@@ -111,7 +111,7 @@ import { UserRole } from "../../interfaces/users";
 import { AuthRequest } from "../../middleware";
 import { constructPermission } from "../../helpers/permissions/permissions";
 import { RequestError } from "../../helpers/errors";
-import { hasValidPhone } from "../../helpers";
+import { hasValidPhone, validName } from "../../helpers";
 import { differenceInYears, parseISO } from "date-fns";
 import { TokenWithExpiration } from "../../mongoose/models/Tokens";
 import { generateVerificationUrl } from "../../utils";
@@ -128,7 +128,6 @@ interface Body {
   dateOfBirthday: Date;
 }
 
-const validName = ({}, val: string) => val.length >= 3;
 const data: IData = {
   rules: {
     body: {

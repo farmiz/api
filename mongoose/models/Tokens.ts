@@ -1,8 +1,7 @@
-import mongoose, { Document, Schema, Types } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { defaultPlugin } from "../utils";
 import { IDefaultPlugin } from "../../interfaces";
 import { MongooseDefaults } from "../../constants";
-import { isPast } from "date-fns";
 
 export type VerifyAccountTokenType = "signup" | "login" | "recovery";
 

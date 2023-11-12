@@ -37,7 +37,7 @@ export class Validator {
         return next();
       } else {
         const errors: { error: string; status: number }[] =
-        await bundleValidation(rules, req, "body");
+          await bundleValidation(rules, req, "body");
         if (errors.length > 0) {
           return res
             .status(errors[0].status)
@@ -164,35 +164,37 @@ async function bundleValidation(
 
     // RULES FOR VALIDATION
     if (ruleKeys.includes("validate")) {
-      const validators = Array.isArray(rule.validate)
-        ? rule.validate
-        : [rule.validate];
-      const generalValidateError = validators[1]
-        ? (validators[1] as string)
-        : `${rule.fieldName || field} is invalid.`;
-      for (const validator of validators) {
-        if (typeof validator === "boolean" && !validator) {
-          errors.push({ error: generalValidateError, status: 400 });
-        } else if (typeof validator === "function") {
-          const result = await validator(req, value);
-          if (typeof result === "boolean" && !result) {
+      if (Object.keys(req[validationIsFor]).includes(field)) {
+        const validators = Array.isArray(rule.validate)
+          ? rule.validate
+          : [rule.validate];
+        const generalValidateError = validators[1]
+          ? (validators[1] as string)
+          : `${rule.fieldName || field} is invalid.`;
+        for (const validator of validators) {
+          if (typeof validator === "boolean" && !validator) {
             errors.push({ error: generalValidateError, status: 400 });
-          } else if (Array.isArray(result)) {
-            const [validatorFunc, errorMessage] = result;
-            if (
-              typeof validatorFunc === "function" &&
-              !validatorFunc(req, value)
-            ) {
-              errors.push({
-                error: errorMessage || generalValidateError,
-                status: 400,
-              });
-            }
-            if (typeof validatorFunc === "boolean" && !validatorFunc) {
-              errors.push({
-                error: errorMessage || generalValidateError,
-                status: 400,
-              });
+          } else if (typeof validator === "function") {
+            const result = await validator(req, value);
+            if (typeof result === "boolean" && !result) {
+              errors.push({ error: generalValidateError, status: 400 });
+            } else if (Array.isArray(result)) {
+              const [validatorFunc, errorMessage] = result;
+              if (
+                typeof validatorFunc === "function" &&
+                !validatorFunc(req, value)
+              ) {
+                errors.push({
+                  error: errorMessage || generalValidateError,
+                  status: 400,
+                });
+              }
+              if (typeof validatorFunc === "boolean" && !validatorFunc) {
+                errors.push({
+                  error: errorMessage || generalValidateError,
+                  status: 400,
+                });
+              }
             }
           }
         }

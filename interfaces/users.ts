@@ -1,15 +1,8 @@
 import { IAddress, IDefaultPlugin, IPhone } from ".";
 
-export type UserRole =
-  | "admin"
-  | "support"
-  | "customer";
+export type UserRole = "admin" | "support" | "customer";
 
-export const userRoles: UserRole[] = [
-  "admin",
-  "support",
-  "customer",
-];
+export const userRoles: UserRole[] = ["admin", "support", "customer"];
 export type Gender = "male" | "female" | "non-binary" | "other";
 export const genders: Gender[] = ["female", "male", "non-binary", "other"];
 export type UserStatus =
@@ -40,8 +33,12 @@ export interface IUser extends IDefaultPlugin {
   isLoggedIn?: boolean;
   dateOfBirth?: Date;
   lastLoggedInDate?: Date;
-  permission?: {
-    access: string;
-    userId?: string;
-  };
+  permission?: any;
 }
+
+// permission?: {
+//   access: string;
+//   userId?: string;
+// }; this is the virtual
+
+// permission? : {}

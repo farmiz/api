@@ -1,4 +1,3 @@
-import { Document } from "mongoose";
 import {
   HttpCodeNames,
   HttpCodes,
@@ -100,7 +99,7 @@ export const MongooseDefaults = {
   toJSON: {
     getters: true, // Add this line to include virtuals,
     virtuals: true,
-    transform: (doc: Document, ret: any) => {
+    transform: ({}, ret: any) => {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;
@@ -110,7 +109,7 @@ export const MongooseDefaults = {
   toObject: {
     getters: true, // Add this line to include virtuals,
     virtuals: true,
-    transform: (doc: Document, ret: any) => {
+    transform: ({}, ret: any) => {
       ret.id = ret._id;
       delete ret._id;
       delete ret.__v;
