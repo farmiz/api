@@ -112,7 +112,7 @@ async function createUserHandler(
 }
 export default {
   data,
-  url: "/users/create",
+  url: "/users",
   handler: createUserHandler,
   method: "post",
 };
