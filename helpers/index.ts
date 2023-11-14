@@ -1,6 +1,6 @@
 import { PopulateOptions } from "mongoose";
 import { AuthRequest } from "../middleware";
-import { UserRole, userRoles } from "../interfaces/users";
+import { UserRole, userRoles, userStatuses } from "../interfaces/users";
 import { differenceInYears, isFuture, isToday, parseISO } from "date-fns";
 import {
   IAddress,
@@ -16,6 +16,7 @@ import {
   PERMISSIONS_LIST,
   PERMISSION_OPERATIONS,
 } from "./permissions/permissions";
+import { UserStatus } from "../interfaces/users";
 
 export const isActualObject = (obj: Record<string, any>): boolean =>
   !!(!Array.isArray(obj) && obj && Object.keys(obj).length);
@@ -102,15 +103,17 @@ export const validatePermission = ({}, permissions: PermissionObject) => {
     permissionHasValidKeys
   );
 };
-export const hasValidRole = (req: AuthRequest, role: UserRole) => {
-  if (!["support", "admin"].includes(req.user?.role as string)) {
-    return !["admin", "support"].includes(role);
-  }
-  const filteredRoles = userRoles.filter(
-    role => !["admin", "support"].includes(role),
-  );
-  return filteredRoles.includes(role);
+export const hasValidRole = ({}, role: UserRole) => {
+  // if (!["support", "admin"].includes(req.user?.role as string)) {
+  //   return !["admin", "support"].includes(role);
+  // }
+  // const filteredRoles = userRoles.filter(
+  //   role => !["admin", "support"].includes(role),
+  // );
+  return userRoles.includes(role);
 };
+export const hasValidStatus = (status: UserStatus) =>
+  userStatuses.includes(status);
 export const validName = ({}, val: string) => val.length >= 3;
 export const dataHasValidLength = (data: string, dataLength: number) =>
   data.length >= dataLength;

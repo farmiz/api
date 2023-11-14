@@ -10,11 +10,11 @@ type validUserRegistrationFields =
   | "lastName"
   | "dateOfBirth"
   | "phone"
-  | "username";
+  | "username" | "status";
 export const createUser = async (
   data: Pick<UserModel, validUserRegistrationFields>,
 ): Promise<UserModel> => {
-  const { email, password, role, firstName, lastName, dateOfBirth, phone, username } =
+  const { email, password, role, firstName, lastName, dateOfBirth, phone, username, status } =
     data;
   const hashedPassword = await passwordManager.hashPassword(password);
   const user = await userService.create({
@@ -22,6 +22,7 @@ export const createUser = async (
     password: hashedPassword,
     role,
     firstName,
+    status,
     lastName,
     phone,
     dateOfBirth,
