@@ -100,7 +100,7 @@ async function updateUserHandler(
 }
 export default {
   data,
-  url: "/:id/users",
+  url: "/users/:id",
   handler: updateUserHandler,
   method: "put",
 };
