@@ -12,7 +12,6 @@ const data: IData = {
 };
 async function postHandler(req: Request, res: Response) {
   try {
-    req.file
     return res.send({ success: true, message: `Welcome to ${process.env.APP_NAME} from ${req.url}` });
   } catch (error: any) {
     res.status(500).send({ error: error.message });

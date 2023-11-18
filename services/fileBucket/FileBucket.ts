@@ -1,50 +1,65 @@
 import { Request } from "express";
-import { credential, initializeApp, storage } from "firebase-admin";
-import * as fs from "fs";
+import * as admin from "firebase-admin";
 import * as path from "path";
 import * as stream from "stream";
 import { v4 as uuid } from "uuid";
+import { farmizLogger } from "../../core/logger";
 
+export type Directory = "directory" | "profileImage" | "assets";
+export interface UploadFileProps {
+  req: Request;
+  directory: Directory,
+  streamOptions?: Record<string, any>
+}
+export interface UploadFileReturnProps {
+  url: string;
+  directory: string;
+  fileName: string;
+}
+const {
+  BUCKET_URL = "",
+  STORAGE_URL = "",
+  STORAGE_KEY_PATH = "",
+} = process.env;
 class FileBucket {
-  private storage: storage.Storage;
-  private bucket = "farmiz-staging.appspot.com";
+  private storage: admin.storage.Storage;
 
   constructor() {
-    this.storage = this.initialBucket();
+    this.storage = this.initializeFileBucket();
+    // this.storage = storage();
   }
 
-  private initialBucket(): storage.Storage {
+  private initializeFileBucket(): admin.storage.Storage {
     const configData = this.setConfigData();
-    initializeApp(configData);
-    return storage();
+
+    try {
+      admin.initializeApp(configData);
+    } catch (error: any) {
+      farmizLogger.log("error", "initializeFileBucket", error.message);
+    }
+
+    return admin.storage();
   }
 
   private setConfigData() {
-    const serviceAccountKeyPath = path.join(
-      __dirname,
-      "../../farmiz-staging-firebase-adminsdk-gj1bl-df7d8fa50b.json"
-    );
-
-    const serviceAccount = JSON.parse(
-      fs.readFileSync(serviceAccountKeyPath, "utf8")
-    );
+    const serviceAccountKeyPath = path.join(__dirname, STORAGE_KEY_PATH);
 
     return {
-      storageBucket: this.bucket,
-      credential: credential.cert(serviceAccount),
+      storageBucket: BUCKET_URL,
+      credential: admin.credential.cert(serviceAccountKeyPath),
     };
   }
 
   // Upload a file to the specified path in the bucket from a readable stream
   async uploadFile(
-    req: Request,
-    streamOptions?: Record<string, any>
-  ): Promise<string> {
+    data: UploadFileProps
+  ): Promise<UploadFileReturnProps> {
     try {
+      const {directory, req, streamOptions} = data;
       const bucket = this.storage.bucket();
-      const fileName = `${Date.now()}_${uuid()}_${
-        req.file?.originalname.split(".").pop()
-      }`;
+      const fileName = `${directory}/${Date.now()}_${uuid()}_${req.file?.originalname
+        .split(".")
+        .pop()}`;
 
       const file = bucket.file(fileName);
       const uploadStream = file.createWriteStream(streamOptions);
@@ -57,7 +72,11 @@ class FileBucket {
       });
 
       file.makePublic();
-      return `https://storage.googleapis.com/${this.bucket}/${fileName}`;
+      return {
+        url: `${STORAGE_URL}/${BUCKET_URL}/${fileName}`,
+        directory,
+        fileName,
+      };
     } catch (error) {
       // Handle the error, e.g., log it or throw a custom error
       console.error("Error during file upload:", error);

@@ -56,6 +56,12 @@ userSchema.virtual("permission", {
   justOne: true,
 });
 
+userSchema.virtual("profileImageData", {
+  ref: "ProfileImage",
+  localField: "_id",
+  foreignField: "userId",
+  justOne: true,
+});
 export async function preSaveUsers(
   model: UserDocumentProps | null,
   fields?: any,

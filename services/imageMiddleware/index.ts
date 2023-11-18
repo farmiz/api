@@ -44,7 +44,7 @@ class FileMiddleware {
     destination: string | null,
     fileSize?: number,
   ) {
-    this.multer({
+    return this.multer({
       fileFilter: this.fileFilter(),
       storage: this.setStorageConfig(diskType, destination),
       limits: {
