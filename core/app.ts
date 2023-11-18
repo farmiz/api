@@ -20,7 +20,6 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import compression from "compression";
 import helmet from "helmet";
-import bodyParser from "body-parser";
 import { getRoutes } from "../controllers";
 import authMiddleware, { AuthRequest } from "../middleware";
 import { ErrorHandler } from "../helpers/errors";
@@ -202,8 +201,8 @@ export class App implements HttpServer {
 
     this.app.disable("x-powered-by");
     this.app.use(compression());
-    this.app.use(bodyParser.urlencoded({ extended: false, limit: "50kb" }));
-    this.app.use(bodyParser.json());
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true, limit: "50kb" }));
     // use hpp to prevent Parameter Pollution attacks
     this.app.use(hpp());
     // set default security settings
