@@ -62,6 +62,9 @@ const data: IData<IUser> = {
         required: true,
         validate: validatePermission,
       },
+      gender: {
+        required: true
+      }
     },
   },
 };

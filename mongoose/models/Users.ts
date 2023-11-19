@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema<UserModel>(
     phone: {
       prefix: { type: String },
       number: { type: String },
-      country: { type: String, default: "GH" },
+      country: { type: String },
     },
     password: { type: String, required: true },
     role: { type: String, default: "customer", enum: userRoles },
@@ -56,6 +56,12 @@ userSchema.virtual("permission", {
   justOne: true,
 });
 
+userSchema.virtual("profileImageData", {
+  ref: "ProfileImage",
+  localField: "_id",
+  foreignField: "userId",
+  justOne: true,
+});
 export async function preSaveUsers(
   model: UserDocumentProps | null,
   fields?: any,

@@ -57,19 +57,31 @@ export const formatModelProjection = <T>(
   return { ...includesFormatted, ...excludeFormatted };
 };
 export const formatModelPopulate = (
-  fieldsToPopulate: Record<string, string[]>,
+  fieldsToPopulate?: Record<string, string[]> | string[],
 ): PopulateOptions[] => {
   const fields: PopulateOptions[] = [];
-  // { path: 'author', select: 'name email' },
-  for (const field in fieldsToPopulate) {
-    const populateField = fieldsToPopulate[field].length
-      ? { select: fieldsToPopulate[field].join(" ") }
-      : {};
-    fields.push({
-      path: field,
-      ...populateField,
-    });
+
+  if (fieldsToPopulate) {
+    if (Array.isArray(fieldsToPopulate)) {
+      fieldsToPopulate.forEach(path => {
+        fields.push({ path });
+      });
+    } else {
+      for (const field in fieldsToPopulate) {
+        if (Object.prototype.hasOwnProperty.call(fieldsToPopulate, field)) {
+          const populateField = fieldsToPopulate[field].length
+            ? { select: fieldsToPopulate[field].join(" ") }
+            : {};
+
+          fields.push({
+            path: field,
+            ...(Object.keys(populateField).length && { ...populateField }),
+          });
+        }
+      }
+    }
   }
+
   return fields;
 };
 
