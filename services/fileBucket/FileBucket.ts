@@ -20,6 +20,7 @@ const {
   BUCKET_URL = "",
   STORAGE_URL = "",
   STORAGE_KEY_PATH = "",
+  NODE_ENV
 } = process.env;
 class FileBucket {
   private storage: admin.storage.Storage;
@@ -42,12 +43,15 @@ class FileBucket {
   }
 
   private setConfigData() {
-    const serviceAccountKeyPath = path.join(__dirname, STORAGE_KEY_PATH);
+    if(NODE_ENV !== "test"){
 
-    return {
-      storageBucket: BUCKET_URL,
-      credential: admin.credential.cert(serviceAccountKeyPath),
-    };
+      const serviceAccountKeyPath = path.join(__dirname, STORAGE_KEY_PATH);
+  
+      return {
+        storageBucket: BUCKET_URL,
+        credential: admin.credential.cert(serviceAccountKeyPath),
+      };
+    }
   }
 
   // Upload a file to the specified path in the bucket from a readable stream
