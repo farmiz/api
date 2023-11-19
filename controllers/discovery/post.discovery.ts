@@ -139,7 +139,7 @@ async function createDiscoveryHandler(
       createdBy: req.user?.id,
     });
 
-    if (discoveryCreated._id) {
+    if (discoveryCreated._id && process.env.NODE_ENV !== "test") {
       await fileBucket.uploadFile({
         directory: "directory",
         req,
