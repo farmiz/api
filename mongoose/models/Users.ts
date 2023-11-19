@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema<UserModel>(
     phone: {
       prefix: { type: String },
       number: { type: String },
-      country: { type: String, default: "GH" },
+      country: { type: String },
     },
     password: { type: String, required: true },
     role: { type: String, default: "customer", enum: userRoles },

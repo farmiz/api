@@ -32,7 +32,11 @@ const getSingleUserHandler = async (
       _id: req.params.id,
     };
 
-    const user = await userService.findOne(filter);
+    const user = await userService.findOne(
+      filter,
+      { excludes: ["password"] },
+      { profileImageData: ["directory", "fileName"], permission: ["access"] },
+    );
     if (!user) return next(new RequestError(404, "User not found"));
 
     sendSuccessResponse(res, next, {
