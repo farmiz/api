@@ -79,15 +79,14 @@ const getDiscoveryHandler = async (
     };
 
     const buildQuery = queryBuilder<DiscoveryProps>(query, [
-        "amount",
-        "closingDate",
-        "description",
-        "duration",
-        "endDate",
-        "name",
-        "profitPercentage",
-        "tags",
-        "riskLevel"
+      "amount",
+      "description",
+      "duration",
+      "endDate",
+      "name",
+      "profitPercentage",
+      "tags",
+      "riskLevel",
     ]);
     buildQuery.filter = { ...buildQuery.filter, ...filter };
 

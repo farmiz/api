@@ -11,7 +11,7 @@ import { fileBucket } from "../../services/fileBucket/FileBucket";
 import { profileImageService } from "../../services/auth/profileImage";
 const data: IData = {
   requireAuth: true,
-  customMiddleware: fileMiddleware.fileMiddleware("memory", null, 10),
+  customMiddleware: fileMiddleware.fileMiddleware("memory", null, 2),
   rules: {
     body: {
       userId: {
