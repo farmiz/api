@@ -18,7 +18,6 @@ export const mockDiscoveryTemplate = (): Partial<DiscoveryModel> => {
       value: Math.ceil(Math.random() * 365)
     },
     tags: ["something cool", "another cool thing"],
-    closingDate:addMonths(new Date(), 2),
     startDate: new Date(),
     endDate: addMonths(new Date(), 5),
     deleted: false,

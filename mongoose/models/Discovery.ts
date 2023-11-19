@@ -43,11 +43,7 @@ const discoverySchema = new Schema<DiscoveryModel>({
   endDate: {
     type: Date,
     required: true,
-  },
-  closingDate: {
-    type: Date,
-    required: true,
-  },
+  }
 });
 
 discoverySchema.plugin(defaultPlugin);

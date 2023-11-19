@@ -10,7 +10,7 @@
  *
  * @apiBody {String} name Name of the discovery.
  * @apiBody {String} duration.type Duration type of the discovery. should be one of these `day`,`month`, or `year`
-  * @apiBody {String} duration.value Duration value of the discovery.
+ * @apiBody {String} duration.value Duration value of the discovery.
  * @apiBody {String} description Description of the discovery.
  * @apiBody {String[]} tags Tags associated with the discovery..
  * @apiBody {Number} amount Amount of the discovery.
@@ -32,7 +32,7 @@
  *         "name": "Sample Discovery",
  *         "duration": {
  *          type: "month",
- *          value: 10  
+ *          value: 10
  *          },
  *         "description": "A sample discovery",
  *         "tags": ["sample", "example"],
@@ -69,37 +69,40 @@ import {
 import { DiscoveryModel } from "../../mongoose/models/Discovery";
 import { toNumber } from "lodash";
 import validator from "validator";
+import { fileMiddleware } from "../../services/imageMiddleware";
+import { fileBucket } from "../../services/fileBucket/FileBucket";
 const data: IData = {
   requireAuth: true,
   permission: ["discovery", "create"],
+  customMiddleware: fileMiddleware.fileMiddleware("memory", null, 5),
   rules: {
     body: {
       name: {
         required: true,
         fieldName: "Name",
         validate: [
-          ({}, name: string) => name.length >=3,
+          ({}, name: string) => name.length >= 3,
           "Name should be at least 3 chars long",
         ],
-        sanitize: validator.trim
+        sanitize: validator.trim,
       },
       amount: {
         required: true,
         fieldName: "Amount",
-        sanitize: toNumber
+        sanitize: toNumber,
       },
       duration: {
         required: true,
-        fieldName: "Duration"
+        fieldName: "Duration",
       },
       description: {
         required: true,
         fieldName: "Description",
         validate: [
-          ({}, description: string) =>description.length >= 3,
+          ({}, description: string) => description.length >= 3,
           "Description should be at least 3 chars long",
         ],
-        sanitize: validator.trim
+        sanitize: validator.trim,
       },
       tags: {
         required: true,
@@ -121,10 +124,6 @@ const data: IData = {
         required: true,
         fieldName: "End date",
       },
-      closingDate: {
-        required: true,
-        fieldName: "Closing date",
-      },
     },
   },
 };
@@ -139,6 +138,16 @@ async function createDiscoveryHandler(
       ...req.body,
       createdBy: req.user?.id,
     });
+
+    if (discoveryCreated._id) {
+      await fileBucket.uploadFile({
+        directory: "directory",
+        req,
+        streamOptions: {
+          contentType: req.file?.mimetype,
+        },
+      });
+    }
     sendSuccessResponse<DiscoveryModel>(
       res,
       next,
