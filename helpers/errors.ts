@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import {  Response, NextFunction } from "express";
 import { httpCodes } from "../constants";
 
 class RequestError extends Error {
@@ -16,7 +16,7 @@ class RequestError extends Error {
 class ErrorHandler {
   public static handle(
     error: RequestError,
-    req: Request,
+    {},
     res: Response,
     next: NextFunction
   ) {

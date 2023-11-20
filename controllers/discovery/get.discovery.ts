@@ -1,12 +1,12 @@
 /**
- * @api {GET} /api/discovery Get Discoveries
+ * @api {GET} /discovery Get Discoveries
  * @apiName Get Discoveries
  * @apiGroup Discovery
  * @apiVersion 0.0.1
  * @apiDescription Endpoint used to retrieve discoveries.
  *
  * @apiPermission authenticated user (with "discovery" - "read" permission)
- * @apiSampleRequest https://staging-api.farmiz.co
+ * @apiSampleRequest https://staging-api.farmiz.co/v1
  *
  * @apiSuccess {Boolean} success Indicates if the request was successful.
  * @apiSuccess {Object} response Response object containing discoveries.
@@ -58,7 +58,7 @@ import {
 } from "../../helpers/requestResponse";
 import { queryBuilder } from "../../utils";
 import { ceil } from "lodash";
-import { IDiscovery } from "../../interfaces/discovery";
+import { DiscoveryProps } from "../../interfaces/discovery";
 import { discoveryService } from "../../services/discovery";
 
 const data: IData = {
@@ -78,36 +78,35 @@ const getDiscoveryHandler = async (
       deleted: false,
     };
 
-    const buildQuery = queryBuilder<IDiscovery>(query, [
-        "amount",
-        "closingDate",
-        "description",
-        "duration",
-        "endDate",
-        "name",
-        "profitPercentage",
-        "tags",
-        "riskLevel"
+    const buildQuery = queryBuilder<DiscoveryProps>(query, [
+      "amount",
+      "description",
+      "duration",
+      "endDate",
+      "name",
+      "profitPercentage",
+      "tags",
+      "riskLevel",
     ]);
     buildQuery.filter = { ...buildQuery.filter, ...filter };
 
-    const discoveried = await discoveryService.findMany(
+    const discoveries = await discoveryService.findMany(
       buildQuery.filter,
       null,
       null,
       buildQuery.options,
     );
-    if (!discoveried) {
+    if (!discoveries) {
       return next(
-        new RequestError(httpCodes.BAD_REQUEST.code, "No wallet found"),
+        new RequestError(httpCodes.BAD_REQUEST.code, "No discoveries found"),
       );
     }
     const totalDocuments = await discoveryService.countDocuments(filter);
     const perPage = filter.perPage || 50;
     const response = {
-      data: discoveried,
+      data: discoveries,
       paginator: {
-        page: totalDocuments,
+        page: ceil(perPage / totalDocuments),
         perPage,
         totalPages: ceil(totalDocuments / perPage),
       },

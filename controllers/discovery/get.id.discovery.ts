@@ -1,12 +1,12 @@
 /**
- * @api {GET} /api/:id/discovery Get Discovery
+ * @api {GET} /:id/discovery Get Discovery
  * @apiName Get Discovery
  * @apiGroup Discovery
  * @apiVersion 0.0.1
  * @apiDescription Endpoint used to get a single discovery.
  *
  * @apiPermission authenticated (with "discovery" - "read" permission)
-  * @apiSampleRequest https://staging-api.farmiz.co
+  * @apiSampleRequest https://staging-api.farmiz.co/v1
  *
  * @apiParam {String} id Id of the discovery.
  * @apiSuccess {Boolean} success Indicates if the request was successful.
@@ -61,7 +61,7 @@ const data: IData = {
   rules: {
     params: {
       id: {
-        required: true,
+        required: true
       },
     },
   },
@@ -79,16 +79,16 @@ const getSingleDiscoveryHandler = async (
       deleted: false,
     };
 
-    const wallet = await discoveryService.findOne(filter);
+    const discovery = await discoveryService.findOne(filter);
 
-    if (!wallet)
+    if (!discovery)
       return next(
         new RequestError(httpCodes.NOT_FOUND.code, "Discovery not found"),
       );
 
     sendSuccessResponse(res, next, {
       success: true,
-      response: { ...wallet },
+      response: { ...discovery },
     });
   } catch (error: any) {
     sendFailedResponse(res, next, error);

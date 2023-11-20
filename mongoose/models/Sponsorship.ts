@@ -8,6 +8,7 @@ const sponsorshipSchema = new Schema<SponsorshipModel>({
   userId: {
     type: String,
     required: true,
+    ref: "User"
   },
   discoveryId: {
     type: String,
@@ -36,9 +37,18 @@ const sponsorshipSchema = new Schema<SponsorshipModel>({
   status: {
     type: String,
     required: false,
-    enum: ["active", "cancelled"],
+    enum: ["active", "cancelled", "closed"],
     default: "active"
   },
+  walletId: {
+    type: String,
+    required: true,
+    ref: "Wallet"
+  },
+  delayDays: {
+    type: Number,
+    required: true
+  }
 });
 
 sponsorshipSchema.plugin(defaultPlugin);

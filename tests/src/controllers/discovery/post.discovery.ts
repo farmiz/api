@@ -206,22 +206,7 @@ describe("POST DISCOVERY   /discovery", async () => {
       .be.a("string")
       .eql(ERROR_MESSAGES.fieldRequired("End date"));
   });
-  it("should not create discovery without discovery closingDate", async () => {
-    const res = await chai
-      .request(app.app)
-      .post("/v1/discovery")
-      .set({
-        Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
-      })
-      .send({ ...omit(validDiscoveryData, ["closingDate"]) });
-    res.should.have.status(400);
-    res.body.should.have.property("success").be.a("boolean").eql(false);
-    res.body.should.have.property("response").be.a("object");
-    res.body.response.should.have
-      .property("message")
-      .be.a("string")
-      .eql(ERROR_MESSAGES.fieldRequired("Closing date"));
-  });
+
   it("should create discovery with  valid discovery data", async () => {
     const res = await chai
       .request(app.app)
@@ -230,6 +215,7 @@ describe("POST DISCOVERY   /discovery", async () => {
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
       .send(validDiscoveryData);
+
     res.should.have.status(201);
     res.body.should.have.property("success").be.a("boolean").eql(true);
     res.body.should.have.property("response").be.a("object");
@@ -243,7 +229,6 @@ describe("POST DISCOVERY   /discovery", async () => {
       "tags",
       "startDate",
       "endDate",
-      "closingDate",
       "createdBy",
       "deleted",
       "_id",

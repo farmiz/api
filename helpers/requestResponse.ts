@@ -5,6 +5,7 @@ import { httpCodes } from "../constants";
 
 export function sendSuccessResponse<T>(
   res: Response,
+  // @ts-ignore
   next: NextFunction,
   data: IResponseData<T>,
   statusCode: number = httpCodes.OK.code,
@@ -20,6 +21,7 @@ export function sendSuccessResponse<T>(
 
 export function sendFailedResponse(
   res: Response,
+  // @ts-ignore
   next: NextFunction,
   error: Error | AxiosError,
   code?: number,

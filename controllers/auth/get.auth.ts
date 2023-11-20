@@ -1,5 +1,5 @@
 /**
- * @api {GET} /api/auth Auth
+ * @api {GET} /auth Auth
  * @apiName Authenticate
  * @apiGroup Auth
  * @apiVersion 0.0.1
@@ -31,6 +31,7 @@ import {
 import { userService } from "../../services/users";
 import { RequestError } from "../../helpers/errors";
 import { AuthRequest } from "../../middleware";
+import { farmizLogger } from "../../core/logger";
 
 const data: IData = {
   requireAuth: true,
@@ -51,12 +52,10 @@ async function checkAuthHandler(
       { permission: ["access"] },
     );
 
-    const initData = {};
     if (!authUser) return next(new RequestError(404, "Not Found"));
 
     const response = {
       user: authUser,
-      initData,
       authorized: true,
     };
 
@@ -66,6 +65,7 @@ async function checkAuthHandler(
     });
   } catch (error: any) {
     sendFailedResponse(res, next, error);
+    farmizLogger.log("error", "checkAuthHandler",  error.message)
   }
 }
 

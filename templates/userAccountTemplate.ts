@@ -1,6 +1,5 @@
 import { renderEmailTemplate } from "../template";
 import { defaultFrom } from "../utils";
-const { MAIN_ORIGIN = "", APP_NAME = "" } = process.env;
 
 export const newUserEmailTemplate = async (data: {
   email: string;
@@ -8,7 +7,7 @@ export const newUserEmailTemplate = async (data: {
   from?: string;
   recipientName: string;
 }) => ({
-  from: defaultFrom(data.from),
+  from: defaultFrom("WELCOME"),
   to: data.email,
   subject: `${data.recipientName}, Welcome to the our platform`,
   text: "Welcome to the our platform",
@@ -20,7 +19,7 @@ export const accountPasswordRecovery = async (
   recoveryLink: string,
   from?: string,
 ) => ({
-  from: defaultFrom(from),
+  from: defaultFrom("SUPPORT") || from,
   to: email,
   subject: `${email}, Password reset`,
   text: "You are trying to reset your password",

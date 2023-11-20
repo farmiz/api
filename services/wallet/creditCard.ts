@@ -1,6 +1,6 @@
 import { Model } from "mongoose";
 import { BaseService } from "..";
-import Wallet, { CreditCardWallet, CreditCardWalletModel, WalletModel } from "../../mongoose/models/Wallet";
+import  { CreditCardWallet, CreditCardWalletModel } from "../../mongoose/models/Wallet";
 
 class CreditCardWalletService extends BaseService<CreditCardWalletModel> {
   protected readonly model: Model<CreditCardWalletModel>;

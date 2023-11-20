@@ -2,8 +2,13 @@ import mongoose from "mongoose";
 import { IUser, userRoles } from "../../interfaces/users";
 import { MongooseDefaults } from "../../constants";
 import { defaultPlugin } from "../utils";
+import { RequestError } from "../../helpers/errors";
+import { Document } from "mongoose";
 
 export interface UserModel extends IUser {}
+export interface UserDocumentProps
+  extends Omit<UserModel, "_id" | "id">,
+    Document {}
 
 const userSchema = new mongoose.Schema<UserModel>(
   {
@@ -11,7 +16,7 @@ const userSchema = new mongoose.Schema<UserModel>(
     phone: {
       prefix: { type: String },
       number: { type: String },
-      country: { type: String, default: "GH" },
+      country: { type: String },
     },
     password: { type: String, required: true },
     role: { type: String, default: "customer", enum: userRoles },
@@ -38,7 +43,7 @@ const userSchema = new mongoose.Schema<UserModel>(
     status: { type: String, default: "pendingApproval" },
     isLoggedIn: { type: Boolean },
     dateOfBirth: { type: Date },
-    lastLoggedInDate: { type: Date }
+    lastLoggedInDate: { type: Date },
   },
   MongooseDefaults,
 );
@@ -51,6 +56,32 @@ userSchema.virtual("permission", {
   justOne: true,
 });
 
+userSchema.virtual("profileImageData", {
+  ref: "ProfileImage",
+  localField: "_id",
+  foreignField: "userId",
+  justOne: true,
+});
+export async function preSaveUsers(
+  model: UserDocumentProps | null,
+  fields?: any,
+) {
+  const existingUser = await User.findOne({
+    $or: [
+      { username: fields?.username },
+      { email: model?.email },
+      { phone: model?.phone?.number, prefix: model?.phone?.prefix },
+    ],
+  });
+
+  if (existingUser) {
+    return new RequestError(400, `User with already exists`);
+  }
+}
+export async function preSaveUserHook(this: UserDocumentProps): Promise<void> {
+  await preSaveUsers(this);
+}
+userSchema.pre("save", preSaveUserHook);
 const User = mongoose.model<UserModel>("User", userSchema);
 
 export default User;

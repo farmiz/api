@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     services:
       redis:
         image: redis
@@ -25,20 +25,20 @@ jobs:
 
       - name: Set environment variables
         env:
-          APP_PORT: ${{ secrets.DEV_APP_PORT }}
+          PORT: ${{ secrets.PORT }}
           JWT_REFRESH_TOKEN_SECRET: ${{ secrets.JWT_REFRESH_TOKEN_SECRET }}
           JWT_TOKEN_SECRET: ${{ secrets.JWT_TOKEN_SECRET }}
           PASSWORD_HASH: ${{ secrets.PASSWORD_HASH }}
           PASSWORD_SALT: ${{ secrets.PASSWORD_SALT }}
-          DATABASE_URI: ${{ secrets.DEV_DATABASE_URI }}
-          PAYSTACK_SK: ${{ secrets.DEV_PAYSTACK_SK }}
-          REDIS_PORT: ${{ secrets.DEV_REDIS_PORT }}
-          REDIS_USER: ${{ secrets.DEV_REDIS_USER }}
-          REDIS_PASSWORD: ${{ secrets.DEV_REDIS_PASSWORD }}
-          REDIS_HOST: ${{ secrets.DEV_REDIS_HOST }}
+          DATABASE_URI: ${{ secrets.DATABASE_URI }}
+          PAYSTACK_SK: ${{ secrets.PAYSTACK_SK }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT }}
+          REDIS_USER: ${{ secrets.REDIS_USER }}
+          REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
 
         run: |
-          echo "APP_PORT=${APP_PORT}" >> $GITHUB_ENV
+          echo "PORT=${PORT}" >> $GITHUB_ENV
           echo "JWT_REFRESH_TOKEN_SECRET=${JWT_REFRESH_TOKEN_SECRET}" >> $GITHUB_ENV
           echo "JWT_TOKEN_SECRET=${JWT_TOKEN_SECRET}" >> $GITHUB_ENV
           echo "PASSWORD_HASH=${PASSWORD_HASH}" >> $GITHUB_ENV

@@ -49,7 +49,7 @@ async function resetPasswordHandler(
         new RequestError(400, ERROR_MESSAGES.samePasswordCombination),
       );
 
-    const user = await userService.findOne({ email });
+    const user = await userService.findOne({ email, deleted: false });
 
     if (!user) return next(new RequestError(400, ERROR_MESSAGES.userNotFound));
 

@@ -13,6 +13,7 @@ import { AuthRequest } from "../../middleware";
 import { Validator } from "../../mongoose/validators";
 import { RequestError } from "../../helpers/errors";
 import { ERROR_MESSAGES } from "../../constants";
+import { farmizLogger } from "../../core/logger";
 
 const data: IData = {
   requireAuth: true,
@@ -39,17 +40,24 @@ async function updatePasswordHandler(
 ) {
   try {
     const { oldPassword, newPassword } = req.body;
-    if(oldPassword === newPassword) return next(new RequestError(400, ERROR_MESSAGES.samePasswordCombination));
+    if (oldPassword === newPassword)
+      return next(
+        new RequestError(400, ERROR_MESSAGES.samePasswordCombination),
+      );
 
     const user = await userService.findOne(
-      { _id: req?.user?.id },
+      { _id: req?.user?.id, deleted: false },
       { includes: ["password"] },
     );
 
-    if(!user) return next(new RequestError(400, ERROR_MESSAGES.userNotFound));
+    if (!user) return next(new RequestError(400, ERROR_MESSAGES.userNotFound));
 
-    const passwordIsValid = await passwordManager.comparePassword(oldPassword, user?.password);
-    if(!passwordIsValid) return next(new RequestError(400, ERROR_MESSAGES.invalidPassword));
+    const passwordIsValid = await passwordManager.comparePassword(
+      oldPassword,
+      user?.password,
+    );
+    if (!passwordIsValid)
+      return next(new RequestError(400, ERROR_MESSAGES.invalidPassword));
 
     const newPasswordHashed = await passwordManager.hashPassword(newPassword);
 
@@ -63,6 +71,9 @@ async function updatePasswordHandler(
     });
   } catch (error: any) {
     sendFailedResponse(res, next, error);
+    farmizLogger.log("error", "updatePasswordHandler", error.message, {
+      body: { ...req.body },
+    });
   }
 }
 

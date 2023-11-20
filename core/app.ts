@@ -1,9 +1,10 @@
 import dotenv from "dotenv";
-const path = process.env.NODE_ENV !== "production"
-? `.env.${process.env.NODE_ENV}`
-: ".env";
+const path =
+  process.env.NODE_ENV !== "production"
+    ? `.env.${process.env.NODE_ENV}`
+    : ".env";
 dotenv.config({
-  path
+  path,
 });
 import { HttpServer } from "./../interfaces";
 import { IData, RouteTypes } from "../interfaces";
@@ -19,7 +20,6 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import compression from "compression";
 import helmet from "helmet";
-import bodyParser from "body-parser";
 import { getRoutes } from "../controllers";
 import authMiddleware, { AuthRequest } from "../middleware";
 import { ErrorHandler } from "../helpers/errors";
@@ -33,7 +33,8 @@ import hpp from "hpp";
 // @ts-ignore
 import trebble from "@treblle/express";
 import { RATE_LIMITS, UNALLOWED_ENV } from "../constants";
-const { MAIN_ORIGIN = "", NODE_ENV = "" } = process.env;
+import { WORKERS } from "../services/workers";
+const { MAIN_ORIGIN = "", NODE_ENV = "", APP_VERSION = "v1" } = process.env;
 
 type RequestValidation = {
   [x: string]: ValidationRule;
@@ -61,7 +62,7 @@ export class App implements HttpServer {
       data && data.rules && data.rules.query ? data.rules.query : {};
 
     this.router[method](
-      `/v1${url}`,
+      `/${APP_VERSION}${url}`,
       [
         // LIMIT THE METHODS ALLOWED ON EACH ROUTE
         (req: Request, res: Response, next: NextFunction) => {
@@ -74,7 +75,7 @@ export class App implements HttpServer {
         },
         //AUTHENTICATE CLIENT IP ADDRESS
         async (req: Request, res: Response, next: NextFunction) => {
-        await authMiddleware.getServerIp(req, res, next);
+          await authMiddleware.getServerIp(req, res, next);
         },
 
         // RATE LIMITING
@@ -168,6 +169,9 @@ export class App implements HttpServer {
   async start(port: number) {
     await this.addRoutes();
     this.config();
+    for (const WORKER of WORKERS) {
+      await WORKER();
+    }
     this.app.listen(port, () => {
       console.log(`App is running on port ${port}`);
     });
@@ -175,7 +179,7 @@ export class App implements HttpServer {
   private config() {
     this.app.use(
       cors({
-        origin: MAIN_ORIGIN, // Allow requests from this origin
+        origin: MAIN_ORIGIN.split(","), // Allow requests from this origin
         methods: "GET, POST, DELETE, PUT", // Allow these HTTP methods
         allowedHeaders: ["Content-Type", "Authorization"], // Allow these headers
         credentials: true, // Allow cookies to be sent with requests
@@ -197,8 +201,8 @@ export class App implements HttpServer {
 
     this.app.disable("x-powered-by");
     this.app.use(compression());
-    this.app.use(bodyParser.urlencoded({ extended: false, limit: "50kb" }));
-    this.app.use(bodyParser.json());
+    this.app.use(express.json());
+    this.app.use(express.urlencoded({ extended: true, limit: "50kb" }));
     // use hpp to prevent Parameter Pollution attacks
     this.app.use(hpp());
     // set default security settings
@@ -209,6 +213,7 @@ export class App implements HttpServer {
         replaceWith: "_",
         allowDots: true,
         dryRun: true,
+        // @ts-ignore
         onSanitize: ({ key, req }) => {
           console.warn({ key });
         },
@@ -225,6 +230,7 @@ export class App implements HttpServer {
       next();
     });
 
+    // @ts-ignore
     this.app.use((req: Request, res: Response, next: NextFunction) => {
       if (process.env.NODE_ENV !== "test") {
         console.debug({
@@ -232,11 +238,13 @@ export class App implements HttpServer {
           method: req.method,
           url: req.url,
           ip: req.ip,
+          cookie: req.cookies,
         });
       }
       next();
     });
     this.app.use(this.router);
+    // @ts-ignore
     this.app.all("*", (req, res, next) => {
       res.status(404).send("Route not found");
       next();

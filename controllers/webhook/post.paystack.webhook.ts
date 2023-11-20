@@ -1,4 +1,4 @@
-import { NextFunction, Response } from "express";
+import { Response } from "express";
 import { IData } from "../../interfaces";
 import { AuthRequest } from "../../middleware";
 import { validatePaystackHookHandler } from "../../middleware/paystack";
@@ -9,12 +9,11 @@ const data: IData = {
 };
 async function paystackWebhookHandler(
   req: AuthRequest,
-  res: Response,
-  next: NextFunction,
+  res: Response
 ) {
   const event = req.body.event;
   await paystackWebhook.handleEvent(event, req.body.data);
-  res.status(200).send({ sent: "yes" });
+  res.status(200).send({ message: "received" });
 }
 
 export default {

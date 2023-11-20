@@ -15,16 +15,18 @@ export const selectRandomItem = <T>(data: T[]): T => {
   return data[Math.floor(Math.random() * convertedArray.length)];
 };
 
-interface QueryBuilderResult {
+interface QueryBuilderResult<T> {
   filter: any;
   options: any;
+  columns: (keyof T)[];
 }
-
+// /items?search=apple&searchSelection=name,description&sort=-price,rating&limit=20&currentPage=3&columns=name,price,description
 export function queryBuilder<T = any>(
   reqQuery: any,
   searchableFields: (keyof T)[],
-): QueryBuilderResult {
-  const { search, searchSelection, limit, sort, currentPage } = reqQuery;
+): QueryBuilderResult<T> {
+  const { search, searchSelection, limit, sort, currentPage, columns } =
+    reqQuery;
   // Filter
   let filter: any = {};
   if (search && searchSelection && searchableFields.includes(searchSelection)) {
@@ -62,12 +64,17 @@ export function queryBuilder<T = any>(
   }
 
   // Pagination
-  const perPage = parseInt(limit) || 10;
+  const perPage = parseInt(limit) || 30;
   const page = parseInt(currentPage) || 1;
   const skip = (page - 1) * perPage;
   options.skip = skip;
-
-  return { filter, options };
+  options.limit = perPage;
+  options.page = page;
+  return {
+    filter,
+    options,
+    columns: columns && columns.length ? columns.split(",") : searchableFields,
+  };
 }
 
 export type NetworkTypes = "MTN" | "VODAFONE" | "Airtel Tigo";
@@ -166,10 +173,23 @@ export function modeMomoTypeForPaystack(phone: string) {
     : network;
 }
 
-const { EMAIL_SENDER, APP_NAME } = process.env;
+const { APP_NAME, WHITELISTED_EMAIL_DOMAIN = "farmiz.co" } = process.env;
 
-export const defaultFrom = (from?: string) => `${APP_NAME} <${EMAIL_SENDER || from}>`;
-export const roundNumber = (data: number | string, round: number = 2)=> (Number(data) / 100).toFixed(round);
+type DefaultSenderEmails = "SALES" | "SUPPORT" | "PAYMENT" | "WELCOME";
+const defaultSenderEmails: { [K in DefaultSenderEmails]: string } = {
+  SALES: "sales",
+  SUPPORT: "support",
+  PAYMENT: "payment",
+  WELCOME: "welcome",
+};
+export const defaultFrom = (type: DefaultSenderEmails, from?: string) => {
+  const sender = from
+    ? from
+    : `${defaultSenderEmails[type]}-no-reply@${WHITELISTED_EMAIL_DOMAIN}`;
+  return `${APP_NAME} <${sender}>`;
+};
+export const roundNumber = (data: number | string, round: number = 2) =>
+  (Number(data) / 100).toFixed(round);
 
 export function generateRandomNumber(length: number): string {
   if (length <= 0) {
@@ -181,7 +201,9 @@ export function generateRandomNumber(length: number): string {
   return randomHex.slice(0, length);
 }
 const { MAIN_ORIGIN } = process.env;
-    // Generate a unique URL with the token appended as a query parameter
-    export const generateVerificationUrl = (tokenData: TokenWithExpiration | null) => {
-      return `${MAIN_ORIGIN}/verify?token=${tokenData?.token}&type=${tokenData?.type}`;
-    };
+// Generate a unique URL with the token appended as a query parameter
+export const generateVerificationUrl = (
+  tokenData: TokenWithExpiration | null,
+) => {
+  return `${MAIN_ORIGIN}/verify?token=${tokenData?.token}&type=${tokenData?.type}`;
+};

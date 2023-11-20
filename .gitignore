@@ -3,7 +3,9 @@ build/
 .vscode/settings.json
 test.ts
 docs/
-dump.rdb
+*.rdb
 .nyc_output
 .coverage
 .env
+*.txt
+*.log
