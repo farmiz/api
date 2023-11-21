@@ -106,9 +106,10 @@ const getDiscoveryHandler = async (
     const response = {
       data: discoveries,
       paginator: {
-        page: ceil(perPage / totalDocuments),
+        page: buildQuery.options.page,
         perPage,
         totalPages: ceil(totalDocuments / perPage),
+        totalDocuments,
       },
     };
     sendSuccessResponse(res, next, {
