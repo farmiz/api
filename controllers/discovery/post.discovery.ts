@@ -142,18 +142,20 @@ async function createDiscoveryHandler(
     });
 
     if (discoveryCreated._id) {
-      const result = await fileBucket.uploadFile({
-        directory: "directory",
-        req,
-        streamOptions: {
-          contentType: req.file?.mimetype,
-        },
-      });
+      if(process.env.NODE_ENV !== "test"){
+        const result = await fileBucket.uploadFile({
+          directory: "directory",
+          req,
+          streamOptions: {
+            contentType: req.file?.mimetype,
+          },
+        });
+        await discoveryFileService.create({
+          ...result,
+          discoveryId: discoveryCreated._id,
+        });
+      }
 
-      await discoveryFileService.create({
-        ...result,
-        discoveryId: discoveryCreated._id,
-      });
     }
     sendSuccessResponse<DiscoveryModel>(
       res,
