@@ -71,6 +71,7 @@ import { toNumber } from "lodash";
 import validator from "validator";
 import { fileMiddleware } from "../../services/imageMiddleware";
 import { fileBucket } from "../../services/fileBucket/FileBucket";
+import { discoveryFileService } from "../../services/files/Discovery";
 const data: IData = {
   requireAuth: true,
   permission: ["discovery", "create"],
@@ -134,18 +135,24 @@ async function createDiscoveryHandler(
   next: NextFunction,
 ) {
   try {
+    console.info({ body: req.body })
     const discoveryCreated = await discoveryService.create({
       ...req.body,
       createdBy: req.user?.id,
     });
 
-    if (discoveryCreated._id && process.env.NODE_ENV !== "test") {
-      await fileBucket.uploadFile({
+    if (discoveryCreated._id) {
+      const result = await fileBucket.uploadFile({
         directory: "directory",
         req,
         streamOptions: {
           contentType: req.file?.mimetype,
         },
+      });
+
+      await discoveryFileService.create({
+        ...result,
+        discoveryId: discoveryCreated._id,
       });
     }
     sendSuccessResponse<DiscoveryModel>(

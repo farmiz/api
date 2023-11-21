@@ -36,7 +36,7 @@ async function getUsersHandler(req: AuthRequest, res: Response, next: NextFuncti
     const users = await userService.findMany(
       buildQuery.filter,
       { includes: buildQuery.columns },
-      {profileImageData: ["directory", "fileName"]},
+      {profileImageData: ["url"]},
       buildQuery.options,
     );
     if (!users) {

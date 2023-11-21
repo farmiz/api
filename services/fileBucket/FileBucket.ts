@@ -8,8 +8,8 @@ import { farmizLogger } from "../../core/logger";
 export type Directory = "directory" | "profileImage" | "assets";
 export interface UploadFileProps {
   req: Request;
-  directory: Directory,
-  streamOptions?: Record<string, any>
+  directory: Directory;
+  streamOptions?: Record<string, any>;
 }
 export interface UploadFileReturnProps {
   url: string;
@@ -20,7 +20,7 @@ const {
   BUCKET_URL = "",
   STORAGE_URL = "",
   STORAGE_KEY_PATH = "",
-  NODE_ENV
+  NODE_ENV,
 } = process.env;
 class FileBucket {
   private storage: admin.storage.Storage;
@@ -34,7 +34,9 @@ class FileBucket {
     const configData = this.setConfigData();
 
     try {
-      admin.initializeApp(configData);
+      if (NODE_ENV !== "test") {
+        admin.initializeApp(configData);
+      }
     } catch (error: any) {
       farmizLogger.log("error", "initializeFileBucket", error.message);
     }
@@ -43,10 +45,9 @@ class FileBucket {
   }
 
   private setConfigData() {
-    if(NODE_ENV !== "test"){
-
+    if (NODE_ENV !== "test") {
       const serviceAccountKeyPath = path.join(__dirname, STORAGE_KEY_PATH);
-  
+
       return {
         storageBucket: BUCKET_URL,
         credential: admin.credential.cert(serviceAccountKeyPath),
@@ -55,11 +56,9 @@ class FileBucket {
   }
 
   // Upload a file to the specified path in the bucket from a readable stream
-  async uploadFile(
-    data: UploadFileProps
-  ): Promise<UploadFileReturnProps> {
+  async uploadFile(data: UploadFileProps): Promise<UploadFileReturnProps> {
     try {
-      const {directory, req, streamOptions} = data;
+      const { directory, req, streamOptions } = data;
       const bucket = this.storage.bucket();
       const fileName = `${directory}/${Date.now()}_${uuid()}_${req.file?.originalname
         .split(".")
