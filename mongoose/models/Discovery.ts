@@ -46,6 +46,11 @@ const discoverySchema = new Schema<DiscoveryModel>({
   }
 });
 
+discoverySchema.virtual("discoveryImage", {
+  ref: "Files",
+  foreignField: "discoveryId",
+   localField: "_id"
+});
 discoverySchema.plugin(defaultPlugin);
 
 export const Discovery = mongoose.model<DiscoveryModel>("Discovery", discoverySchema);

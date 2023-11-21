@@ -1,5 +1,5 @@
-import { cleanupJob } from "../../jobs/CleanerJob";
-import { sponsorJob } from "../../jobs/SponsorJob";
+import { cleanupJob } from "../jobs/CleanerJob";
+import { sponsorJob } from "../jobs/SponsorJob";
 
 async function cleanupJobs() {
   await cleanupJob.addJob(null, {
