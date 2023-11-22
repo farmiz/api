@@ -6,7 +6,7 @@
  * @apiDescription Endpoint used to get a single discovery.
  *
  * @apiPermission authenticated (with "discovery" - "read" permission)
-  * @apiSampleRequest https://staging-api.farmiz.co/v1
+ * @apiSampleRequest https://staging-api.farmiz.co/v1
  *
  * @apiParam {String} id Id of the discovery.
  * @apiSuccess {Boolean} success Indicates if the request was successful.
@@ -61,7 +61,7 @@ const data: IData = {
   rules: {
     params: {
       id: {
-        required: true
+        required: true,
       },
     },
   },
@@ -79,7 +79,9 @@ const getSingleDiscoveryHandler = async (
       deleted: false,
     };
 
-    const discovery = await discoveryService.findOne(filter);
+    const discovery = await discoveryService.findOne(filter, null, {
+      discoveryFile: ["url"],
+    });
 
     if (!discovery)
       return next(

@@ -21,7 +21,7 @@ const filesSchema = new Schema<FilesModel>({
 });
 filesSchema.plugin(defaultPlugin);
 
-const Files = mongoose.model<FilesProp>("Files", filesSchema);
+const Files = mongoose.model<FilesProp>("File", filesSchema);
 
 export interface DiscoveryFilesProps extends FilesModel {
   discoveryId: string;

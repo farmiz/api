@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 import { IDefaultPlugin } from "../../interfaces";
 import { DiscoveryProps, RiskLevel } from "../../interfaces/discovery";
 import { defaultPlugin } from "../utils";
+import { MongooseDefaults } from "../../constants";
 
 export interface DiscoveryModel extends DiscoveryProps, IDefaultPlugin {}
 
@@ -43,14 +44,20 @@ const discoverySchema = new Schema<DiscoveryModel>({
   endDate: {
     type: Date,
     required: true,
-  }
-});
-
-discoverySchema.virtual("discoveryImage", {
-  ref: "Files",
-  foreignField: "discoveryId",
-   localField: "_id"
-});
+  },
+}, MongooseDefaults);
 discoverySchema.plugin(defaultPlugin);
 
-export const Discovery = mongoose.model<DiscoveryModel>("Discovery", discoverySchema);
+discoverySchema.virtual("discoveryFile", {
+  ref: "File",
+  localField: "_id",
+  foreignField: "discoveryId",
+  justOne: true,
+  match: { deleted: false },
+});
+
+
+export const Discovery = mongoose.model<DiscoveryModel>(
+  "Discovery",
+  discoverySchema,
+);
