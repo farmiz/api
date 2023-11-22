@@ -83,6 +83,7 @@ const getDiscoveryHandler = async (
       "description",
       "duration",
       "endDate",
+      "startDate",
       "name",
       "profitPercentage",
       "tags",
@@ -92,8 +93,8 @@ const getDiscoveryHandler = async (
 
     const discoveries = await discoveryService.findMany(
       buildQuery.filter,
-      null,
-      null,
+      { includes: buildQuery.columns },
+      {discoveryFile: ["url"]},
       buildQuery.options,
     );
     if (!discoveries) {

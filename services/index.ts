@@ -106,6 +106,7 @@ export abstract class BaseService<T> implements IService<T> {
     if (options && options.sort) {
       query.sort(options.sort);
     }
+    console.info({query: query._mongooseOptions})
     const result = await query.exec();
     return result;
   }

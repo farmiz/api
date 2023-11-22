@@ -28,6 +28,7 @@ export function queryBuilder<T = any>(
   const { search, searchSelection, limit, sort, currentPage, columns } =
     reqQuery;
   // Filter
+  console.info({reqQuery})
   let filter: any = {};
   if (search && searchSelection && searchableFields.includes(searchSelection)) {
     // Build the $or array for searching in the specified field
