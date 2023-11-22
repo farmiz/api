@@ -231,7 +231,6 @@ describe("POST DISCOVERY   /discovery", async () => {
       "endDate",
       "createdBy",
       "deleted",
-      "_id",
       "createdAt",
       "updatedAt",
     ];
