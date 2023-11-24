@@ -1,5 +1,3 @@
-
-
 import { IData } from "../../interfaces";
 
 import { AuthRequest } from "../../middleware";
@@ -15,11 +13,10 @@ const data: IData = {
   permission: ["users", "delete"],
   rules: {
     params: {
-      id: { 
+      id: {
         required: true,
-        authorize: userService.canViewDocument,
       },
-    }
+    },
   },
 };
 

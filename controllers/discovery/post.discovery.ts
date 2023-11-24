@@ -135,7 +135,6 @@ async function createDiscoveryHandler(
   next: NextFunction,
 ) {
   try {
-    console.info({ body: req.body })
     const discoveryCreated = await discoveryService.create({
       ...req.body,
       createdBy: req.user?.id,

@@ -11,12 +11,11 @@ const data: IData = {
 async function uploadFileHandler(req: AuthRequest, res: Response) {
   try {
     if (req.file) {
-      const fileURL = await fileBucket.uploadFile({
+      await fileBucket.uploadFile({
         req,
         directory: "profileImage",
         streamOptions: { metadata: { contentType: req.file.mimetype } },
       });
-      console.log({ file: fileURL });
     }
     return res.send({
       success: true,

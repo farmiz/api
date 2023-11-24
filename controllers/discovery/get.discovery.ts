@@ -89,12 +89,12 @@ const getDiscoveryHandler = async (
       "tags",
       "riskLevel",
     ]);
-    buildQuery.filter = { ...buildQuery.filter, ...filter };
+    buildQuery.filter = { ...filter, ...buildQuery.filter };
 
     const discoveries = await discoveryService.findMany(
       buildQuery.filter,
       { includes: buildQuery.columns },
-      {discoveryFile: ["url"]},
+      { discoveryFile: ["url"] },
       buildQuery.options,
     );
     if (!discoveries) {
@@ -103,7 +103,7 @@ const getDiscoveryHandler = async (
       );
     }
     const totalDocuments = await discoveryService.countDocuments(filter);
-    const perPage = filter.perPage || 50;
+    const perPage = filter.perPage;
     const response = {
       data: discoveries,
       paginator: {
