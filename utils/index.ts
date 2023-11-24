@@ -25,11 +25,70 @@ export function queryBuilder<T = any>(
   reqQuery: any,
   searchableFields: (keyof T)[],
 ): QueryBuilderResult<T> {
-  const { search, searchSelection, limit, sort, currentPage, columns } =
-    reqQuery;
+  const {
+    search,
+    searchSelection,
+    limit,
+    sort,
+    currentPage,
+    columns,
+    ...uniqueFields
+  } = reqQuery;
+
   // Filter
-  console.info({reqQuery})
   let filter: any = {};
+
+  const operatorMapper: Record<string, any> = {
+    eq: "$eq",
+    gt: "$gt",
+    gte: "$gte",
+    lt: "$lt",
+    lte: "$lte",
+    ne: "$ne",
+    in: "$in",
+    nin: "$nin",
+    regex: "$regex",
+    exists: "$exists",
+  };
+
+  // Handle unique fields
+  let customFilter: any = {};
+  let firstNameRange: any = {};
+
+  Object.keys(uniqueFields).forEach(key => {
+    const [field, operator] = key.split("_");
+
+    let value: number | string | boolean | string[] | null = null;
+    const queryValue = uniqueFields[key];
+    if (queryValue !== undefined && queryValue !== null && queryValue) {
+      if (!!Number(queryValue)) {
+        value = parseFloat(queryValue);
+      } else if (typeof queryValue === "string") {
+        if (["in", "nin"].includes(operator) && queryValue) {
+          value = queryValue.split(",");
+        } else {
+          value = queryValue;
+        }
+      }
+
+      if ((operator === "gte" || operator === "lte") && value) {
+        // Handle "gte" and "lte" for firstName within the same $or condition
+        firstNameRange = {
+          $or: [
+            { [field]: { [operatorMapper["gte"]]: value } },
+            { [field]: { [operatorMapper["lte"]]: value } },
+          ],
+        };
+      } else {
+        // Handle other fields and operators
+        customFilter[field] = {
+          [operatorMapper[operator]]: value,
+        };
+      }
+    }
+  });
+
+  // Handle search
   if (search && searchSelection && searchableFields.includes(searchSelection)) {
     // Build the $or array for searching in the specified field
     filter[searchSelection] = { $regex: search, $options: "i" };
@@ -39,8 +98,15 @@ export function queryBuilder<T = any>(
       [field]: { $regex: search, $options: "i" },
     }));
 
-    filter.$or = orConditions;
+    filter.$or = orConditions || [];
   }
+
+  // Merge the firstNameRange and customFilter
+  filter = {
+    ...filter,
+    ...customFilter,
+    ...firstNameRange,
+  };
 
   // Options
   let options: any = {};
@@ -62,6 +128,10 @@ export function queryBuilder<T = any>(
       }
     });
     options.sort = sortOptions;
+  } else {
+    options.sort = {
+      updatedAt: -1,
+    };
   }
 
   // Pagination
@@ -71,12 +141,14 @@ export function queryBuilder<T = any>(
   options.skip = skip;
   options.limit = perPage;
   options.page = page;
+
   return {
     filter,
     options,
     columns: columns && columns.length ? columns.split(",") : searchableFields,
   };
 }
+
 
 export type NetworkTypes = "MTN" | "VODAFONE" | "Airtel Tigo";
 
