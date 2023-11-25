@@ -29,7 +29,7 @@ describe("GET ALL DISCOVERY /discovery", () => {
   it.skip("Should return discoveries", async()=>{
     const res = await chai
     .request(app.app)
-    .get(`/v1/discovery`)
+    .get(`/v1/discoveries`)
     .set({
       Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
     })

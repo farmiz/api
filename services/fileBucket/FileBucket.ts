@@ -8,8 +8,8 @@ import { farmizLogger } from "../../core/logger";
 export type Directory = "directory" | "profileImage" | "assets";
 export interface UploadFileProps {
   req: Request;
-  directory: Directory,
-  streamOptions?: Record<string, any>
+  directory: Directory;
+  streamOptions?: Record<string, any>;
 }
 export interface UploadFileReturnProps {
   url: string;
@@ -20,14 +20,13 @@ const {
   BUCKET_URL = "",
   STORAGE_URL = "",
   STORAGE_KEY_PATH = "",
-  NODE_ENV
+  NODE_ENV,
 } = process.env;
 class FileBucket {
   private storage: admin.storage.Storage;
 
   constructor() {
     this.storage = this.initializeFileBucket();
-    // this.storage = storage();
   }
 
   private initializeFileBucket(): admin.storage.Storage {
@@ -43,10 +42,9 @@ class FileBucket {
   }
 
   private setConfigData() {
-    if(NODE_ENV !== "test"){
-
+    if (NODE_ENV !== "test") {
       const serviceAccountKeyPath = path.join(__dirname, STORAGE_KEY_PATH);
-  
+
       return {
         storageBucket: BUCKET_URL,
         credential: admin.credential.cert(serviceAccountKeyPath),
@@ -55,11 +53,9 @@ class FileBucket {
   }
 
   // Upload a file to the specified path in the bucket from a readable stream
-  async uploadFile(
-    data: UploadFileProps
-  ): Promise<UploadFileReturnProps> {
+  async uploadFile(data: UploadFileProps): Promise<UploadFileReturnProps> {
     try {
-      const {directory, req, streamOptions} = data;
+      const { directory, req, streamOptions } = data;
       const bucket = this.storage.bucket();
       const fileName = `${directory}/${Date.now()}_${uuid()}_${req.file?.originalname
         .split(".")
@@ -102,6 +98,21 @@ class FileBucket {
     const file = bucket.file(remoteFilePath);
 
     await file.delete();
+  }
+  async updateFile(
+    data: UploadFileProps,
+    oldFileName: string,
+  ): Promise<UploadFileReturnProps> {
+    try {
+      // Step 1: Delete the old file
+      await this.deleteFile(oldFileName);
+
+      // Step 2: Upload the new file
+      return this.uploadFile(data);
+    } catch (error: any) {
+      farmizLogger.log("error", "updateFile", error.message);
+      throw error;
+    }
   }
 }
 

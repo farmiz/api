@@ -6,7 +6,7 @@
  * @apiDescription Endpoint used to update a discovery.
  *
  * @apiPermission authenticated (with "discovery" - "update" permission)
-  * @apiSampleRequest https://staging-api.farmiz.co/v1
+ * @apiSampleRequest https://staging-api.farmiz.co/v1
  *
  * @apiParam {String} id Id of the discovery.
  * @apiBody {String} [duration] Duration of the discovery.
@@ -62,69 +62,73 @@ import {
   sendFailedResponse,
   sendSuccessResponse,
 } from "../../helpers/requestResponse";
-import { buildPayloadUpdates } from "../../utils";
+import flattenObject, { buildPayloadUpdates } from "../../utils";
 import { discoveryService } from "../../services/discovery";
+import { fileMiddleware } from "../../services/imageMiddleware";
+import { fileBucket } from "../../services/fileBucket/FileBucket";
+import { discoveryFileService } from "../../services/files/Discovery";
 
 const data: IData = {
   requireAuth: true,
+  customMiddleware: fileMiddleware.fileMiddleware("memory", null, 5),
   permission: ["discovery", "update"],
   rules: {
     params: {
       id: {
         required: true,
-        authorize: discoveryService._exists,
+        // authorize: discoveryService._exists,
       },
     },
     body: {
-        name: {
-          required: false,
-          fieldName: "Name",
-          validate: [
-            ({}, name: string) => name.length >=3,
-            "Name should be at least 3 chars long",
-          ],
-        },
-        duration: {
-          required: false,
-          fieldName: "Duration",
-        },
-        description: {
-          required: false,
-          fieldName: "Description",
-          validate: [
-            ({}, description: string) => description.length >=3,
-            "Description should be at least 3 chars long",
-          ],
-        },
-        tags: {
-          required: false,
-          fieldName: "Tags",
-        },
-        amount: {
-          required: false,
-          fieldName: "Amount",
-        },
-        profitPercentage: {
-          required: false,
-          fieldName: "Profit percentage",
-        },
-        riskLevel: {
-          required: false,
-          fieldName: "Risk level",
-        },
-        startDate: {
-          required: false,
-          fieldName: "Start date",
-        },
-        endDate: {
-          required: false,
-          fieldName: "End date",
-        },
-        closingDate: {
-          required: false,
-          fieldName: "Closing date",
-        },
+      name: {
+        required: false,
+        fieldName: "Name",
+        validate: [
+          ({}, name: string) => name.length >= 3,
+          "Name should be at least 3 chars long",
+        ],
       },
+      duration: {
+        required: false,
+        fieldName: "Duration",
+      },
+      description: {
+        required: false,
+        fieldName: "Description",
+        validate: [
+          ({}, description: string) => description.length >= 3,
+          "Description should be at least 3 chars long",
+        ],
+      },
+      tags: {
+        required: false,
+        fieldName: "Tags",
+      },
+      amount: {
+        required: false,
+        fieldName: "Amount",
+      },
+      profitPercentage: {
+        required: false,
+        fieldName: "Profit percentage",
+      },
+      riskLevel: {
+        required: false,
+        fieldName: "Risk level",
+      },
+      startDate: {
+        required: false,
+        fieldName: "Start date",
+      },
+      endDate: {
+        required: false,
+        fieldName: "End date",
+      },
+      closingDate: {
+        required: false,
+        fieldName: "Closing date",
+      },
+    },
   },
 };
 
@@ -135,15 +139,58 @@ const updateSingleWalletHandler = async (
 ) => {
   try {
     const { params } = req;
-
     const filter: Record<string, any> = {
       _id: params.id,
-      deleted: true,
     };
-
+    let discovery = null;
     const fieldsToUpdate = buildPayloadUpdates(req.body);
-    const discovery = await discoveryService.updateOne(filter, fieldsToUpdate);
 
+    // CHECK IF FILE EXISTS
+    if (req.file) {
+      const file = await discoveryFileService.findOne({
+        discoveryId: params.id,
+      });
+      if (process.env.NODE_ENV !== "test") {
+        const result = await fileBucket.updateFile(
+          {
+            directory: "directory",
+            req,
+            streamOptions: {
+              contentType: req.file?.mimetype,
+            },
+          },
+          String(file?.fileName),
+        );
+        await discoveryFileService.updateOne(
+          { discoveryId: params.id },
+          result,
+        );
+        discovery = await discoveryService.findOne({ _id: params.id }, null, {
+          discoveryFile: ["url"],
+        });
+      }
+    }
+
+    // UPDATE DISCOVERY
+    if (Object.keys(fieldsToUpdate).length) {
+      if (
+        fieldsToUpdate.duration &&
+        typeof fieldsToUpdate.duration === "string"
+      ) {
+        fieldsToUpdate.duration = JSON.parse(fieldsToUpdate.duration);
+      }
+      if (fieldsToUpdate.tags && typeof fieldsToUpdate.tags === "string") {
+        fieldsToUpdate.tags = fieldsToUpdate.tags.split(",");
+      }
+      const updates = flattenObject({
+        ...fieldsToUpdate,
+        updatedBy: req.user?.id,
+      });
+
+      discovery = await discoveryService.updateOne(filter, updates, {
+        discoveryFile: ["url"],
+      });
+    }
     sendSuccessResponse(res, next, {
       success: true,
       response: discovery,
@@ -155,7 +202,7 @@ const updateSingleWalletHandler = async (
 
 export default {
   method: "put",
-  url: "/:id/discovery",
+  url: "/discoveries/:id",
   data,
   handler: updateSingleWalletHandler,
 };

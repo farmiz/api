@@ -88,6 +88,7 @@ const getDiscoveryHandler = async (
       "profitPercentage",
       "tags",
       "riskLevel",
+      "duration",
     ]);
     buildQuery.filter = { ...filter, ...buildQuery.filter };
 
@@ -103,7 +104,7 @@ const getDiscoveryHandler = async (
       );
     }
     const totalDocuments = await discoveryService.countDocuments(filter);
-    const perPage =  buildQuery.options.limit;
+    const perPage = buildQuery.options.limit;
     const response = {
       data: discoveries,
       paginator: {
@@ -123,7 +124,7 @@ const getDiscoveryHandler = async (
 };
 export default {
   method: "get",
-  url: "/discovery",
+  url: "/discoveries",
   data,
   handler: getDiscoveryHandler,
 };

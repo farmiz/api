@@ -113,10 +113,13 @@ export abstract class BaseService<T> implements IService<T> {
   async updateOne(
     filter: FilterQuery<T>,
     update: Partial<Record<keyof T | FilterOpts, any>>,
+    populate?: PopulateOpt | string[] | null,
   ): Promise<any> {
-    const result = await this.model.findOneAndUpdate(filter, update, {
-      new: true,
-    });
+    const result = await this.model
+      .findOneAndUpdate(filter, update, {
+        new: true,
+      })
+      .populate(populate ? formatModelPopulate(populate) : []);
     return result?.toObject();
   }
 

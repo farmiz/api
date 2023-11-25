@@ -31,7 +31,7 @@ describe("POST DISCOVERY   /discovery", async () => {
   it("should not create discovery without discovery name", async () => {
     const res = await chai
       .request(app.app)
-      .post("/v1/discovery")
+      .post("/v1/discoveries")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -47,7 +47,7 @@ describe("POST DISCOVERY   /discovery", async () => {
   it("should not create discovery without a valid amount", async () => {
     const res = await chai
       .request(app.app)
-      .post("/v1/discovery")
+      .post("/v1/discoveries")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -65,7 +65,7 @@ describe("POST DISCOVERY   /discovery", async () => {
   it("should not create discovery without discovery amount", async () => {
     const res = await chai
       .request(app.app)
-      .post("/v1/discovery")
+      .post("/v1/discoveries")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -81,7 +81,7 @@ describe("POST DISCOVERY   /discovery", async () => {
   it("should not create discovery without discovery duration", async () => {
     const res = await chai
       .request(app.app)
-      .post("/v1/discovery")
+      .post("/v1/discoveries")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -97,7 +97,7 @@ describe("POST DISCOVERY   /discovery", async () => {
   it("should not create discovery without discovery description", async () => {
     const res = await chai
       .request(app.app)
-      .post("/v1/discovery")
+      .post("/v1/discoveries")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -113,7 +113,7 @@ describe("POST DISCOVERY   /discovery", async () => {
   it("should not create discovery without a valid discovery description", async () => {
     const res = await chai
       .request(app.app)
-      .post("/v1/discovery")
+      .post("/v1/discoveries")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -129,7 +129,7 @@ describe("POST DISCOVERY   /discovery", async () => {
   it("should not create discovery without discovery tags", async () => {
     const res = await chai
       .request(app.app)
-      .post("/v1/discovery")
+      .post("/v1/discoveries")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -145,7 +145,7 @@ describe("POST DISCOVERY   /discovery", async () => {
   it("should not create discovery without discovery profitPercentage", async () => {
     const res = await chai
       .request(app.app)
-      .post("/v1/discovery")
+      .post("/v1/discoveries")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -161,7 +161,7 @@ describe("POST DISCOVERY   /discovery", async () => {
   it("should not create discovery without discovery riskLevel", async () => {
     const res = await chai
       .request(app.app)
-      .post("/v1/discovery")
+      .post("/v1/discoveries")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -177,7 +177,7 @@ describe("POST DISCOVERY   /discovery", async () => {
   it("should not create discovery without discovery startDate", async () => {
     const res = await chai
       .request(app.app)
-      .post("/v1/discovery")
+      .post("/v1/discoveries")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -193,7 +193,7 @@ describe("POST DISCOVERY   /discovery", async () => {
   it("should not create discovery without discovery endDate", async () => {
     const res = await chai
       .request(app.app)
-      .post("/v1/discovery")
+      .post("/v1/discoveries")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
@@ -210,7 +210,7 @@ describe("POST DISCOVERY   /discovery", async () => {
   it("should create discovery with  valid discovery data", async () => {
     const res = await chai
       .request(app.app)
-      .post("/v1/discovery")
+      .post("/v1/discoveries")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
