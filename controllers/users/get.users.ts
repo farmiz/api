@@ -29,6 +29,8 @@ async function getUsersHandler(req: AuthRequest, res: Response, next: NextFuncti
       "status",
       "gender",
       "role",
+      "phone",
+      "email",
       "phone"
     ]);
     buildQuery.filter = { ...filter, ...buildQuery.filter };
