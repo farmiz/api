@@ -81,16 +81,16 @@ const getDiscoveryHandler = async (
     const buildQuery = queryBuilder<DiscoveryProps>(query, [
       "amount",
       "description",
-      "duration",
       "endDate",
       "startDate",
       "name",
       "profitPercentage",
       "tags",
       "riskLevel",
+      "duration",
     ]);
     buildQuery.filter = { ...filter, ...buildQuery.filter };
-
+    
     const discoveries = await discoveryService.findMany(
       buildQuery.filter,
       { includes: buildQuery.columns },
@@ -103,7 +103,7 @@ const getDiscoveryHandler = async (
       );
     }
     const totalDocuments = await discoveryService.countDocuments(filter);
-    const perPage =  buildQuery.options.limit;
+    const perPage = buildQuery.options.limit;
     const response = {
       data: discoveries,
       paginator: {
@@ -123,7 +123,7 @@ const getDiscoveryHandler = async (
 };
 export default {
   method: "get",
-  url: "/discovery",
+  url: "/discoveries",
   data,
   handler: getDiscoveryHandler,
 };

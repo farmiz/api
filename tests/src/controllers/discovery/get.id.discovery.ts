@@ -9,7 +9,7 @@ import { mockUser } from "../../../data/users/UserMock";
 import { app } from "../../../core/app";
 import { discoveryMock } from "../../../data/discovery/DiscoveryMock";
 
-describe("GET DISCOVERY /:id/discovery", () => {
+describe("GET DISCOVERY /discoveries/:id", () => {
   const dummyKey = uuid();
   const dummyKey2 = uuid();
   before(async () => {
@@ -40,7 +40,7 @@ describe("GET DISCOVERY /:id/discovery", () => {
   it("Should not return discovery that is deleted", async()=>{
     const res = await chai
     .request(app.app)
-    .get(`/v1/${discoveryMock.getId(dummyKey2)}/discovery`)
+    .get(`/v1/discoveries/${discoveryMock.getId(dummyKey2)}`)
     .set({
       Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
     })
@@ -55,7 +55,7 @@ describe("GET DISCOVERY /:id/discovery", () => {
   it("Should return discovery", async()=>{
     const res = await chai
     .request(app.app)
-    .get(`/v1/${discoveryMock.getId(dummyKey)}/discovery`)
+    .get(`/v1/discoveries/${discoveryMock.getId(dummyKey)}`)
     .set({
       Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
     })

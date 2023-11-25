@@ -135,13 +135,19 @@ async function createDiscoveryHandler(
   next: NextFunction,
 ) {
   try {
+    if (req.body.duration && typeof req.body.duration === "string") {
+      req.body.duration = JSON.parse(req.body.duration);
+    }
+    if (req.body.tags && typeof req.body.tags === "string") {
+      req.body.tags = req.body.tags.split(",");
+    }
     const discoveryCreated = await discoveryService.create({
       ...req.body,
       createdBy: req.user?.id,
     });
 
-    if (discoveryCreated._id) {
-      if(process.env.NODE_ENV !== "test"){
+    if (discoveryCreated.id) {
+      if (process.env.NODE_ENV !== "test") {
         const result = await fileBucket.uploadFile({
           directory: "directory",
           req,
@@ -149,12 +155,12 @@ async function createDiscoveryHandler(
             contentType: req.file?.mimetype,
           },
         });
+
         await discoveryFileService.create({
           ...result,
-          discoveryId: discoveryCreated._id,
+          discoveryId: discoveryCreated.id,
         });
       }
-
     }
     sendSuccessResponse<DiscoveryModel>(
       res,
@@ -172,7 +178,7 @@ async function createDiscoveryHandler(
 
 export default {
   method: "post",
-  url: "/discovery",
+  url: "/discoveries",
   data,
   handler: createDiscoveryHandler,
 };

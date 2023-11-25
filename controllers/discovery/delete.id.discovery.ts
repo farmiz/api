@@ -96,7 +96,7 @@ const deleteSingleDiscoveryHandler = async (
 
 export default {
   method: "delete",
-  url: "/:id/discovery",
+  url: "/discoveries/:id",
   data,
   handler: deleteSingleDiscoveryHandler,
 };

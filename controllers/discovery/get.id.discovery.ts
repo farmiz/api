@@ -99,7 +99,7 @@ const getSingleDiscoveryHandler = async (
 
 export default {
   method: "get",
-  url: "/:id/discovery",
+  url: "/discoveries/:id",
   data,
   handler: getSingleDiscoveryHandler,
 };

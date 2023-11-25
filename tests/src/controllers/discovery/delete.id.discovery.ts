@@ -35,7 +35,7 @@ describe("DELETE DISCOVERY /:id/discovery", () => {
   it("Should delete a valid discovery", async()=>{
     const res = await chai
     .request(app.app)
-    .delete(`/v1/${discoveryMock.getId(dummyKey)}/discovery`)
+    .delete(`/v1/discoveries/${discoveryMock.getId(dummyKey)}`)
     .set({
       Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
     })
@@ -47,7 +47,7 @@ describe("DELETE DISCOVERY /:id/discovery", () => {
   it("Should not delete a discovery discovery that is already deleted", async()=>{
     const res = await chai
     .request(app.app)
-    .delete(`/v1/${discoveryMock.getId(dummyKey2)}/discovery`)
+    .delete(`/v1/discoveries/${discoveryMock.getId(dummyKey2)}`)
     .set({
       Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
     })
