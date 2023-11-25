@@ -81,7 +81,6 @@ const getDiscoveryHandler = async (
     const buildQuery = queryBuilder<DiscoveryProps>(query, [
       "amount",
       "description",
-      "duration",
       "endDate",
       "startDate",
       "name",
@@ -91,7 +90,7 @@ const getDiscoveryHandler = async (
       "duration",
     ]);
     buildQuery.filter = { ...filter, ...buildQuery.filter };
-
+    
     const discoveries = await discoveryService.findMany(
       buildQuery.filter,
       { includes: buildQuery.columns },

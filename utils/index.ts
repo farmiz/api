@@ -145,7 +145,7 @@ export function queryBuilder<T = any>(
   return {
     filter,
     options,
-    columns: columns && columns.length ? columns.split(",") : searchableFields,
+    columns: searchableFields,
   };
 }
 
