@@ -103,7 +103,7 @@ const getDiscoveryHandler = async (
       );
     }
     const totalDocuments = await discoveryService.countDocuments(filter);
-    const perPage = filter.perPage;
+    const perPage =  buildQuery.options.limit;
     const response = {
       data: discoveries,
       paginator: {
