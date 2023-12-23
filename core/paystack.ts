@@ -1,4 +1,4 @@
 import { PayStack } from "paystackly";
 
 const { PAYSTACK_SK = "" } = process.env;
-export const paystack = new PayStack(PAYSTACK_SK);
+export const payStack = new PayStack(PAYSTACK_SK);

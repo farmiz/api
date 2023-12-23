@@ -106,7 +106,7 @@ const getSingleWalletHandler = async (
 
 export default {
   method: "get",
-  url: "/:id/wallet",
+  url: "/wallets/:id",
   data,
   handler: getSingleWalletHandler,
 };

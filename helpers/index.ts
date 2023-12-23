@@ -107,6 +107,7 @@ function isValidPermissionObject(
 }
 export const validatePermission = ({}, permissions: PermissionObject) => {
   const permissionKeys = Object.keys(permissions) as PermissionString[];
+  console.log({ permissions })
   const permissionHasValidKeys = permissionKeys.every((key: PermissionString) =>
     PERMISSIONS_LIST.includes(key),
   );

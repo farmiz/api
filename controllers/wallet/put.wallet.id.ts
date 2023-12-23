@@ -122,7 +122,7 @@ const updateSingleWalletHandler = async (
 
 export default {
   method: "put",
-  url: "/:id/wallet",
+  url: "/wallets/:id",
   data,
   handler: updateSingleWalletHandler,
 };

@@ -55,6 +55,7 @@
  *     }
  */
 
+// TODO: Lower discoveries shouldn't be editable(Prevent even admins from editing it)
 import { IData } from "../../interfaces";
 import { AuthRequest } from "../../middleware";
 import { NextFunction, Response } from "express";
@@ -64,19 +65,19 @@ import {
 } from "../../helpers/requestResponse";
 import flattenObject, { buildPayloadUpdates } from "../../utils";
 import { discoveryService } from "../../services/discovery";
-import { fileMiddleware } from "../../services/imageMiddleware";
-import { fileBucket } from "../../services/fileBucket/FileBucket";
-import { discoveryFileService } from "../../services/files/Discovery";
+import { RequestError } from "../../helpers/errors";
+import { convertDiscoveryDuration } from "../../services/sponsorship/convertDiscoveryDuration";
+import { addDays, differenceInDays } from "date-fns";
 
 const data: IData = {
   requireAuth: true,
-  customMiddleware: fileMiddleware.fileMiddleware("memory", null, 5),
   permission: ["discovery", "update"],
   rules: {
     params: {
       id: {
         required: true,
-        // authorize: discoveryService._exists,
+        authorize: async (_, id: string) =>
+          await discoveryService._exists({ _id: id }),
       },
     },
     body: {
@@ -142,55 +143,42 @@ const updateSingleWalletHandler = async (
     const filter: Record<string, any> = {
       _id: params.id,
     };
+
+    const discoveryExists = await discoveryService.findOne({ _id: params.id });
+
+    if (discoveryExists) {
+      // Make discovery not editable if the riskLevel is low
+      if (discoveryExists.riskLevel === "low") {
+        return next(new RequestError(400, "Cannot update low risk discovery"));
+      }
+      
+      const convertedDiscoveryDuration = convertDiscoveryDuration(
+        discoveryExists.duration,
+        );
+        const addedDate = addDays(
+          discoveryExists.closingDate,
+          convertedDiscoveryDuration,
+          );
+          // check difference in days and block access if date doesn't match
+      if (differenceInDays(addedDate, new Date()) <= 0) {
+        return next(
+          new RequestError(400, "Cannot update a discovery that has ended"),
+        );
+      }
+    }
+
     let discovery = null;
     const fieldsToUpdate = buildPayloadUpdates(req.body);
 
-    // CHECK IF FILE EXISTS
-    if (req.file) {
-      const file = await discoveryFileService.findOne({
-        discoveryId: params.id,
-      });
-      if (process.env.NODE_ENV !== "test") {
-        const result = await fileBucket.updateFile(
-          {
-            directory: "directory",
-            req,
-            streamOptions: {
-              contentType: req.file?.mimetype,
-            },
-          },
-          String(file?.fileName),
-        );
-        await discoveryFileService.updateOne(
-          { discoveryId: params.id },
-          result,
-        );
-        discovery = await discoveryService.findOne({ _id: params.id }, null, {
-          discoveryFile: ["url"],
-        });
-      }
-    }
+    const updates = flattenObject({
+      ...fieldsToUpdate,
+      updatedBy: req.user?.id,
+    });
 
-    // UPDATE DISCOVERY
-    if (Object.keys(fieldsToUpdate).length) {
-      if (
-        fieldsToUpdate.duration &&
-        typeof fieldsToUpdate.duration === "string"
-      ) {
-        fieldsToUpdate.duration = JSON.parse(fieldsToUpdate.duration);
-      }
-      if (fieldsToUpdate.tags && typeof fieldsToUpdate.tags === "string") {
-        fieldsToUpdate.tags = fieldsToUpdate.tags.split(",");
-      }
-      const updates = flattenObject({
-        ...fieldsToUpdate,
-        updatedBy: req.user?.id,
-      });
+    discovery = await discoveryService.updateOne(filter, updates, {
+      discoveryFile: ["url"],
+    });
 
-      discovery = await discoveryService.updateOne(filter, updates, {
-        discoveryFile: ["url"],
-      });
-    }
     sendSuccessResponse(res, next, {
       success: true,
       response: discovery,

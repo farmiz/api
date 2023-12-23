@@ -77,7 +77,7 @@ import {
   WalletPayload,
   WalletType,
 } from "../../interfaces/wallet";
-import { paystack } from "../../core/paystack";
+import { payStack } from "../../core/payStack";
 import { CardBINResponse, ResolveAccountResponse } from "paystackly";
 import { extractWalletData, getNetworkBaseOnNumber } from "../../utils";
 import { RequestError } from "../../helpers/errors";
@@ -151,7 +151,7 @@ async function createWalletHandler(
 
       assert(bankCode, "Invalid phone number");
       const account_number = `0${walletData.mobileMoneyDetails.phone.number}`;
-      accountVerified = await paystack.verification.resolveAccount({
+      accountVerified = await payStack.verification.resolveAccount({
         account_number,
         bank_code: bankCode,
       });
@@ -167,7 +167,7 @@ async function createWalletHandler(
       }
     } else if (walletData.type === "credit card") {
       const binNumber = walletData.cardDetails.number.substring(0, 6);
-      accountVerified = await paystack.verification.verifyCardBIN({
+      accountVerified = await payStack.verification.verifyCardBIN({
         binNumber,
       });
 
@@ -178,7 +178,7 @@ async function createWalletHandler(
           accountVerified.data,
         );
         response = await creditCardWalletService.create(
-          dataToStore as TCreditCardWallet,
+          dataToStore as TCreditCardWallet
         );
       }
     } else
@@ -209,7 +209,7 @@ async function createWalletHandler(
 
 export default {
   method: "post",
-  url: "/wallet",
+  url: "/wallets",
   handler: createWalletHandler,
   data,
 };

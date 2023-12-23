@@ -14,7 +14,7 @@ import { httpCodes } from "../../constants";
 
 const data: IData = {
   requireAuth: true,
-  permission: ["sponsor", "read"],
+  permission: ["sponsorship", "read"],
   rules: {
     query: {},
   },
@@ -31,21 +31,25 @@ async function getSponsorsHandler(
     const filter: Record<string, any> = {
       deleted: false,
     };
+
     if (req.user?.role === "customer") {
       filter.userId = req.user.id;
     }
+
     const buildQuery = queryBuilder<SponsorshipProps>(query, [
       "status",
       "endDate",
       "startDate",
-      "isActive",
+      "status",
+      "sponsoredAmount",
+      "delayDays"
     ]);
-    buildQuery.filter = { ...buildQuery.filter, ...filter };
+    buildQuery.filter = { ...filter, ...buildQuery.filter };
 
     const sponsorships = await sponsorshipService.findMany(
       buildQuery.filter,
       null,
-      null,
+      { wallet: [], discovery: [] },
       buildQuery.options,
     );
     if (!sponsorships) {
@@ -54,13 +58,14 @@ async function getSponsorsHandler(
       );
     }
     const totalDocuments = await sponsorshipService.countDocuments(filter);
-    const perPage = filter.perPage || 50;
+    const perPage = filter.perPage || 30;
     const response = {
       data: sponsorships,
       paginator: {
-        page: ceil(perPage / totalDocuments),
+        page: buildQuery.options.page,
         perPage,
         totalPages: ceil(totalDocuments / perPage),
+        totalDocuments,
       },
     };
     sendSuccessResponse(res, next, { response, success: true });
@@ -70,7 +75,7 @@ async function getSponsorsHandler(
 }
 export default {
   data,
-  url: "/sponsors",
+  url: "/sponsorships",
   handler: getSponsorsHandler,
   method: "GET",
 };

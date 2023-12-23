@@ -1,11 +1,10 @@
 import { NextFunction, Response } from "express";
-import { IData, IPhone } from "../../interfaces";
+import {  IPhone } from "../../interfaces";
 import { AuthRequest } from "../../middleware";
 import {
   sendFailedResponse,
   sendSuccessResponse,
 } from "../../helpers/requestResponse";
-import { IUser } from "../../interfaces/users";
 import { hasValidPhone, validName, validatePermission } from "../../helpers";
 import { Validator } from "../../mongoose/validators";
 import { addHours, differenceInYears, parseISO } from "date-fns";
@@ -17,7 +16,7 @@ import crypto from "crypto";
 import { emailSender } from "../../services/email/EmailSender";
 import Tokens, { TokenWithExpiration } from "../../mongoose/models/Tokens";
 import { generateVerificationUrl } from "../../utils";
-const data: IData<IUser> = {
+const data = {
   requireAuth: true,
   permission: ["users", "create"],
   rules: {
@@ -58,7 +57,7 @@ const data: IData<IUser> = {
         fieldName: "Password",
         validate: Validator.isPasswordStrong,
       },
-      permission: {
+      userPermission: {
         required: true,
         validate: validatePermission,
       },
@@ -75,8 +74,8 @@ async function createUserHandler(
   next: NextFunction,
 ) {
   try {
-    const constructedPermission = constructPermission(req.body.permission);
-    const { permission, ...rest } = req.body;
+    const constructedPermission = constructPermission(req.body.userPermission);
+    const { userPermission, ...rest } = req.body;
 
     const data = {
       ...rest,

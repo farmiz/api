@@ -62,7 +62,7 @@ import {
 import { RATE_LIMITS, httpCodes } from "../../constants";
 import { AuthRequest } from "../../middleware";
 import { walletService } from "../../services/wallet";
-import { paystack } from "../../core/paystack";
+import { payStack } from "../../core/payStack";
 import {
   BaseChargeResponse,
   ChargeWithMobileMoneyPayload,
@@ -70,7 +70,7 @@ import {
 } from "paystackly";
 import { mobileMoneyWalletService } from "../../services/wallet/mobileMoney";
 import { RequestError } from "../../helpers/errors";
-import { walletTopupService } from "../../services/transaction/topup";
+import { walletTopUpService } from "../../services/transaction/topUp";
 import { v4 as uuid } from "uuid";
 const data: IData = {
   requireAuth: true,
@@ -96,7 +96,7 @@ const data: IData = {
   },
   requestRateLimiter: RATE_LIMITS.addWallet,
 };
-async function topupWalletWithMomoHandler(
+async function topUpWalletWithMoMoHandler(
   req: AuthRequest,
   res: Response,
   next: NextFunction,
@@ -120,11 +120,11 @@ async function topupWalletWithMomoHandler(
     };
 
     const result: BaseChargeResponse | TransactionResponse =
-      await paystack.charges.chargeWithMobileMoney(chargePayload);
+      await payStack.charges.chargeWithMobileMoney(chargePayload);
 
     if (!result.status)
       return next(new RequestError(httpCodes.BAD_REQUEST.code, result.message));
-    await walletTopupService.create({
+    await walletTopUpService.create({
       amount: req.body.amount,
       userId: req.user?.id,
       reference,
@@ -141,7 +141,7 @@ async function topupWalletWithMomoHandler(
 
 export default {
   method: "post",
-  url: "/wallet/:id/topup/mobile-money",
-  handler: topupWalletWithMomoHandler,
+  url: "/wallets/:id/topUp/mobile-money",
+  handler: topUpWalletWithMoMoHandler,
   data,
 };

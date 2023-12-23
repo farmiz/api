@@ -28,40 +28,23 @@ describe("POST DISCOVERY   /discovery", async () => {
       userPermission: { discovery: ["create"] },
     });
   });
-  it("should not create discovery without discovery name", async () => {
+  it("should not create discovery without discovery product", async () => {
     const res = await chai
       .request(app.app)
       .post("/v1/discoveries")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
-      .send({ ...omit(validDiscoveryData, ["name"]) });
+      .send({ ...omit(validDiscoveryData, ["product"]) });
     res.should.have.status(400);
     res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
     res.body.response.should.have
       .property("message")
       .be.a("string")
-      .eql(ERROR_MESSAGES.fieldRequired("Name"));
+      .eql(ERROR_MESSAGES.fieldRequired("Product"));
   });
-  it("should not create discovery without a valid amount", async () => {
-    const res = await chai
-      .request(app.app)
-      .post("/v1/discoveries")
-      .set({
-        Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
-      })
-      .send({
-        name: "Ab",
-      });
-    res.should.have.status(400);
-    res.body.should.have.property("success").be.a("boolean").eql(false);
-    res.body.should.have.property("response").be.a("object");
-    res.body.response.should.have
-      .property("message")
-      .be.a("string")
-      .eql("Name should be at least 3 chars long");
-  });
+
   it("should not create discovery without discovery amount", async () => {
     const res = await chai
       .request(app.app)
@@ -220,7 +203,7 @@ describe("POST DISCOVERY   /discovery", async () => {
     res.body.should.have.property("success").be.a("boolean").eql(true);
     res.body.should.have.property("response").be.a("object");
     const expectedFields = [
-      "name",
+      "product",
       "amount",
       "duration",
       "profitPercentage",

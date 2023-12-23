@@ -1,7 +1,7 @@
 export type RiskLevel = "high" | "moderate" | "low";
 export interface DiscoveryProps {
   id?: string;
-  name: string;
+  product: string;
   duration: {
     type: "day" | "month" | "year";
     value: number;
@@ -13,4 +13,5 @@ export interface DiscoveryProps {
   riskLevel: RiskLevel;
   startDate: Date;
   endDate: Date;
+  closingDate: Date;
 }

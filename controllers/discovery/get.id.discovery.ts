@@ -79,9 +79,7 @@ const getSingleDiscoveryHandler = async (
       deleted: false,
     };
 
-    const discovery = await discoveryService.findOne(filter, null, {
-      discoveryFile: ["url"],
-    });
+    const discovery = await discoveryService.findOne(filter, null);
 
     if (!discovery)
       return next(

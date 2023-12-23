@@ -102,7 +102,7 @@ const getWalletsHandler = async (
       );
     }
     const totalDocuments = await walletService.countDocuments(filter);
-    const perPage = filter.perPage || 50;
+    const perPage = filter.perPage || 30;
     const response = {
       data: wallets,
       totalBalance: wallets

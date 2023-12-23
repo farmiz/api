@@ -69,22 +69,14 @@ import {
 import { DiscoveryModel } from "../../mongoose/models/Discovery";
 import { toNumber } from "lodash";
 import validator from "validator";
-import { fileMiddleware } from "../../services/imageMiddleware";
-import { fileBucket } from "../../services/fileBucket/FileBucket";
-import { discoveryFileService } from "../../services/files/Discovery";
 const data: IData = {
   requireAuth: true,
   permission: ["discovery", "create"],
-  customMiddleware: fileMiddleware.fileMiddleware("memory", null, 5),
   rules: {
     body: {
-      name: {
+      product: {
         required: true,
-        fieldName: "Name",
-        validate: [
-          ({}, name: string) => name.length >= 3,
-          "Name should be at least 3 chars long",
-        ],
+        fieldName: "Product",
         sanitize: validator.trim,
       },
       amount: {
@@ -135,33 +127,12 @@ async function createDiscoveryHandler(
   next: NextFunction,
 ) {
   try {
-    if (req.body.duration && typeof req.body.duration === "string") {
-      req.body.duration = JSON.parse(req.body.duration);
-    }
-    if (req.body.tags && typeof req.body.tags === "string") {
-      req.body.tags = req.body.tags.split(",");
-    }
     const discoveryCreated = await discoveryService.create({
       ...req.body,
       createdBy: req.user?.id,
     });
 
-    if (discoveryCreated.id) {
-      if (process.env.NODE_ENV !== "test") {
-        const result = await fileBucket.uploadFile({
-          directory: "directory",
-          req,
-          streamOptions: {
-            contentType: req.file?.mimetype,
-          },
-        });
 
-        await discoveryFileService.create({
-          ...result,
-          discoveryId: discoveryCreated.id,
-        });
-      }
-    }
     sendSuccessResponse<DiscoveryModel>(
       res,
       next,

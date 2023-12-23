@@ -90,7 +90,7 @@ async function loginHandler(
       accessToken: tokens.accessToken,
       user: userData,
     };
-    res.cookie("refreshAuthToken", "", { expires: new Date(0) });
+    res.clearCookie("refreshAuthToken");
     res.cookie("refreshAuthToken", tokens.refreshToken, {
       httpOnly: true,
       secure: true,

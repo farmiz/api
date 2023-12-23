@@ -38,10 +38,10 @@ async function generateService() {
 function askQuestions(): Promise<string[]> {
   return new Promise(resolve => {
     rl.question("1. Service name: eg, user: ", serviceName => {
-      rl.question("1. Service class name: eg, User: ", serviceClass => {
+      rl.question("1. Service class name: eg, UserService: ", serviceClass => {
         rl.question("2. File name: eg, index: ", fileName => {
           rl.question("3. Service ModelName: eg, User: ", modelName => {
-            resolve([serviceName, fileName, modelName, serviceClass]);
+            resolve([serviceName, fileName || "index", modelName, serviceClass]);
           });
         });
       });

@@ -21,7 +21,7 @@ type CustomAuth = (
   next: NextFunction,
 ) => Promise<any> | void | any;
 export interface AuthRequest<T = any> extends Request {
-  user?: Partial<UserModel>;
+  user?: Partial<UserModel> | null;
   geolocation?: Record<string, string>;
   body: T;
 }
@@ -36,7 +36,7 @@ class AuthMiddleware {
     } catch (err: any) {
       return res
         .status(401)
-        .json({ succes: false, response: { error: err.message } });
+        .json({ success: false, response: { error: err.message } });
     }
   }
 
@@ -81,7 +81,7 @@ class AuthMiddleware {
       storeClient: Database.connection(),
       points: config.max, // Number of points
       duration: config.windowMs / 1000, // Per second(s),
-      blockDuration: config.blockDuration || 60 * 60 * 5, // block the ip for 5hours,
+      blockDuration: config.blockDuration || 60 * 60 * 1, // block the ip for 1hour,
       keyPrefix: "rateLimiter",
       keyGenerator: (req: Request) => req.method,
     };

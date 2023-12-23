@@ -156,6 +156,7 @@ export const DEFAULT_USER_PERMISSION: {
 } = {
   users: ["read", "update"],
   wallet: ["create", "read", "delete", "update"],
+  transaction: ["read"],
   discovery: ["read"],
   sponsor: ["create", "read", "update"],
   settings: ["create", "update", "read"]

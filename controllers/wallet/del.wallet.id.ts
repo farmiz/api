@@ -72,7 +72,7 @@ const data: IData = {
   permission: ["wallet", "delete"],
   rules: {
     params: {
-      walletId: { 
+      id: { 
         required: true,
         authorize: walletService.canViewDocument,
       },
@@ -116,7 +116,7 @@ const deleteSingleWalletHandler = async (
 
 export default {
   method: "delete",
-  url: "/:walletId/wallet",
+  url: "/wallets/:id",
   data,
   handler: deleteSingleWalletHandler,
 };
