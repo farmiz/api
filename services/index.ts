@@ -31,7 +31,7 @@ export interface IService<T> {
   updateMany(filter: FilterQuery<T>, update: any): Promise<UpdateWriteOpResult>;
 }
 
-type FilterOpts = "$inc" | "$in" | "$dec";
+type FilterOpts = "$inc" | "$in" | "$dec" | "$push" | "$pull";
 export abstract class BaseService<T> implements IService<T> {
   protected readonly model: Model<T>;
   readonly session;
@@ -114,13 +114,16 @@ export abstract class BaseService<T> implements IService<T> {
     filter: FilterQuery<T>,
     update: Partial<Record<keyof T | FilterOpts, any>>,
     populate?: PopulateOpt | string[] | null,
-  ): Promise<any> {
+  ): Promise<T | null> {
     const result = await this.model
       .findOneAndUpdate(filter, update, {
         new: true,
       })
       .populate(populate ? formatModelPopulate(populate) : []);
-    return result?.toObject();
+      if(result && result.toObject()){
+        return result.toObject()
+      }
+    return null;
   }
 
   async updateMany(

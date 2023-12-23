@@ -5,10 +5,12 @@ export interface SponsorshipProps {
   discoveryId?: string;
   startDate: Date;
   endDate: Date;
-  estimatedProfitPercentage: number;
   sponsoredAmount: number;
-  isActive: boolean;
-  status?: "cancelled" | "active";
+  status?: "cancelled" | "active" | "closed";
   walletId: string;
   delayDays: number;
+  cancelledBy?: string,
+  cancelledAt?: Date,
+  cancellationReason?: string;
+  growthStagesIds?: string[]
 }

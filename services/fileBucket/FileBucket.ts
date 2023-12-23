@@ -5,7 +5,7 @@ import * as stream from "stream";
 import { v4 as uuid } from "uuid";
 import { farmizLogger } from "../../core/logger";
 
-export type Directory = "directory" | "profileImage" | "assets";
+export type Directory = "products" | "profileImage" | "assets";
 export interface UploadFileProps {
   req: Request;
   directory: Directory;

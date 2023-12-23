@@ -5,9 +5,12 @@ export const PERMISSIONS_LIST: PermissionString[] = [
   "users",
   "wallet",
   "discovery",
-  "sponsor",
+  "sponsorship",
   "settings",
   "transaction",
+  "products",
+  "growth-stages",
+  "tags",
 ];
 export const PERMISSION_OPERATIONS: PermissionOperation[] = [
   "create",

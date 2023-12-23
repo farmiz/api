@@ -48,12 +48,12 @@ import {
 import { RATE_LIMITS, httpCodes } from "../../constants";
 import { AuthRequest } from "../../middleware";
 import { walletService } from "../../services/wallet";
-import { paystack } from "../../core/paystack";
 import { ChargeWithCardPayload } from "paystackly";
 import { creditCardWalletService } from "../../services/wallet/creditCard";
-import { walletTopupService } from "../../services/transaction/topup";
 import { RequestError } from "../../helpers/errors";
 import { v4 as uuid } from "uuid";
+import { walletTopUpService } from "../../services/transaction/topUp";
+import { payStack } from "../../core/payStack";
 
 const data: IData = {
   requireAuth: true,
@@ -79,7 +79,7 @@ const data: IData = {
   },
   requestRateLimiter: RATE_LIMITS.addWallet,
 };
-async function topupWalletWithCardHandler(
+async function topUpWalletWithCardHandler(
   req: AuthRequest,
   res: Response,
   next: NextFunction,
@@ -105,11 +105,11 @@ async function topupWalletWithCardHandler(
       },
     };
 
-    const result = await paystack.charges.chargeWithCard(chargePayload);
+    const result = await payStack.charges.chargeWithCard(chargePayload);
 
     if (!result.status)
       return next(new RequestError(httpCodes.BAD_REQUEST.code, result.message));
-    await walletTopupService.create({
+    await walletTopUpService.create({
       amount: req.body.amount,
       userId: req.user?.id,
       reference,
@@ -128,7 +128,7 @@ async function topupWalletWithCardHandler(
 
 export default {
   method: "post",
-  url: "/wallet/:id/topup/credit-card",
-  handler: topupWalletWithCardHandler,
+  url: "/wallets/:id/topUp/credit-card",
+  handler: topUpWalletWithCardHandler,
   data,
 };

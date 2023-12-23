@@ -7,7 +7,7 @@ export function generateServiceTemplate({
   serviceName: string;
   modelName: string;
 }): string {
-  const serviceClassName = `${serviceClass}Service`;
+  const serviceClassName = `${serviceClass}`;
   const serviceModelName = `${modelName}Model`;
   return `
 import { Model } from "mongoose";
@@ -17,7 +17,7 @@ import { ${serviceModelName}, ${modelName} } from "../../mongoose/models/${model
 class ${serviceClassName} extends BaseService<${serviceModelName}> {
   protected readonly model: Model<${serviceModelName}>;
 
-  constructor(model: Model<${serviceModelName}>) {
+  constructor(model: Model<${modelName}>) {
     super(model);
     this.model = model;
   }

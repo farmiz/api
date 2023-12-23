@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 import { defaultPlugin } from "../utils";
 import { IDefaultPlugin } from "../../interfaces";
 import { FilesProp } from "../../interfaces/files";
+import { MongooseDefaults } from "../../constants";
 
 export interface FilesModel extends FilesProp, IDefaultPlugin {}
 
@@ -18,26 +19,26 @@ const filesSchema = new Schema<FilesModel>({
     type: String,
     required: true,
   },
-});
+}, MongooseDefaults);
 filesSchema.plugin(defaultPlugin);
 
 const Files = mongoose.model<FilesProp>("File", filesSchema);
 
-export interface DiscoveryFilesProps extends FilesModel {
-  discoveryId: string;
+export interface ProductFilesProps extends FilesModel {
+  productId: string;
 }
-export const DiscoveryFiles = Files.discriminator<DiscoveryFilesProps>(
-  "DISCOVERY",
+export const ProductFiles = Files.discriminator<ProductFilesProps>(
+  "PRODUCT",
   new Schema({
-    discoveryId: {
+    productId: {
       type: String,
       required: true,
-      ref: "Discovery",
+      ref: "Product",
     },
   }),
 );
 export interface ProfileImageProps extends FilesModel {
-  discoveryId: string;
+  productId: string;
 }
 export const ProfileImage = Files.discriminator<ProfileImageProps>(
   "PROFILE_IMAGE",
