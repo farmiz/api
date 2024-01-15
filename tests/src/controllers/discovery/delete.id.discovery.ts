@@ -9,7 +9,7 @@ import { mockUser } from "../../../data/users/UserMock";
 import { app } from "../../../core/app";
 import { discoveryMock } from "../../../data/discovery/DiscoveryMock";
 
-describe("DELETE DISCOVERY /:id/discovery", () => {
+describe("DELETE DISCOVERY /discoveries/:id", () => {
   const dummyKey = uuid();
   const dummyKey2 = uuid();
   before(async () => {

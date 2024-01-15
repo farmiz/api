@@ -7,9 +7,12 @@ export type PermissionString =
   | "users"
   | "wallet"
   | "discovery"
-  | "sponsor"
+  | "sponsorship"
   | "settings"
-  | "transaction";
+  | "transaction"
+  | "tags"
+  | "products"
+  | "growth-stages";
 export type IPermission = Record<
   PermissionString,
   Record<PermissionOperation, number>

@@ -2,33 +2,37 @@ import { sponsorshipService } from ".";
 import { AuthRequest } from "../../middleware";
 import { DiscoveryModel } from "../../mongoose/models/Discovery";
 import { SponsorshipModel } from "../../mongoose/models/Sponsorship";
-import { ProgramSponoredTransaction } from "../../mongoose/models/Transaction";
+import { ProgramSponsoredTransaction } from "../../mongoose/models/Transaction";
 import { emailSender } from "../email/EmailSender";
 import { walletService } from "../wallet";
 import { v4 as uuid } from "uuid";
+import { convertDiscoveryDuration } from "./convertDiscoveryDuration";
+import { addDays } from "date-fns";
 export const createSponsorship = async (data: {
   req: AuthRequest;
+  amount: number;
   discovery: DiscoveryModel;
   walletId: string;
   walletType: "mobile money" | "credit card";
 }): Promise<Partial<SponsorshipModel>> => {
-  const { req, discovery, walletId, walletType } = data;
-  const discoveryId = discovery.id;
+  const { req, discovery, walletId, walletType, amount } = data;
+  const { closingDate, duration, id } = discovery;
+  const discoveryId = id;
   const session = await sponsorshipService.session;
   let programSponsored: Partial<SponsorshipModel> = {};
   try {
     session.startTransaction();
 
+    const convertedDiscoveryDuration = convertDiscoveryDuration(duration);
     programSponsored = await sponsorshipService.create({
       userId: String(req.user?.id),
       discoveryId,
-      endDate: discovery.endDate,
-      estimatedProfitPercentage: discovery.profitPercentage,
-      isActive: true,
-      sponsoredAmount: discovery.amount,
-      startDate: discovery.startDate,
+      endDate: addDays(closingDate, convertedDiscoveryDuration + 10),
+      status: "active",
+      sponsoredAmount: amount,
+      startDate: closingDate,
       walletId,
-      delayDays: req.body.delayDays
+      delayDays: 10,
     });
 
     const amountDeducted = await walletService.updateOne(
@@ -37,8 +41,8 @@ export const createSponsorship = async (data: {
     );
 
     if (amountDeducted && programSponsored) {
-      await ProgramSponoredTransaction.create({
-        amount: discovery.amount,
+      await ProgramSponsoredTransaction.create({
+        amount: amount,
         channel: walletType,
         fees: 0,
         reference: uuid(),
@@ -49,11 +53,14 @@ export const createSponsorship = async (data: {
         ip_address: req.ip,
         walletId,
         discoveryId,
+        userId: req.user?.id,
       });
-      await emailSender.programSponsored({
-        discoveryId: String(discoveryId),
-        email: String(req.user?.email),
-      });
+      if (discoveryId && req.user?.email) {
+        await emailSender.programSponsored({
+          discoveryId: discoveryId,
+          email: req.user?.email,
+        });
+      }
       session.commitTransaction();
     }
   } catch (error) {

@@ -1,12 +1,12 @@
 import { ITransaction } from "../interfaces/transaction";
-import { walletTopupService } from "../services/transaction/topup";
+import { walletTopUpService } from "../services/transaction/topUp";
 import { roundNumber } from "../utils";
 import { walletService } from "../services/wallet";
 import { emailSender } from "../services/email/EmailSender";
 import { userService } from "../services/users";
 import { startCase } from "lodash";
 
-export type PaystackWebhookEvent =
+export type PayStackWebhookEvent =
   | "charge.success"
   | "charge.failure"
   | "charge.daily.reconciliation"
@@ -15,8 +15,8 @@ export type PaystackWebhookEvent =
   | "subscription.enable"
   | "subscription.terminate";
 
-export class PaystackWebhookHandler {
-  async handleEvent(event: PaystackWebhookEvent, data: ITransaction) {
+export class PayStackWebhookHandler {
+  async handleEvent(event: PayStackWebhookEvent, data: ITransaction) {
     switch (event) {
       case "charge.success":
         await this.handleChargeSuccess(data);
@@ -25,7 +25,7 @@ export class PaystackWebhookHandler {
   }
   private async handleChargeSuccess(data: ITransaction) {
     const reference = data.reference;
-    await walletTopupService.updateOne(
+    await walletTopUpService.updateOne(
       { reference },
       {
         ...data,
@@ -88,4 +88,4 @@ function maskString(inputString: string) {
   }
   return inputString;
 }
-export const paystackWebhook = new PaystackWebhookHandler();
+export const payStackWebhook = new PayStackWebhookHandler();

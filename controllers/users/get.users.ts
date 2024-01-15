@@ -31,7 +31,8 @@ async function getUsersHandler(req: AuthRequest, res: Response, next: NextFuncti
       "role",
       "phone",
       "email",
-      "phone"
+      "phone",
+      "createdAt"
     ]);
     buildQuery.filter = { ...filter, ...buildQuery.filter };
     const users = await userService.findMany(

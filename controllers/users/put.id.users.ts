@@ -1,11 +1,10 @@
 import { NextFunction, Response } from "express";
-import { IData, IPhone } from "../../interfaces";
+import { IPhone } from "../../interfaces";
 import { AuthRequest } from "../../middleware";
 import {
   sendFailedResponse,
   sendSuccessResponse,
 } from "../../helpers/requestResponse";
-import { IUser } from "../../interfaces/users";
 import { hasValidPhone, validName, validatePermission } from "../../helpers";
 import { Validator } from "../../mongoose/validators";
 import { differenceInYears, parseISO } from "date-fns";
@@ -13,7 +12,7 @@ import { constructPermission } from "../../helpers/permissions/permissions";
 import Permission from "../../mongoose/models/Permission";
 import { buildPayloadUpdates } from "../../utils";
 import { userService } from "../../services/users";
-const data: IData<IUser> = {
+const data = {
   requireAuth: true,
   permission: ["users", "create"],
   rules: {
@@ -54,7 +53,7 @@ const data: IData<IUser> = {
         fieldName: "Password",
         validate: Validator.isPasswordStrong,
       },
-      permission: {
+      userPermission: {
         required: false,
         validate: validatePermission,
       },
@@ -70,8 +69,11 @@ async function updateUserHandler(
   try {
     const { id } = req.params;
     let constructedPermission = "";
-    if (req.body.permission && Object.keys(req.body.permission).length) {
-      constructedPermission = constructPermission(req.body.permission);
+    if (
+      req.body.userPermission &&
+      Object.keys(req.body.userPermission).length
+    ) {
+      constructedPermission = constructPermission(req.body.userPermission);
     }
 
     const fieldsToUpdate = buildPayloadUpdates(req.body);
@@ -84,10 +86,12 @@ async function updateUserHandler(
     );
 
     if (constructedPermission) {
-      await Permission.create({
-        access: constructedPermission,
-        userId: id,
-      });
+      await Permission.updateOne(
+        { userId: id },
+        {
+          access: constructedPermission,
+        },
+      );
     }
 
     const response = {

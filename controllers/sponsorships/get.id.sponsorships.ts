@@ -10,7 +10,7 @@ import { RequestError } from "../../helpers/errors";
 
 const data: IData = {
   requireAuth: true,
-  permission: ["sponsor", "read"],
+  permission: ["sponsorship", "read"],
 };
 
 async function getSingleSponsorHandler(
@@ -27,10 +27,19 @@ async function getSingleSponsorHandler(
     if (req.user?.role === "customer") {
       filter.userId = req.user.id;
     }
-    const sponsorShip = await sponsorshipService.findOne(filter);
+    
+    const sponsorShip = await sponsorshipService.findOne(filter, null, {
+      wallet: [],
+      discovery: [],
+      ...(["admin", "support"].includes(String(req.user?.role)) && {
+        customer: [],
+      }),
+      growthStages: []
+    });
 
-    if (!sponsorShip)
+    if (!sponsorShip) {
       return next(new RequestError(404, "Sponsorship not found"));
+    }
     const response = {
       ...sponsorShip,
     };
@@ -41,7 +50,7 @@ async function getSingleSponsorHandler(
 }
 export default {
   data,
-  url: "/:id/sponsor",
+  url: "/sponsorships/:id",
   handler: getSingleSponsorHandler,
   method: "GET",
 };

@@ -5,31 +5,26 @@ import {
   sendFailedResponse,
   sendSuccessResponse,
 } from "../../helpers/requestResponse";
-import { cancelSponsorship } from "../../services/sponsorship/cancelSponsorship";
+import { productService } from "../../services/product";
 
 const data: IData = {
   requireAuth: true,
-  permission: ["sponsor", "update"],
+  permission: ["products", "read"],
   rules: {
     params: {
-      id: {
-        required: true,
-      },
+      id: { required: true },
     },
   },
 };
 
-async function updateSponsorShipHandler(
+async function getSingleProductHandler(
   req: AuthRequest,
   res: Response,
   next: NextFunction,
 ) {
   try {
-    const programCancelled = await cancelSponsorship(req.params.id);
-
-    const response = {
-      ...programCancelled,
-    };
+    const { id = "" } = req.params;
+    const response = await productService.findOne({ _id: id, deleted: false });
     sendSuccessResponse(res, next, { response, success: true });
   } catch (error: any) {
     sendFailedResponse(res, next, error);
@@ -37,7 +32,7 @@ async function updateSponsorShipHandler(
 }
 export default {
   data,
-  url: "/:id/sponsor/cancel",
-  handler: updateSponsorShipHandler,
-  method: "put",
+  url: "/products/:id",
+  handler: getSingleProductHandler,
+  method: "get",
 };
