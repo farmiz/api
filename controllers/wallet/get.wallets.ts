@@ -1,12 +1,12 @@
 /**
- * @api {GET} /api/wallets Get Wallets
+ * @api {GET} /wallets Get Wallets
  * @apiName GetWallets
  * @apiGroup Wallet
  * @apiVersion 0.0.1
  * @apiDescription Endpoint used to retrieve wallets.
  
  * @apiPermission authenticated user (with "wallet" - "read" permission)
- * @apiSampleRequest https://staging-api.farmiz.co
+ * @apiSampleRequest https://staging-api.farmiz.co/v1
  *
  * @apiSuccess {Boolean} success Indicates if the request was successful.
  * @apiSuccess {Object} response Response object containing wallets.
@@ -102,14 +102,14 @@ const getWalletsHandler = async (
       );
     }
     const totalDocuments = await walletService.countDocuments(filter);
-    const perPage = filter.perPage || 50;
+    const perPage = filter.perPage || 30;
     const response = {
       data: wallets,
       totalBalance: wallets
         .map(wa => wa.availableBalance)
         .reduce((acc = 0, inc = 0) => acc + inc, 0),
       paginator: {
-        page: totalDocuments,
+        page: ceil(perPage / totalDocuments),
         perPage,
         totalPages: ceil(totalDocuments / perPage),
       },

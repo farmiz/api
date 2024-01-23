@@ -4,7 +4,6 @@ import  {
   MobileMoneyWaletModel,
   MobileMoneyWallet,
 } from "../../mongoose/models/Wallet";
-import { ITransaction } from "../../interfaces/transaction";
 
 class MobileMoneyWalletService extends BaseService<MobileMoneyWaletModel> {
   protected readonly model: Model<MobileMoneyWaletModel>;
@@ -24,14 +23,6 @@ class MobileMoneyWalletService extends BaseService<MobileMoneyWaletModel> {
       filter = { ...filter, ...optionalFilter };
     }
     return await this._exists(filter);
-  }
-
-  async baseWalletData(override:Record<keyof Partial<ITransaction>, any>) {
-    return {
-      status: "pending",
-      message: null,
-      created_at: new Date(),
-    };
   }
 }
 export const mobileMoneyWalletService = new MobileMoneyWalletService(

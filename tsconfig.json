@@ -9,6 +9,8 @@
     "resolveJsonModule": true,
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "noImplicitAny": true,
     "strict": true
   },

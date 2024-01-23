@@ -13,6 +13,12 @@ export interface WalletTopupEmailProps extends BaseProps {
   email: string;
   amount: number | string;
   jobId: "wallet-topup";
+  recipientName: string;
+  transactionDate: Date;
+  transactionStatus: string;
+  transactionId: string;
+  paymentMethod: string;
+  paymentNumber: string;
 }
 export interface AccountPasswordRecoveryProps extends BaseProps {
   recoveryLink: string;

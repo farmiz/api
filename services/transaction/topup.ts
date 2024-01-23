@@ -1,8 +1,8 @@
 import { Model } from "mongoose";
 import { BaseService } from "..";
-import  { TransactionModel, WalletTopup } from "../../mongoose/models/Transaction";
+import  { TransactionModel, WalletTopUp } from "../../mongoose/models/Transaction";
 
-class WalletTopupTransactionService extends BaseService<TransactionModel> {
+class WalletTopUpTransactionService extends BaseService<TransactionModel> {
   protected readonly model: Model<TransactionModel>;
 
   constructor(model: Model<TransactionModel>) {
@@ -10,4 +10,4 @@ class WalletTopupTransactionService extends BaseService<TransactionModel> {
     this.model = model;
   }
 }
-export const walletTopupService = new WalletTopupTransactionService(WalletTopup);
+export const walletTopUpService = new WalletTopUpTransactionService(WalletTopUp);

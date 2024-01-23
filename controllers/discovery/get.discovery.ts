@@ -1,12 +1,12 @@
 /**
- * @api {GET} /api/discovery Get Discoveries
+ * @api {GET} /discovery Get Discoveries
  * @apiName Get Discoveries
  * @apiGroup Discovery
  * @apiVersion 0.0.1
  * @apiDescription Endpoint used to retrieve discoveries.
  *
  * @apiPermission authenticated user (with "discovery" - "read" permission)
- * @apiSampleRequest https://staging-api.farmiz.co
+ * @apiSampleRequest https://staging-api.farmiz.co/v1
  *
  * @apiSuccess {Boolean} success Indicates if the request was successful.
  * @apiSuccess {Object} response Response object containing discoveries.
@@ -58,7 +58,7 @@ import {
 } from "../../helpers/requestResponse";
 import { queryBuilder } from "../../utils";
 import { ceil } from "lodash";
-import { IDiscovery } from "../../interfaces/discovery";
+import { DiscoveryProps } from "../../interfaces/discovery";
 import { discoveryService } from "../../services/discovery";
 
 const data: IData = {
@@ -78,38 +78,40 @@ const getDiscoveryHandler = async (
       deleted: false,
     };
 
-    const buildQuery = queryBuilder<IDiscovery>(query, [
-        "amount",
-        "closingDate",
-        "description",
-        "duration",
-        "endDate",
-        "name",
-        "profitPercentage",
-        "tags",
-        "riskLevel"
+    const buildQuery = queryBuilder<DiscoveryProps>(query, [
+      "amount",
+      "description",
+      "endDate",
+      "startDate",
+      "closingDate",
+      "product",
+      "profitPercentage",
+      "tags",
+      "riskLevel",
+      "duration",
     ]);
-    buildQuery.filter = { ...buildQuery.filter, ...filter };
-
-    const discoveried = await discoveryService.findMany(
+    buildQuery.filter = { ...filter, ...buildQuery.filter };
+    
+    const discoveries = await discoveryService.findMany(
       buildQuery.filter,
-      null,
+      { includes: buildQuery.columns },
       null,
       buildQuery.options,
     );
-    if (!discoveried) {
+    if (!discoveries) {
       return next(
-        new RequestError(httpCodes.BAD_REQUEST.code, "No wallet found"),
+        new RequestError(httpCodes.BAD_REQUEST.code, "No discoveries found"),
       );
     }
     const totalDocuments = await discoveryService.countDocuments(filter);
-    const perPage = filter.perPage || 50;
+    const perPage = buildQuery.options.limit;
     const response = {
-      data: discoveried,
+      data: discoveries,
       paginator: {
-        page: totalDocuments,
+        page: buildQuery.options.page,
         perPage,
         totalPages: ceil(totalDocuments / perPage),
+        totalDocuments,
       },
     };
     sendSuccessResponse(res, next, {
@@ -122,7 +124,7 @@ const getDiscoveryHandler = async (
 };
 export default {
   method: "get",
-  url: "/discovery",
+  url: "/discoveries",
   data,
   handler: getDiscoveryHandler,
 };

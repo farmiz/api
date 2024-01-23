@@ -1,8 +1,7 @@
-import mongoose, { Document, Schema, Types } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { defaultPlugin } from "../utils";
 import { IDefaultPlugin } from "../../interfaces";
 import { MongooseDefaults } from "../../constants";
-import { isPast } from "date-fns";
 
 export type VerifyAccountTokenType = "signup" | "login" | "recovery";
 
@@ -18,7 +17,7 @@ export type TokenWithExpiration = {
 };
 export interface ITokens {
   accessToken: string;
-  refreshToken: string[];
+  refreshToken: string;
   verifyAccountToken?: TokenWithExpiration | null;
   emailRecoveryToken: TokenWithExpiration | null;
 }
@@ -31,7 +30,7 @@ const tokenSchema = new Schema<TokenDocument>(
   {
     tokens: {
       refreshToken: {
-        type: Array,
+        type: String,
         require: true,
       },
       accessTokenExpiresAt: {

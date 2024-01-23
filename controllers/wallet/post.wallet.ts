@@ -1,12 +1,12 @@
 /**
- * @api {POST} /api/wallet Create Wallet
+ * @api {POST} /wallet Create Wallet
  * @apiName Wallet
  * @apiGroup Wallet
  * @apiVersion 0.0.1
  * @apiDescription Endpoint used to add a wallet.
  
  * @apiPermission authenticated (with "wallet" - "create" permission)
- * @apiSampleRequest https://staging-api.farmiz.co
+ * @apiSampleRequest https://staging-api.farmiz.co/v1/v1
  *
  * @apiBody {String} type Type of wallet. Should be one of: `mobile money` or `credit card`.
  * @apiBody {Object} mobileMoneyDetails Mobile money details (required if type is "mobile money").
@@ -77,7 +77,7 @@ import {
   WalletPayload,
   WalletType,
 } from "../../interfaces/wallet";
-import { paystack } from "../../core/paystack";
+import { payStack } from "../../core/payStack";
 import { CardBINResponse, ResolveAccountResponse } from "paystackly";
 import { extractWalletData, getNetworkBaseOnNumber } from "../../utils";
 import { RequestError } from "../../helpers/errors";
@@ -120,7 +120,7 @@ const data: IData = {
       },
       primary: {
         required: false,
-      },
+      }
     },
   },
   requestRateLimiter: RATE_LIMITS.addWallet,
@@ -151,7 +151,7 @@ async function createWalletHandler(
 
       assert(bankCode, "Invalid phone number");
       const account_number = `0${walletData.mobileMoneyDetails.phone.number}`;
-      accountVerified = await paystack.verification.resolveAccount({
+      accountVerified = await payStack.verification.resolveAccount({
         account_number,
         bank_code: bankCode,
       });
@@ -167,7 +167,7 @@ async function createWalletHandler(
       }
     } else if (walletData.type === "credit card") {
       const binNumber = walletData.cardDetails.number.substring(0, 6);
-      accountVerified = await paystack.verification.verifyCardBIN({
+      accountVerified = await payStack.verification.verifyCardBIN({
         binNumber,
       });
 
@@ -178,7 +178,7 @@ async function createWalletHandler(
           accountVerified.data,
         );
         response = await creditCardWalletService.create(
-          dataToStore as TCreditCardWallet,
+          dataToStore as TCreditCardWallet
         );
       }
     } else
@@ -209,7 +209,7 @@ async function createWalletHandler(
 
 export default {
   method: "post",
-  url: "/wallet",
+  url: "/wallets",
   handler: createWalletHandler,
   data,
 };

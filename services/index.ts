@@ -1,4 +1,10 @@
-import { Model, FilterQuery, PopulateOptions, startSession } from "mongoose";
+import {
+  Model,
+  FilterQuery,
+  PopulateOptions,
+  startSession,
+  UpdateWriteOpResult,
+} from "mongoose";
 import { formatModelPopulate, formatModelProjection } from "../helpers";
 import { AuthRequest } from "../middleware";
 
@@ -10,7 +16,6 @@ export interface IOptions {
 interface PopulateOpt {
   [key: string]: string[];
 }
-type UpdateResult<T> = T & { isNew: boolean };
 export interface IService<T> {
   findOne(
     filter: FilterQuery<T>,
@@ -22,14 +27,11 @@ export interface IService<T> {
     options?: IOptions,
   ): Promise<T | null>;
   findMany(filter?: any): Promise<T[]>;
-  updateOne(
-    filter: FilterQuery<T>,
-    update: any,
-  ): Promise<UpdateResult<T> | null>;
-  updateMany(filter: FilterQuery<T>, update: any): Promise<void>;
+  updateOne(filter: FilterQuery<T>, update: any): Promise<any | null>;
+  updateMany(filter: FilterQuery<T>, update: any): Promise<UpdateWriteOpResult>;
 }
 
-type FilterOpts = "$inc" | "$in" | "$dec";
+type FilterOpts = "$inc" | "$in" | "$dec" | "$push" | "$pull";
 export abstract class BaseService<T> implements IService<T> {
   protected readonly model: Model<T>;
   readonly session;
@@ -54,7 +56,6 @@ export abstract class BaseService<T> implements IService<T> {
       excludes?: (keyof T)[];
     } | null,
     populate?: PopulateOpt,
-    options?: IOptions,
   ): Promise<T | null> {
     let objectToProject = {};
 
@@ -69,12 +70,6 @@ export abstract class BaseService<T> implements IService<T> {
       const populatedFields: PopulateOptions[] = formatModelPopulate(populate);
       query.populate(populatedFields);
     }
-    if (options && options.limit) {
-      query.limit(options.limit);
-    }
-    if (options && options.sort) {
-      query.sort(options.sort);
-    }
     const result = await query.exec();
     return result ? result.toObject() : result;
   }
@@ -85,7 +80,7 @@ export abstract class BaseService<T> implements IService<T> {
       includes?: (keyof T)[];
       excludes?: (keyof T)[];
     } | null,
-    populate?: PopulateOpt | null,
+    populate?: PopulateOpt | string[] | null,
     options?: IOptions,
   ): Promise<T[]> {
     let objectToProject = {};
@@ -101,6 +96,10 @@ export abstract class BaseService<T> implements IService<T> {
       const populatedFields: PopulateOptions[] = formatModelPopulate(populate);
       query.populate(populatedFields);
     }
+
+    if (options && options.skip) {
+      query.skip(options.skip);
+    }
     if (options && options.limit) {
       query.limit(options.limit);
     }
@@ -114,17 +113,24 @@ export abstract class BaseService<T> implements IService<T> {
   async updateOne(
     filter: FilterQuery<T>,
     update: Partial<Record<keyof T | FilterOpts, any>>,
-  ): Promise<UpdateResult<T> | null> {
-    const result = await this.model.findOneAndUpdate(filter, update, {
-      new: true,
-    });
-    return result && result.isNew
-      ? { ...result.toObject(), isNew: result.isNew }
-      : result;
+    populate?: PopulateOpt | string[] | null,
+  ): Promise<T | null> {
+    const result = await this.model
+      .findOneAndUpdate(filter, update, {
+        new: true,
+      })
+      .populate(populate ? formatModelPopulate(populate) : []);
+      if(result && result.toObject()){
+        return result.toObject()
+      }
+    return null;
   }
 
-  async updateMany(filter: FilterQuery<T>, update: any): Promise<void> {
-    await this.model.updateMany(filter, update).exec();
+  async updateMany(
+    filter: FilterQuery<T>,
+    update: Partial<Record<keyof T | FilterOpts, any>>,
+  ) {
+    return await this.model.updateMany(filter, update).exec();
   }
   async countDocument(filter: FilterQuery<T>): Promise<number> {
     return await this.model.countDocuments(filter);

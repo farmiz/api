@@ -1,9 +1,18 @@
-import { NextFunction, RequestHandler } from "express";
+import { RequestHandler } from "express";
 import { ValidationRule } from "../helpers/validator";
 import { JobOptions } from "bull";
 
 export type PermissionOperation = "create" | "read" | "update" | "delete";
-export type PermissionString = "users" | "wallet" | "discovery" | "sponsor" | "settings";
+export type PermissionString =
+  | "users"
+  | "wallet"
+  | "discovery"
+  | "sponsorship"
+  | "settings"
+  | "transaction"
+  | "tags"
+  | "products"
+  | "growth-stages";
 export type IPermission = Record<
   PermissionString,
   Record<PermissionOperation, number>
@@ -103,7 +112,9 @@ export type JobId =
   | "wallet-topup"
   | "wallet-deduction"
   | "program-sponsored"
-  | "sponsorship-cancelled";
+  | "sponsorship-cancelled"
+  | "cleanup-job"
+  | "update-sponsorship-status";
 
 export interface JobData<T> {
   data: T;

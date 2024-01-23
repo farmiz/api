@@ -1,9 +1,8 @@
 import { Resend } from "resend";
 import { MailOptions } from "../../interfaces";
-import { UNALLOWED_ENV } from "../../constants";
+import { farmizLogger } from "../../core/logger";
 const {
   EMAIL_KEY = "",
-  EMAIL_SENDER = "",
   WHITELISTED_EMAIL_DOMAIN,
   NODE_ENV = "",
 } = process.env;
@@ -22,20 +21,28 @@ export class EmailService {
 
     mailOptions.to = toEmail;
     try {
-      if (!UNALLOWED_ENV.includes(NODE_ENV)) {
-        await this.transporter.emails.send({
-          ...mailOptions,
-          from: EMAIL_SENDER,
+      if (NODE_ENV === "test") {
+      farmizLogger.log("info", "EmailService:sendEmail:[test]", "Email sent", {
+        ...mailOptions
+      })
+        return;
+      }
+      if (NODE_ENV === "production" || isWhiteListedEmail(toEmail)) {
+         await this.transporter.emails.send({
+          ...mailOptions
         } as any);
       } else {
-        console.log({ mailOptions });
-      }
+        farmizLogger.log("info", "EmailService:sendEmail:[development]", "Email sent", {
+          ...mailOptions
+        })      }
     } catch (error: any) {
-      console.log({ error: error.message });
+      farmizLogger.log("error", "EmailService:sendEmail",  error.message)
     }
   }
 }
 
-export function isWhiteListedEmail(email: string) {
-  return WHITELISTED_EMAIL_DOMAIN === email.split("@")[1];
+export function isWhiteListedEmail(emails: string[]) {
+  return emails.some((email: string) => {
+    return WHITELISTED_EMAIL_DOMAIN === email.split("@")[1];
+  });
 }

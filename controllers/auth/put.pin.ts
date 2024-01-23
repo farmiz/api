@@ -3,6 +3,7 @@
  * @apiName UpdatePIN
  * @apiGroup Auth
  * @apiVersion 0.0.1
+ * @apiSampleRequest https://staging-api.farmiz.co/v1
  * @apiDescription Endpoint to update a user's PIN code.
  * @apiSuccess {Boolean} success Indicates if the PIN was updated successfully.
  * @apiSuccess {Object} response Response object with a success message.

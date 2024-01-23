@@ -1,12 +1,12 @@
 /**
- * @api {POST} /api/auth/login Login
+ * @api {POST} /auth/login Login
  * @apiName Login
  * @apiGroup Auth
  * @apiVersion 0.0.1
  * @apiDescription Endpoint use to login 
  * @apiSuccess {Object} response User Data
  * @apiPermission anyone
- * @apiSampleRequest https://staging-api.farmiz.co
+ * @apiSampleRequest https://staging-api.farmiz.co/v1
  * @apiBody {String} email  User's email
  * @apiBody {String} password  User's password
  * @apiSuccessExample {json}
@@ -36,6 +36,8 @@ interface Body {
 import { ERROR_MESSAGES } from "../../constants";
 import { RequestError } from "../../helpers/errors";
 import { AuthRequest } from "../../middleware";
+import { farmizLogger } from "../../core/logger";
+import { addDays } from "date-fns";
 interface Body {
   email: string;
   password: string;
@@ -63,7 +65,7 @@ async function loginHandler(
     body: { email, password },
   } = req;
   try {
-    const user = await userService.findOne({ email }, null, {
+    const user = await userService.findOne({ email, deleted: false }, null, {
       permission: ["access"],
     });
 
@@ -86,13 +88,13 @@ async function loginHandler(
     });
     const response = {
       accessToken: tokens.accessToken,
-      ...userData,
+      user: userData,
     };
-
-    res.cookie("refreshAuthToken", tokens.refreshToken[0], {
+    res.clearCookie("refreshAuthToken");
+    res.cookie("refreshAuthToken", tokens.refreshToken, {
       httpOnly: true,
       secure: true,
-      expires: new Date(Date.now() + 60 * 60 * 1000),
+      expires: addDays(new Date(), 10),
       sameSite: "none",
       path: "/",
     });
@@ -103,6 +105,9 @@ async function loginHandler(
     });
   } catch (error: any) {
     sendFailedResponse(res, next, error);
+    farmizLogger.log("error", "refreshTokenHandler", error.message, {
+      body: { ...req.body },
+    });
   }
 }
 

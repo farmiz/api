@@ -1,12 +1,22 @@
 import { PopulateOptions } from "mongoose";
 import { AuthRequest } from "../middleware";
-import { UserRole, userRoles } from "../interfaces/users";
+import { UserRole, userRoles, userStatuses } from "../interfaces/users";
 import { differenceInYears, isFuture, isToday, parseISO } from "date-fns";
-import { IAddress, IPhone, PermissionOperation } from "../interfaces";
+import {
+  IAddress,
+  IPhone,
+  PermissionOperation,
+  PermissionString,
+} from "../interfaces";
 import { userService } from "../services/users";
 import { SPECIAL_ROLES } from "../constants";
 import { TCreditCardWallet, TMobileMoneyWallet } from "../interfaces/wallet";
 import { networkTypes } from "../mongoose/models/Wallet";
+import {
+  PERMISSIONS_LIST,
+  PERMISSION_OPERATIONS,
+} from "./permissions/permissions";
+import { UserStatus } from "../interfaces/users";
 
 export const isActualObject = (obj: Record<string, any>): boolean =>
   !!(!Array.isArray(obj) && obj && Object.keys(obj).length);
@@ -47,33 +57,77 @@ export const formatModelProjection = <T>(
   return { ...includesFormatted, ...excludeFormatted };
 };
 export const formatModelPopulate = (
-  fieldsToPopulate: Record<string, string[]>,
+  fieldsToPopulate?: Record<string, string[]> | string[],
 ): PopulateOptions[] => {
   const fields: PopulateOptions[] = [];
-  // { path: 'author', select: 'name email' },
-  for (const field in fieldsToPopulate) {
-    const populateField = fieldsToPopulate[field].length
-      ? { select: fieldsToPopulate[field].join(" ") }
-      : {};
-    fields.push({
-      path: field,
-    });
+
+  if (fieldsToPopulate) {
+    if (Array.isArray(fieldsToPopulate)) {
+      fieldsToPopulate.forEach(path => {
+        fields.push({ path });
+      });
+    } else {
+      for (const field in fieldsToPopulate) {
+        if (Object.prototype.hasOwnProperty.call(fieldsToPopulate, field)) {
+          const populateField = fieldsToPopulate[field].length
+            ? { select: fieldsToPopulate[field].join(" ") }
+            : {};
+
+          fields.push({
+            path: field,
+            ...(Object.keys(populateField).length && { ...populateField }),
+          });
+        }
+      }
+    }
   }
+
   return fields;
 };
 
 export const trimAndClean = (value: string) => value.trim();
 
-export const hasValidRole = (req: AuthRequest, role: UserRole) => {
-  if (!["support", "admin"].includes(req.user?.role as string)) {
-    return !["admin", "support"].includes(role);
-  }
-  const filteredRoles = userRoles.filter(
-    role => !["admin", "support"].includes(role),
-  );
-  return filteredRoles.includes(role);
+export type PermissionObject = {
+  [key in PermissionString]: PermissionOperation[];
 };
-
+function isValidPermissionObject(
+  permissions: PermissionObject,
+  permissionOperations: PermissionOperation[],
+) {
+  for (const key in permissions) {
+    if (permissions.hasOwnProperty(key)) {
+      const values: PermissionOperation[] =
+        permissions[key as PermissionString];
+      if (!values.every(value => permissionOperations.includes(value))) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+export const validatePermission = ({}, permissions: PermissionObject) => {
+  const permissionKeys = Object.keys(permissions) as PermissionString[];
+  console.log({ permissions })
+  const permissionHasValidKeys = permissionKeys.every((key: PermissionString) =>
+    PERMISSIONS_LIST.includes(key),
+  );
+  return (
+    isValidPermissionObject(permissions, PERMISSION_OPERATIONS) &&
+    permissionHasValidKeys
+  );
+};
+export const hasValidRole = ({}, role: UserRole) => {
+  // if (!["support", "admin"].includes(req.user?.role as string)) {
+  //   return !["admin", "support"].includes(role);
+  // }
+  // const filteredRoles = userRoles.filter(
+  //   role => !["admin", "support"].includes(role),
+  // );
+  return userRoles.includes(role);
+};
+export const hasValidStatus = (status: UserStatus) =>
+  userStatuses.includes(status);
+export const validName = ({}, val: string) => val.length >= 3;
 export const dataHasValidLength = (data: string, dataLength: number) =>
   data.length >= dataLength;
 
@@ -137,9 +191,12 @@ export const hasValidCreditCardDetails = (
 ): boolean => {
   return !!(
     isActualObject(details) &&
-    details.cvv && hasValidLength(details.cvv, 3) &&
-    details.expiry_month &&  hasValidLength(details.expiry_month, 2) &&
-    details.expiry_year &&  hasValidLength(details.expiry_year, 2) &&
+    details.cvv &&
+    hasValidLength(details.cvv, 3) &&
+    details.expiry_month &&
+    hasValidLength(details.expiry_month, 2) &&
+    details.expiry_year &&
+    hasValidLength(details.expiry_year, 2) &&
     details.number
   );
 };

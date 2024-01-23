@@ -1,4 +1,4 @@
-import mongoose, { Document, Types } from "mongoose";
+import mongoose from "mongoose";
 import { IDefaultPlugin, Statuses } from "../../interfaces";
 import { MongooseDefaults } from "../../constants";
 import { defaultPlugin } from "../utils";

@@ -6,7 +6,6 @@ import { faker } from "@faker-js/faker";
 import { ERROR_MESSAGES, httpCodes } from "../../../../constants";
 import { mockUser } from "../../../data/users/UserMock";
 import { v4 as uuid } from "uuid";
-import { UserRole } from "../../../../interfaces/users";
 import { omit, pick } from "lodash";
 import { subYears } from "date-fns";
 chai.use(chaiAsPromise);
@@ -284,16 +283,16 @@ describe("REGISTER USER /auth/register", function () {
       .be.a("string")
       .eql(ERROR_MESSAGES.userFieldExists("email", email));
   });
-  it.only("should register user with valid user credentials", async function () {
+  it("should register user with valid user credentials", async function () {
     const newEmail = faker.internet.email();
     const res = await chai
       .request(app.app)
       .post("/v1/auth/register")
-      .send({ ...userDetails, email: "bernardarhia@gmail.com" });
+      .send({ ...userDetails, email: newEmail });
     res.should.have.status(httpCodes.CREATED.code);
     res.body.should.have.property("success").eql(true);
     res.body.should.have.property("response");
-    // res.body.response.should.have.property("email").eql(newEmail);
+    res.body.response.should.have.property("email").eql(newEmail);
     res.body.response.should.have.property("status").eql("pendingApproval");
   });
 

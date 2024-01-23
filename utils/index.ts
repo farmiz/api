@@ -15,18 +15,80 @@ export const selectRandomItem = <T>(data: T[]): T => {
   return data[Math.floor(Math.random() * convertedArray.length)];
 };
 
-interface QueryBuilderResult {
+interface QueryBuilderResult<T> {
   filter: any;
   options: any;
+  columns: (keyof T)[];
 }
-
+// /items?search=apple&searchSelection=name,description&sort=-price,rating&limit=20&currentPage=3&columns=name,price,description
 export function queryBuilder<T = any>(
   reqQuery: any,
   searchableFields: (keyof T)[],
-): QueryBuilderResult {
-  const { search, searchSelection, limit, sort, currentPage } = reqQuery;
+): QueryBuilderResult<T> {
+  const {
+    search,
+    searchSelection,
+    limit,
+    sort,
+    currentPage,
+    columns,
+    ...uniqueFields
+  } = reqQuery;
+
   // Filter
   let filter: any = {};
+
+  const operatorMapper: Record<string, any> = {
+    eq: "$eq",
+    gt: "$gt",
+    gte: "$gte",
+    lt: "$lt",
+    lte: "$lte",
+    ne: "$ne",
+    in: "$in",
+    nin: "$nin",
+    regex: "$regex",
+    exists: "$exists",
+  };
+
+  // Handle unique fields
+  let customFilter: any = {};
+  let firstNameRange: any = {};
+
+  Object.keys(uniqueFields).forEach(key => {
+    const [field, operator] = key.split("_");
+
+    let value: number | string | boolean | string[] | null = null;
+    const queryValue = uniqueFields[key];
+    if (queryValue !== undefined && queryValue !== null && queryValue) {
+      if (!!Number(queryValue)) {
+        value = parseFloat(queryValue);
+      } else if (typeof queryValue === "string") {
+        if (["in", "nin"].includes(operator) && queryValue) {
+          value = queryValue.split(",");
+        } else {
+          value = queryValue;
+        }
+      }
+
+      if ((operator === "gte" || operator === "lte") && value) {
+        // Handle "gte" and "lte" for firstName within the same $or condition
+        firstNameRange = {
+          $or: [
+            { [field]: { [operatorMapper["gte"]]: value } },
+            { [field]: { [operatorMapper["lte"]]: value } },
+          ],
+        };
+      } else {
+        // Handle other fields and operators
+        customFilter[field] = {
+          [operatorMapper[operator]]: value,
+        };
+      }
+    }
+  });
+
+  // Handle search
   if (search && searchSelection && searchableFields.includes(searchSelection)) {
     // Build the $or array for searching in the specified field
     filter[searchSelection] = { $regex: search, $options: "i" };
@@ -36,8 +98,15 @@ export function queryBuilder<T = any>(
       [field]: { $regex: search, $options: "i" },
     }));
 
-    filter.$or = orConditions;
+    filter.$or = orConditions || [];
   }
+
+  // Merge the firstNameRange and customFilter
+  filter = {
+    ...filter,
+    ...customFilter,
+    ...firstNameRange,
+  };
 
   // Options
   let options: any = {};
@@ -59,16 +128,27 @@ export function queryBuilder<T = any>(
       }
     });
     options.sort = sortOptions;
+  } else {
+    options.sort = {
+      updatedAt: -1,
+    };
   }
 
   // Pagination
-  const perPage = parseInt(limit) || 10;
+  const perPage = parseInt(limit) || 30;
   const page = parseInt(currentPage) || 1;
   const skip = (page - 1) * perPage;
   options.skip = skip;
+  options.limit = perPage;
+  options.page = page;
 
-  return { filter, options };
+  return {
+    filter,
+    options,
+    columns: searchableFields,
+  };
 }
+
 
 export type NetworkTypes = "MTN" | "VODAFONE" | "Airtel Tigo";
 
@@ -166,10 +246,23 @@ export function modeMomoTypeForPaystack(phone: string) {
     : network;
 }
 
-const { EMAIL_SENDER, APP_NAME } = process.env;
+const { APP_NAME, WHITELISTED_EMAIL_DOMAIN = "farmiz.co" } = process.env;
 
-export const defaultFrom = (from?: string) => `${APP_NAME} <${EMAIL_SENDER || from}>`;
-export const roundNumber = (data: number | string, round: number = 2)=> (Number(data) / 100).toFixed(round);
+type DefaultSenderEmails = "SALES" | "SUPPORT" | "PAYMENT" | "WELCOME";
+const defaultSenderEmails: { [K in DefaultSenderEmails]: string } = {
+  SALES: "sales",
+  SUPPORT: "support",
+  PAYMENT: "payment",
+  WELCOME: "welcome",
+};
+export const defaultFrom = (type: DefaultSenderEmails, from?: string) => {
+  const sender = from
+    ? from
+    : `${defaultSenderEmails[type]}-no-reply@${WHITELISTED_EMAIL_DOMAIN}`;
+  return `${APP_NAME} <${sender}>`;
+};
+export const roundNumber = (data: number | string, round: number = 2) =>
+  (Number(data) / 100).toFixed(round);
 
 export function generateRandomNumber(length: number): string {
   if (length <= 0) {
@@ -181,7 +274,53 @@ export function generateRandomNumber(length: number): string {
   return randomHex.slice(0, length);
 }
 const { MAIN_ORIGIN } = process.env;
-    // Generate a unique URL with the token appended as a query parameter
-    export const generateVerificationUrl = (tokenData: TokenWithExpiration | null) => {
-      return `${MAIN_ORIGIN}/verify?token=${tokenData?.token}&type=${tokenData?.type}`;
-    };
+// Generate a unique URL with the token appended as a query parameter
+export const generateVerificationUrl = (
+  tokenData: TokenWithExpiration | null,
+) => {
+  return `${MAIN_ORIGIN}/verify?token=${tokenData?.token}&type=${tokenData?.type}`;
+};
+
+type TOutput = Record<string, unknown>;
+type TInputObject = Record<string, any>;
+interface IOptions {
+  flattenArray?: boolean;
+  delimiter?: string;
+}
+
+function _isObject(input: any) {
+  return typeof input === 'object' && !Array.isArray(input) && input !== null;
+}
+
+export function flattenObject(obj: TInputObject = {}, inputOptions: IOptions = {}): TOutput {
+  const options = {
+    flattenArray: true,
+    delimiter: '.',
+    ...inputOptions,
+  };
+
+  if (!obj) return {};
+
+  return Object
+    .keys(obj)
+    .reduce((result: Record<string, unknown>, key) => {
+      const isObject = _isObject(obj[key]);
+      const isArray = Array.isArray(obj[key]);
+
+      if (isObject || (options.flattenArray === true && isArray)) {
+        const flatObject = flattenObject(obj[key], options);
+
+        Object.entries(flatObject).forEach(([name, value]) => {
+          result[`${key}${options.delimiter}${name}`] = value;
+        });
+
+        return result;
+      }
+
+      result[key] = obj[key];
+
+      return result;
+    }, {});
+}
+
+export default flattenObject;

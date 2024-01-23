@@ -1,12 +1,11 @@
 /**
- * @api {POST} /api/wallet/:id/topup/credit-card Top Up Wallet with Credit Card
- * @apiName TopUpWalletWithCreditCard
+ * @api {POST} /wallet/:id/topup/mobile-money Top Up Wallet with Mobile Money
+ * @apiName Wallet topup via mobile money
  * @apiGroup Wallet
  * @apiVersion 0.0.1
- * @apiDescription Endpoint used to top up a wallet using a credit card.
- *
+ * @apiDescription Endpoint used to top up a wallet using mobile money.
  * @apiPermission authenticated (with "wallet" - "create" permission)
- * @apiSampleRequest https://staging-api.farmiz.co
+ * @apiSampleRequest https://staging-api.farmiz.co/v1
  *
  * @apiParam {String} id ID of the wallet to be topped up.
  *
@@ -19,7 +18,22 @@
  *     HTTP/1.1 200 OK
  *     {
  *       "success": true,
- *       "response": {}
+ *       "response": {
+ *         "id": "43e25a93-c89e-4c98-8fcb-71f230498ec1",
+ *         "userId": "a3a9477b-b9b9-468c-9f3d-9de03297ebfd",
+ *         "phone": {
+ *           "prefix": "233",
+ *           "number": "200000000",
+ *           "country": "GH"
+ *         },
+ *         "network": "MTN",
+ *         "type": "mobile money",
+ *         "availableBalance": 0,
+ *         "primary": true,
+ *         "createdAt": "2020-04-21T03:32:05.615754Z",
+ *         "deletedAt": "2020-04-21T03:32:05.615754Z",
+ *         "deleted": false
+ *       }
  *     }
  *
  * @apiErrorExample {json} Error-Response:
@@ -48,13 +62,16 @@ import {
 import { RATE_LIMITS, httpCodes } from "../../constants";
 import { AuthRequest } from "../../middleware";
 import { walletService } from "../../services/wallet";
-import { paystack } from "../../core/paystack";
-import { ChargeWithCardPayload } from "paystackly";
-import { creditCardWalletService } from "../../services/wallet/creditCard";
-import { walletTopupService } from "../../services/transaction/topup";
+import { payStack } from "../../core/payStack";
+import {
+  BaseChargeResponse,
+  ChargeWithMobileMoneyPayload,
+  TransactionResponse,
+} from "paystackly";
+import { mobileMoneyWalletService } from "../../services/wallet/mobileMoney";
 import { RequestError } from "../../helpers/errors";
+import { walletTopUpService } from "../../services/transaction/topUp";
 import { v4 as uuid } from "uuid";
-
 const data: IData = {
   requireAuth: true,
   permission: ["wallet", "create"],
@@ -79,25 +96,22 @@ const data: IData = {
   },
   requestRateLimiter: RATE_LIMITS.addWallet,
 };
-async function topupWalletWithCardHandler(
+async function topUpWalletWithMoMoHandler(
   req: AuthRequest,
   res: Response,
   next: NextFunction,
 ) {
   try {
     const reference = uuid();
-    const wallet = await creditCardWalletService.findOne({
+    const wallet = await mobileMoneyWalletService.findOne({
       _id: req.params.id,
     });
-
-    const chargePayload: ChargeWithCardPayload = {
+    const chargePayload: ChargeWithMobileMoneyPayload = {
       amount: req.body.amount,
       email: req.user?.email as string,
-      card: {
-        cvv: String(wallet?.cardDetails.cvv),
-        expiry_month: String(wallet?.cardDetails.expiry_month),
-        expiry_year: String(wallet?.cardDetails.expiry_year),
-        number: String(wallet?.cardDetails.number),
+      mobile_money: {
+        phone: "0" + wallet?.mobileMoneyDetails.phone.number,
+        provider: wallet?.mobileMoneyDetails.network as string,
       },
       reference,
       metadata: {
@@ -105,11 +119,12 @@ async function topupWalletWithCardHandler(
       },
     };
 
-    const result = await paystack.charges.chargeWithCard(chargePayload);
+    const result: BaseChargeResponse | TransactionResponse =
+      await payStack.charges.chargeWithMobileMoney(chargePayload);
 
     if (!result.status)
       return next(new RequestError(httpCodes.BAD_REQUEST.code, result.message));
-    await walletTopupService.create({
+    await walletTopUpService.create({
       amount: req.body.amount,
       userId: req.user?.id,
       reference,
@@ -117,9 +132,7 @@ async function topupWalletWithCardHandler(
     });
     sendSuccessResponse(res, next, {
       success: true,
-      response: {
-        ...result.data,
-      },
+      response: { ...result.data },
     });
   } catch (error: any) {
     sendFailedResponse(res, next, error);
@@ -128,7 +141,7 @@ async function topupWalletWithCardHandler(
 
 export default {
   method: "post",
-  url: "/wallet/:id/topup/credit-card",
-  handler: topupWalletWithCardHandler,
+  url: "/wallets/:id/topUp/mobile-money",
+  handler: topUpWalletWithMoMoHandler,
   data,
 };

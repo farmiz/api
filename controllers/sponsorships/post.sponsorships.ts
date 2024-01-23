@@ -11,13 +11,12 @@ import { httpCodes } from "../../constants";
 import { differenceInDays } from "date-fns";
 import { createSponsorship } from "../../services/sponsorship/createSponsorship";
 import { sponsorshipService } from "../../services/sponsorship";
-import { assert } from "../../helpers/asserts";
 import { walletService } from "../../services/wallet";
 import { SponsorshipModel } from "../../mongoose/models/Sponsorship";
 
 const data: IData = {
   requireAuth: true,
-  permission: ["wallet", "create"],
+  permission: ["sponsorship", "create"],
   rules: {
     body: {
       discoveryId: {
@@ -34,6 +33,10 @@ const data: IData = {
         },
         fieldName: "Wallet",
       },
+      amount: {
+        required: true,
+        validate: ({}, amount) => amount < 100,
+      },
     },
   },
 };
@@ -44,9 +47,12 @@ async function createSponsorshipHandler(
   next: NextFunction,
 ) {
   try {
-    const userId = String(req.user?.id);
+    const userId = req.user?.id;
     const discoveryId = req.body.id;
-    const discovery = await discoveryService.findOne({_id: discoveryId, deleted: false});
+    const discovery = await discoveryService.findOne({
+      _id: discoveryId,
+      deleted: false,
+    });
 
     if (!discovery) {
       return next(
@@ -54,21 +60,22 @@ async function createSponsorshipHandler(
       );
     }
 
-    const walletBalance = await walletService.findOne({
+    const wallet = await walletService.findOne({
       _id: req.body.walletId,
+      deleted: false,
     });
-    if (!walletBalance) {
+    if (!wallet) {
       return next(
         new RequestError(httpCodes.NOT_FOUND.code, "Wallet not found"),
       );
     }
 
-    const amountOnWallet = walletBalance.availableBalance;
+    const amountOnWallet = wallet.availableBalance;
     if (differenceInDays(discovery.endDate, new Date()) < 0) {
       return next(
         new RequestError(
           httpCodes.BAD_REQUEST.code,
-          "This discovery is no longer open for sponsorship",
+          "This discovery is no longer available for sponsorship",
         ),
       );
     }
@@ -88,16 +95,23 @@ async function createSponsorshipHandler(
       isActive: true,
     });
     if (hasSponsoredProgram) {
-      assert(false, "Programmed is already sponsored by you");
+      return next(
+        new RequestError(
+          httpCodes.BAD_REQUEST.code,
+          "Programmed is already sponsored by you",
+        ),
+      );
     }
-    const programSponsored = await createSponsorship(
+    const programSponsored = await createSponsorship({
       req,
       discovery,
-      req.body.walletId,
-    );
+      amount: req.body.amount,
+      walletId: req.body.walletId,
+      walletType: wallet.type,
+    });
 
     const response = {
-     ...programSponsored
+      ...programSponsored,
     };
     sendSuccessResponse<Partial<SponsorshipModel>>(res, next, {
       response,
@@ -110,7 +124,7 @@ async function createSponsorshipHandler(
 
 export default {
   data,
-  url: "/sponsor",
+  url: "/sponsorships",
   handler: createSponsorshipHandler,
   method: "post",
 };

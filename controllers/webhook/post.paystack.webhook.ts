@@ -1,25 +1,24 @@
-import { NextFunction, Response } from "express";
+import { Response } from "express";
 import { IData } from "../../interfaces";
 import { AuthRequest } from "../../middleware";
-import { validatePaystackHookHandler } from "../../middleware/paystack";
-import { paystackWebhook } from "../../core/webhook";
+import { validatePayStackHookHandler } from "../../middleware/payStack";
+import { payStackWebhook } from "../../core/webhook";
 
 const data: IData = {
-  customMiddleware: validatePaystackHookHandler,
+  customMiddleware: validatePayStackHookHandler,
 };
-async function paystackWebhookHandler(
+async function payStackWebhookHandler(
   req: AuthRequest,
-  res: Response,
-  next: NextFunction,
+  res: Response
 ) {
   const event = req.body.event;
-  await paystackWebhook.handleEvent(event, req.body.data);
-  res.status(200).send({ sent: "yes" });
+  await payStackWebhook.handleEvent(event, req.body.data);
+  res.status(200).send({ message: "received" });
 }
 
 export default {
   method: "post",
   url: "/paystack/webhook",
-  handler: paystackWebhookHandler,
+  handler: payStackWebhookHandler,
   data,
 };

@@ -1,10 +1,11 @@
-name: Deploy to Railway after Workflow 1
+name: Deploy staging
 
 on:
   workflow_run:
     workflows: ["Testing"]
     types:
       - completed
+
   push:
     branches:
     - development
@@ -27,7 +28,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16.x
-          cache: 'npm'
 
       - name: Install packages
         run: npm install --frozen-lockfile
@@ -42,6 +42,6 @@ jobs:
         run: npm i -g @railway/cli
 
       - name: Deploy
-        run: railway up
+        run: railway up --service staging-api
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}

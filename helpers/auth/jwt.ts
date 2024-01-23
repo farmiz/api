@@ -12,7 +12,6 @@ import { userService } from "../../services/users";
 import { IUser } from "../../interfaces/users";
 import crypto from "crypto";
 import { addHours, isAfter } from "date-fns";
-import { UserModel } from "../../mongoose/models/Users";
 const { JWT_TOKEN_SECRET = "", JWT_REFRESH_TOKEN_SECRET = "" } = process.env;
 // Token interfaces
 const accessTokenExpiresAt = new Date(Date.now() + 10 * 1000);
@@ -45,28 +44,35 @@ class TokenService {
       return null;
     }
   }
-  async createEmailRecoveryToken(userId: string | null): Promise<TokenDocument | null> {
-    let tokens: Record<string, any> = {}
+  async createEmailRecoveryToken(
+    userId: string | null,
+  ): Promise<TokenDocument | null> {
+    let tokens: Record<string, any> = {};
     try {
-      tokens.emailRecoveryToken =  {
-        type: "recvoery",
+      tokens.emailRecoveryToken = {
+        type: "recovery",
         token: `mha_${crypto.randomBytes(60).toString("hex")}`,
         expiresAt: addHours(new Date(), 5),
       };
-      return await Tokens.create({...tokens, userId});
+      return await Tokens.create({ ...tokens, userId });
     } catch (error: any) {
-      throw new Error(error.message)
+      throw new Error(error.message);
     }
   }
-  async verifyEmailRecoveryToken(token: string): Promise<boolean>{
-    const tokenVerified = await Tokens.findOne({"tokens.emailRecoveryToken": token});
+  async verifyEmailRecoveryToken(token: string): Promise<boolean> {
+    const tokenVerified = await Tokens.findOne({
+      "tokens.emailRecoveryToken": token,
+    });
 
-    if(!tokenVerified) return false;
+    if (!tokenVerified) return false;
 
-    // check if token is exired
+    // check if token is expired
     const currentDate = new Date();
     const emailRecoveryToken = tokenVerified?.tokens?.verifyAccountToken;
-    return isAfter(currentDate, new Date(emailRecoveryToken?.expiresAt as Date));
+    return isAfter(
+      currentDate,
+      new Date(emailRecoveryToken?.expiresAt as Date),
+    );
   }
   public verifyRefreshToken(token: string): IUserPayload {
     const decoded = jwt.verify(token, this.RefreshSecret) as IUserPayload;
@@ -78,28 +84,32 @@ class TokenService {
       const bearer = req.headers.authorization;
       if (!bearer) return next(new RequestError(httpCode, httpMessage));
       const [, accessToken] = bearer.split("Bearer ");
-      if (!accessToken || accessToken == undefined)
+      if (!accessToken || accessToken == undefined){
         return next(new RequestError(httpCode, httpMessage));
+      }
 
       const payload = this.verifyAccessToken(accessToken);
       const id = payload?._id || payload?.id;
       if (!payload) return next(new RequestError(httpCode, httpMessage));
       const user = await userService.findOne({ _id: id }, null, {
-        permission: [],
+        permission: ["access"],
       });
 
-      req.user = user as UserModel;
-      next();
+      if (user) {
+        req.user = user;
+        return next();
+      }
+
+      return next(new RequestError(httpCode, httpMessage));
     } catch (error: any) {
       throw new RequestError(httpCode, error.message);
     }
   }
-
 }
 
 export class TokenModel implements Partial<ITokens> {
   public accessToken: string;
-  public refreshToken: string[];
+  public refreshToken: string;
 
   constructor(tokens: ITokens) {
     this.accessToken = tokens.accessToken;
@@ -118,9 +128,9 @@ export async function generateTokens(
   const refreshToken = tokenService.createRefreshToken({ _id: user.id });
 
   const tokens: Omit<ITokens, "accessToken"> = {
-    refreshToken: [refreshToken],
+    refreshToken: refreshToken,
     verifyAccountToken: null,
-    emailRecoveryToken: null
+    emailRecoveryToken: null,
   };
   if (type) {
     tokens.verifyAccountToken = {
@@ -129,15 +139,14 @@ export async function generateTokens(
       expiresAt: addHours(new Date(), 5),
     };
   }
-  //   store tokens in tokens model
   await Tokens.create({
     tokens,
     userId: user.id,
   });
   return {
     accessToken,
-    refreshToken: [refreshToken],
+    refreshToken: refreshToken,
     verifyAccountToken: tokens.verifyAccountToken,
-    emailRecoveryToken: null
+    emailRecoveryToken: null,
   };
 }

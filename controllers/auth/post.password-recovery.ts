@@ -1,6 +1,5 @@
 import { Response, NextFunction } from "express";
 
-import { passwordManager } from "../../helpers/auth/password";
 import {
   sendFailedResponse,
   sendSuccessResponse,
@@ -37,7 +36,7 @@ async function resetPasswordHandler(
   try {
     const { email } = req.body;
 
-    const user = await userService.findOne({ email });
+    const user = await userService.findOne({ email, deleted: false });
 
     if (user) {
       const tokenCreated = await tokenService.createEmailRecoveryToken(

@@ -1,5 +1,6 @@
 /**
  * @api {POST} /auth/pin/validate Validate PIN
+ * @apiSampleRequest https://staging-api.farmiz.co/v1
  * @apiName ValidatePIN
  * @apiGroup Auth
  * @apiVersion 0.0.1
@@ -74,7 +75,7 @@ async function validatePinHandler(
     body: { code },
   } = req;
   try {
-    const pin = await pinService.findOne({ userId: req.user?.id });
+    const pin = await pinService.findOne({ userId: req.user?.id, deleted: false });
 
     const validPin = await passwordManager.comparePassword(
       code,
