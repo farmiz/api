@@ -1,0 +1,1 @@
+2023-12-09 07:15:21 [ERROR] : initializeFileBucket - Invalid Firebase app options passed as the first argument to initializeApp() for the app named "[DEFAULT]". The "credential" property must be an object which implements the Credential interface. 
