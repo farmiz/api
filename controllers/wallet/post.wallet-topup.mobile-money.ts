@@ -62,7 +62,7 @@ import {
 import { RATE_LIMITS, httpCodes } from "../../constants";
 import { AuthRequest } from "../../middleware";
 import { walletService } from "../../services/wallet";
-import { payStack } from "../../core/payStack";
+import { payStack } from "../../core/paystack";
 import {
   BaseChargeResponse,
   ChargeWithMobileMoneyPayload,
@@ -70,7 +70,7 @@ import {
 } from "paystackly";
 import { mobileMoneyWalletService } from "../../services/wallet/mobileMoney";
 import { RequestError } from "../../helpers/errors";
-import { walletTopUpService } from "../../services/transaction/topUp";
+import { walletTopUpService } from "../../services/transaction/topup";
 import { v4 as uuid } from "uuid";
 const data: IData = {
   requireAuth: true,

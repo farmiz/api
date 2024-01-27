@@ -77,7 +77,7 @@ import {
   WalletPayload,
   WalletType,
 } from "../../interfaces/wallet";
-import { payStack } from "../../core/payStack";
+import { payStack } from "../../core/paystack";
 import { CardBINResponse, ResolveAccountResponse } from "paystackly";
 import { extractWalletData, getNetworkBaseOnNumber } from "../../utils";
 import { RequestError } from "../../helpers/errors";

@@ -1,5 +1,5 @@
 import { ITransaction } from "../interfaces/transaction";
-import { walletTopUpService } from "../services/transaction/topUp";
+import { walletTopUpService } from "../services/transaction/topup";
 import { roundNumber } from "../utils";
 import { walletService } from "../services/wallet";
 import { emailSender } from "../services/email/EmailSender";

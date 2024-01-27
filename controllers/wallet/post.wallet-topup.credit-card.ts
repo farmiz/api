@@ -52,8 +52,8 @@ import { ChargeWithCardPayload } from "paystackly";
 import { creditCardWalletService } from "../../services/wallet/creditCard";
 import { RequestError } from "../../helpers/errors";
 import { v4 as uuid } from "uuid";
-import { walletTopUpService } from "../../services/transaction/topUp";
-import { payStack } from "../../core/payStack";
+import { payStack } from "../../core/paystack";
+import { walletTopUpService } from "../../services/transaction/topup";
 
 const data: IData = {
   requireAuth: true,
