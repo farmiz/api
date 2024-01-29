@@ -129,6 +129,10 @@ const data: IData = {
         required: false,
         fieldName: "Closing date",
       },
+      productId: {
+        required: false,
+        fieldName: "Product id",
+      }
     },
   },
 };
