@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { IData } from "../../interfaces";
 import { AuthRequest } from "../../middleware";
-import { validatePayStackHookHandler } from "../../middleware/payStack";
+import { validatePayStackHookHandler } from "../../middleware/paystack";
 import { payStackWebhook } from "../../core/webhook";
 
 const data: IData = {
