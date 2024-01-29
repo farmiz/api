@@ -56,7 +56,12 @@ const discoverySchema = new Schema<DiscoveryModel>(
 );
 discoverySchema.plugin(defaultPlugin);
 
-
+discoverySchema.virtual("product", {
+justOne: true,
+localField: "productId",
+foreignField: "_id",
+match: { deleted: false }
+})
 export const Discovery = mongoose.model<DiscoveryModel>(
   "Discovery",
   discoverySchema,
