@@ -79,7 +79,9 @@ const getSingleDiscoveryHandler = async (
       deleted: false,
     };
 
-    const discovery = await discoveryService.findOne(filter, null);
+    const discovery = await discoveryService.findOne(filter, null, {
+      product: []
+    });
 
     if (!discovery)
       return next(
