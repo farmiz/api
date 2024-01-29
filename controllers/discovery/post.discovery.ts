@@ -74,7 +74,7 @@ const data: IData = {
   permission: ["discovery", "create"],
   rules: {
     body: {
-      product: {
+      productId: {
         required: true,
         fieldName: "Product",
         sanitize: validator.trim,
