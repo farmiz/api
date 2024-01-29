@@ -9,7 +9,7 @@ export interface DiscoveryModel extends DiscoveryProps, IDefaultPlugin {}
 export const riskLevels: RiskLevel[] = ["high", "low", "moderate"];
 const discoverySchema = new Schema<DiscoveryModel>(
   {
-    product: {
+    productId: {
       type: String,
       required: true,
       ref: "Product",
