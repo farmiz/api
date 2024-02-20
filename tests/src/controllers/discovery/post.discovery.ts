@@ -28,14 +28,14 @@ describe("POST DISCOVERY   /discovery", async () => {
       userPermission: { discovery: ["create"] },
     });
   });
-  it("should not create discovery without discovery product", async () => {
+  it("should not create discovery without discovery productId", async () => {
     const res = await chai
       .request(app.app)
       .post("/v1/discoveries")
       .set({
         Authorization: `Bearer ${mockUser.getToken(dummyKey)}`,
       })
-      .send({ ...omit(validDiscoveryData, ["product"]) });
+      .send({ ...omit(validDiscoveryData, ["productId"]) });
     res.should.have.status(400);
     res.body.should.have.property("success").be.a("boolean").eql(false);
     res.body.should.have.property("response").be.a("object");
@@ -203,7 +203,7 @@ describe("POST DISCOVERY   /discovery", async () => {
     res.body.should.have.property("success").be.a("boolean").eql(true);
     res.body.should.have.property("response").be.a("object");
     const expectedFields = [
-      "product",
+      "productId",
       "amount",
       "duration",
       "profitPercentage",
