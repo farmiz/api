@@ -84,7 +84,6 @@ const getDiscoveryHandler = async (
       "endDate",
       "startDate",
       "closingDate",
-      "product",
       "profitPercentage",
       "tags",
       "riskLevel",
